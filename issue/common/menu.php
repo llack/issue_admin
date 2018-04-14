@@ -1,8 +1,3 @@
-<style>
-body {
-	padding : 1rem;
-}
-</style>
 <div id="topmenu" class="ui menu item four">
   <a class="browse item">
     업무관리
