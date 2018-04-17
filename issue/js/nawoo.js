@@ -13,3 +13,12 @@ function ajax(params, url, callback, method){
 	}
 	});
 }
+
+function setJson() {
+	var frm = arguments[0];
+	var param = {};
+	for(var i = 1; max=arguments.length, i < max; i++) {
+		param[arguments[i]] = frm[arguments[i]].value;
+	}
+	return param;
+}

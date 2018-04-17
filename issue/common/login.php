@@ -210,15 +210,8 @@ function sign_submit(frm) {
 		frm.user_pwd2.focus();
 		return false;
 	}
-	var param = {};
-	param["user_name"] = frm.user_name.value;
-	param["user_id"] = frm.user_id.value;
-	param["user_pwd"] = frm.user_pwd.value;
-	param["user_pwd2"] = frm.user_pwd2.value;
-	param["user_email"] = frm.user_email.value;
-	//console.log(param);
+	var param = setJson(frm,"user_name","user_id","user_pwd","user_pwd2","user_email");
 	ajax(param,"test.php",test_callback);
-	//frm.submit();
 }
 
 function test_callback(result) {
@@ -230,6 +223,7 @@ function test_callback(result) {
 	frm.user_pwd2.value = param.user_pwd2;
 	frm.user_email.value = param.user_email;
 	alert(result.msg);
+	console.log(result);
 	modal_open();
 }
 </script>
