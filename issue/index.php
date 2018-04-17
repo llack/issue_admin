@@ -1,4 +1,10 @@
-<? include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
+<?
+session_start();
+if($_SESSION["USER_NAME"]=="") {
+	header("Location:/common/login.php");
+}
+include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
+
 ?>
 <body>
 <div class="ui container" style="width:100%;height:94%;overflow:hidden;">

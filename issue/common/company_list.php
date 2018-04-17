@@ -12,8 +12,12 @@
 	<!-- /사이드바 헤더 -->
 	
 	<!-- 검색창 -->
-  <div class="item">
-    <div class="ui input"><input type="text" placeholder="Search..."></div>
+  <div id="com_search" class="item">
+    <div class="ui icon input">
+    	<input class="prompt" type="text" placeholder="Search...">
+    	<i class="search icon"></i>
+    </div>
+    <div class="results"></div>
   </div>
   <!-- /검색창 -->
   
@@ -134,3 +138,6 @@
   </div>
   <!-- / 사이드바 업체리스트  -->
 </div>
+<script>
+
+</script>
