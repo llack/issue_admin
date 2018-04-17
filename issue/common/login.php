@@ -152,6 +152,7 @@ function modal_open() {
 	$('.ui.basic.modal').modal({
 		closable : false,
 		onDeny : function() { // true가 닫힘
+			$("div").removeClass('error');
 			return true;
 		}
 		,onApprove : function(e) {
