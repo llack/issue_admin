@@ -49,6 +49,9 @@ if($_SESSION["USER_NAME"]!="") {
 	text-align:left;
 	font-size:30px;
 }
+.ribbon {
+	font-size:14px !important;
+}
 </style>
 <body>
 <div id="login_form">
@@ -92,31 +95,31 @@ if($_SESSION["USER_NAME"]!="") {
 	<form class="ui fluid form" name="form2" method="post" action="member_register.php">
   <div class="field">
   <div class="inline field">
-    <div class="ui right pointing purple basic label">
+    <div class="ui ribbon  purple basic label">
       이름
     </div>
     <input type="text" name="user_name" id="user_name">
   </div>
   <div class="inline field">
-    <div class="ui right pointing purple basic label">
+    <div class="ui ribbon purple basic label">
       아이디
     </div>
     <input type="text" name="user_id" id="user_id">
   </div>
   <div class="inline field">
-    <div class="ui right pointing purple basic label">
+    <div class="ui ribbon purple basic label">
       	비밀번호
     </div>
     <input type="password" name="user_pwd" id="user_pwd">
   </div>
   <div class="inline field">
-    <div class="ui right pointing purple basic label">
+    <div class="ui ribbon purple basic label">
       	비밀번호확인
     </div>
     <input type="password" name="user_pwd2" id="user_pwd2">
   </div>
   <div class="inline field">
-    <div class="ui right pointing purple basic label">
+    <div class="ui ribbon purple basic label">
       	이메일
     </div>
     <input type="text" name="user_email" id="user_email" size="30">
@@ -153,6 +156,7 @@ function modal_open() {
 		closable : false,
 		onDeny : function() { // true가 닫힘
 			$("div").removeClass('error');
+			$("input").val("");
 			return true;
 		}
 		,onApprove : function(e) {
@@ -201,7 +205,7 @@ function sign_submit(frm) {
 		return false;
 	}
 	
-	frm.submit();
+	//frm.submit();
 }
 </script>
 </html>
