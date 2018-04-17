@@ -198,7 +198,7 @@ function sign_submit(frm) {
 	}
 	
 	if(frm.user_pwd.value.trim() != frm.user_pwd2.value.trim()){
-		alert("'비밀번호'가 '비밀번호확인'의 내용과 일치하지 않습니다");
+		alert("비밀번호가 일치하지 않습니다");
 		frm.user_pwd2.value="";
 		$("input[name='user_pwd2']").closest("div").addClass("error");
 		frm.user_pwd2.focus();
