@@ -14,6 +14,7 @@ if($_SESSION["USER_NAME"]!="") {
 <script src="/js/jquery-3.2.1.js"></script>
 <script src="/js/semantic.min.js"></script>
 <script src="/js/docs.js"></script>
+<script src="/js/nawoo.js"></script>
 <title>스파이더</title>
 </head>
 <style>
@@ -92,7 +93,7 @@ if($_SESSION["USER_NAME"]!="") {
 		S P I D E R<br/><div style="text-align:right !important">회원가입</div>
 	</div>
 	<br/><br/>
-	<form class="ui fluid form" name="form2" method="post" action="member_register.php">
+	<form class="ui fluid form" name="form2">
   <div class="field">
   <div class="inline field">
     <div class="ui ribbon  purple basic label">
@@ -151,6 +152,7 @@ $(document).ready(function(){
 		$(this).closest("div").removeClass('error');
 	});
 });
+
 function modal_open() {
 	$('.ui.basic.modal').modal({
 		//closable : false,
@@ -208,8 +210,27 @@ function sign_submit(frm) {
 		frm.user_pwd2.focus();
 		return false;
 	}
-	
+	var param = {};
+	param["user_name"] = frm.user_name.value;
+	param["user_id"] = frm.user_id.value;
+	param["user_pwd"] = frm.user_pwd.value;
+	param["user_pwd2"] = frm.user_pwd2.value;
+	param["user_email"] = frm.user_email.value;
+	//console.log(param);
+	ajax(param,"test.php",test_callback);
 	//frm.submit();
+}
+
+function test_callback(result) {
+	var frm = document.form2;
+	var param = result.param;
+	frm.user_name.value = param.user_name;
+	frm.user_id.value = "";
+	frm.user_pwd.value = param.user_pwd;
+	frm.user_pwd2.value = param.user_pwd2;
+	frm.user_email.value = param.user_email;
+	alert(result.msg);
+	modal_open();
 }
 </script>
 </html>

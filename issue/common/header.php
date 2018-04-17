@@ -7,6 +7,7 @@
 <script src="/js/jquery-3.2.1.js"></script>
 <script src="/js/semantic.min.js"></script>
 <script src="/js/docs.js"></script>
+<script src="/js/nawoo.js"></script> 
 <title>이슈 관리자</title>
 </head>
 <style>
