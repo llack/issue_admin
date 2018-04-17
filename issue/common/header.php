@@ -13,6 +13,7 @@
 body {
 	padding : 1rem;
 }
+
 </style>
 
 <? include $_SERVER['DOCUMENT_ROOT']."/common/menu.php";?>
