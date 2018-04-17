@@ -2,7 +2,7 @@
 session_start();
 header ("Content-Type: text/html; charset=UTF-8");		#다국어지원을 위한 설정
 
-include_once("/conf/config.db.conn.php");//디비연결
+include $_SERVER["DOCUMENT_ROOT"]."/conf/config.db.conn.php";//디비연결
 
 $que = "select * from member where user_id = '" . $_REQUEST[user_id] . "'";
 $res = mysql_query($que);
@@ -13,8 +13,7 @@ if ($total > 0) {
 	<SCRIPT LANGUAGE='JavaScript'>
 	<!--
 		alert('중복된 아이디 입니다!\\n다른 아이디를 입력해주세요!');
-		history.back();
-		$()
+		location.href='/common/login.php';
 	//-->
 	</SCRIPT>
 	";

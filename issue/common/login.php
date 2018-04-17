@@ -3,6 +3,7 @@ session_start();
 if($_SESSION["USER_NAME"]!="") {
 	header("Location:/");
 }
+
 ?>
 <!DOCTYPE>
 <html>
@@ -140,7 +141,9 @@ if($_SESSION["USER_NAME"]!="") {
 </body>
 <script>
 $(document).ready(function(){
+
 	$("#id").focus();
+	
 	$("input").keyup(function(){
 		$(this).closest("div").removeClass('error');
 	});
@@ -148,13 +151,9 @@ $(document).ready(function(){
 function modal_open() {
 	$('.ui.basic.modal').modal({
 		closable : false,
-		onDeny : function() {
-			if(confirm("회원가입을 취소하시겠습니까?")==true) {
-					return true;
-				} else {
-					return false;
-					}
-			}
+		onDeny : function() { // true가 닫힘
+			return true;
+		}
 		,onApprove : function(e) {
 				if(e.hasClass('ok')) {
 					return sign_submit(document.form2);
