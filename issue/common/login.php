@@ -164,6 +164,10 @@ function modal_open() {
 					return sign_submit(document.form2);
 				}
 			}
+		, onHide : function () {
+			$("div").removeClass('error');
+			$("input").val("");
+			}
 		})
 		.modal('show');
 }
