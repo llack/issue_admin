@@ -1,3 +1,4 @@
+window.undefined ="";
 function ajax(params, url, callback, method){
 	//var params = JSON.stringify(pParams);
 	$.ajax({
@@ -21,4 +22,8 @@ function setJson() {
 		param[arguments[i]] = frm[arguments[i]].value;
 	}
 	return param;
+}
+
+function move(url) {
+	location.href= url;
 }

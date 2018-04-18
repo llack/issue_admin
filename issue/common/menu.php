@@ -54,7 +54,7 @@
 		E-mail : <input type="text" value="jjoker010@gmail.com" style="border:none;height:30px" id="user_email" readonly/>
 		<br/>
 		<a href="">미완료 업무 : 4건</a>
-		<button class="negative ui small button right floated"><i class="share square outline icon"></i>로그아웃</button>
+		<button class="negative ui small button right floated" onclick="logout()"><i class="share square outline icon"></i>로그아웃</button>
     </div> <!-- /내정보 -->
   </div>
 </div>
@@ -76,5 +76,13 @@ function copy_email() {
 	var copyText = document.getElementById("user_email");
 	  copyText.select();
 	  document.execCommand("Copy");
+}
+
+function logout() {
+	var param = {};
+	ajax(param,"/common/logout.php",logout_callback);
+}
+function logout_callback(result) {
+	move(result.url);
 }
 </script>

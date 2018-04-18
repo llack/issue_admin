@@ -3,9 +3,8 @@ session_start();
 
 header ("Content-Type: text/html; charset=UTF-8");		#다국어지원을 위한 설정
 
-$pims_path = "../..";
-include_once("$pims_path/conf/config.db.conn.php");//디비연결
-include_once("$pims_path/lib/lib_public.php");//공통라이브러리
+include_once($_SERVER["DOCUMENT_ROOT"]."/conf/config.db.conn.php");//디비연결
+include_once($_SERVER["DOCUMENT_ROOT"]."/lib/lib_public.php");//공통라이브러리
 
 
 $js = new javascript();
@@ -30,11 +29,6 @@ session_destroy();
  $session_file = "sess_" . $_REQUEST[PHPSESSID];
  @unlink("/tmp/$session_file");
  */
-
-if ($_REQUEST[mode]=="") {
-	$js->location("/");
-}
-else {
-	$js->selfclose();
-}
+$result = array("url"=>"/");
+echo json_encode($result); 
 ?>
