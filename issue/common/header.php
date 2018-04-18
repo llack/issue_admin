@@ -12,8 +12,10 @@ include $_SERVER["DOCUMENT_ROOT"]."/lib/nawoo.php";
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
 <link rel="stylesheet" href="/css/semantic.min.css">
+<link rel="stylesheet" href="/css/datatables.min.css">
 <script src="/js/jquery-3.2.1.js"></script>
 <script src="/js/semantic.min.js"></script>
+<script src="/js/datatables.min.js"></script>
 <script src="/js/docs.js"></script>
 <script src="/js/nawoo.js"></script> 
 <title><?=TITLE?></title>
@@ -31,7 +33,7 @@ body {
 .ui.container.table {
 	width: 85%;
 	height:94%;
-	overflow:hidden;
+	overflow-y:auto;
 /* 	border:1px solid; */
 	padding:1rem;
 }
