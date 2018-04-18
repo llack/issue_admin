@@ -25,11 +25,13 @@ $logtime = date("Y-m-d H:i:s");
 if ($total == 0) {
 	$result = array("msg"=>"아이디 또는 비밀번호를 확인해주세요.");
 	echo json_encode($result);
+	exit;
 }
 else {
 	if ($row[user_level]=="") {
 		$result = array("msg"=>"관리자 승인후 이용가능합니다!");
 		echo json_encode($result);
+		exit;
 	}
 		
 	$_SESSION["USER_ID"] = $row[user_id];
@@ -41,4 +43,5 @@ else {
 	$dbms->execute("update member set user_login = '$logtime',lastIP='$REMOTE_ADDR' where user_id = '$row[user_id]'");
 	$result = array("url"=>"/");
 	echo json_encode($result);
+	exit;
 }

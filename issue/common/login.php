@@ -1,5 +1,6 @@
 <?php
 session_start();
+include $_SERVER["DOCUMENT_ROOT"]."/lib/nawoo.php";
 if($_SESSION["USER_NAME"]!="") {
 	header("Location:/");
 }
@@ -15,7 +16,7 @@ if($_SESSION["USER_NAME"]!="") {
 <script src="/js/semantic.min.js"></script>
 <script src="/js/docs.js"></script>
 <script src="/js/nawoo.js"></script>
-<title>스파이더</title>
+<title><?=TITLE?></title>
 </head>
 <style>
 #login_form { 
@@ -266,7 +267,8 @@ function login_chk(result) {
 	if(result.msg) {
 		frm.id.value="";
 		frm.password.value="";
-		$("#id").focus();
+		$("#id").focus().closest("div").addClass("error");
+		$("#password").closest("div").addClass("error");
 		alert(result.msg);
 	}
 	if(result.url) {

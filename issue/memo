@@ -1,3 +1,5 @@
+메인 소스
+
 <?
 session_start();
 if($_SESSION["USER_NAME"]=="") {
@@ -10,8 +12,8 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 <div class="ui container side">
 <? include $_SERVER["DOCUMENT_ROOT"]."/common/company_list.php"; ?>
 </div>
-<div class="ui container table">
-이슈관리자인데...
+<div class="ui container table" style="padding:1rem;">
+메인
 </div>
 </body>
 </html>

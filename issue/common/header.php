@@ -1,3 +1,11 @@
+<? 
+session_start();
+
+header ("Content-Type: text/html; charset=UTF-8");		#다국어지원을 위한 설정
+
+include_once($_SERVER["DOCUMENT_ROOT"]."/conf/config.db.conn.php");//디비연결
+include $_SERVER["DOCUMENT_ROOT"]."/lib/nawoo.php";
+?>
 <!DOCTYPE>
 <html>
 <head>
@@ -8,13 +16,25 @@
 <script src="/js/semantic.min.js"></script>
 <script src="/js/docs.js"></script>
 <script src="/js/nawoo.js"></script> 
-<title>이슈 관리자</title>
+<title><?=TITLE?></title>
 </head>
 <style>
 body {
 	padding : 1rem;
 }
-
+.ui.container.side {
+	width:15%;
+	height:94%;
+	overflow:hidden;
+	float:left;
+}
+.ui.container.table {
+	width: 85%;
+	height:94%;
+	overflow:hidden;
+	border:1px solid;
+	padding:1rem;
+}
 </style>
 
 <? include $_SERVER['DOCUMENT_ROOT']."/common/menu.php";?>

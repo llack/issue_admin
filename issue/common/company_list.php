@@ -1,4 +1,4 @@
-<div class="ui vertical menu" style="width:15%;height:100%;padding:1rem">
+<div class="ui vertical menu" style="width:100%;height:100%;padding:1rem">
 	<!-- 사이드바 헤더 -->
 	<div class="item">
 		<h4 align="center">

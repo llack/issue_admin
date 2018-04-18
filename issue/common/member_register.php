@@ -8,7 +8,9 @@ $que = "select * from member where user_id = '" . $_REQUEST[user_id] . "'";
 $res = mysql_query($que);
 $total = mysql_num_rows($res);
 if ($total > 0) {
-	$result = array("msg"=>"중복된 아이디 입니다!\n다른 아이디를 입력해주세요!","url"=>"/common/login.php","param"=>$_REQUEST);
+	$result = array("msg"=>"중복된 아이디 입니다!\n다른 아이디를 입력해주세요!"
+					,"url"=>"/common/login.php"
+					,"param"=>$_REQUEST);
 
 	echo json_encode($result);
 	exit;
@@ -19,4 +21,5 @@ mysql_query($que) or die(mysql_error());
 $result = array("msg"=>"등록되었습니다.\n관리자 승인후 사용가능합니다.","url"=>"/");
 
 echo json_encode($result);
+exit;
 ?>
