@@ -32,7 +32,7 @@ body {
 	width: 85%;
 	height:94%;
 	overflow:hidden;
-	border:1px solid;
+/* 	border:1px solid; */
 	padding:1rem;
 }
 </style>

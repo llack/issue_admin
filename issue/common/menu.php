@@ -13,7 +13,7 @@
     <i class="dropdown icon"></i>
   </a>
   <a class="browse item">
-    환경설정
+    사원관리
     <i class="dropdown icon"></i>
   </a>
   <a class="browse item">
@@ -43,7 +43,7 @@
     <div class="column" align="center">
       <h4 class="ui header">사원관리</h4>
       <div class="ui link list">
-        <a class="item">권한관리 (관리자)</a>
+        <a class="item" href="/config/employee_auth.php">권한관리 (관리자)</a>
         <a class="item">메뉴1</a>
         <a class="item">메뉴2</a>
       </div>
@@ -70,7 +70,7 @@ $('#topmenu').popup({
 	lastResort : 'bottom center',
 	delay: {
 	  show: 100,
-	  hide: 200
+	  hide: 100
 	 }
 	 });
 	 

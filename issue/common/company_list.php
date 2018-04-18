@@ -24,7 +24,7 @@
   <!-- 업체추가  -->
    <div class="item" >
     <button class="ui button floated purple" style="width:100%">
-    <i class="building outline icon "></i>업체 추가</button>
+    <i class="building outline icon "></i>업체 추가 + </button>
   </div>
   <!-- /업체추가 -->
   
