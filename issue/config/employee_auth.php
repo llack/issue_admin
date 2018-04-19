@@ -17,6 +17,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 <div class="ui container side ">
 <? include $_SERVER["DOCUMENT_ROOT"]."/common/company_list.php"; ?>
 </div>
+<!-- card container start -->
 <div class="ui container table purple segment">
 <div class="right aligned">
 	<a class="ui tag label">menu</a>
@@ -30,10 +31,10 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 </h2>
 <form name="form">
 <h4 class="ui header center aligned">
-ddd
+음.. 이부분은 뭘로 해야될지 모르겠네~
 </h4>
 </form>
-<!-- table start -->
+<!-- card start -->
 <div class="ui cards" style="padding-left:7%">
   <? 
   	$que_user = " select * from member order by user_level desc";
@@ -44,11 +45,10 @@ ddd
   		} else {
   			$level_color = "";
   		}
-  		
   ?>
   <div class="card">
     <div class="content">
-      <img class="right floated tiny ui image avatar" src="/img/img.jpg" style="width: 60px;height:60px;">
+      <div class="right floated" onclick="delete_user('<?=$row_user[seq]?>')"><i class="close red icon" style="cursor:pointer"></i></div>
       <div class="header">
 		<?=$row_user[user_name]?>
 		<? if($row_user[user_level]!="") {?>
@@ -59,7 +59,7 @@ ddd
       </div>
       <div class="meta">
 		<?=$row_user[position]?>
-      </div>
+      </div><br/>
       <div class="description">
       <i class="envelope outline icon purple"></i>
        <?=$row_user[user_email]?>
@@ -114,7 +114,7 @@ ddd
   <!-- /card end  -->
 </div>
 <div id="snackbar">Some text some message..</div>
-<!-- /table container -->
+<!-- /<!-- card container end -->
 </div>
 </body>
 <script>
@@ -150,7 +150,8 @@ function fn_auth(mode,auth,seq) {
 function fn_auth_change(mAuth, cAuth, seq) {
 	var param = {};
 	if(mAuth=="없음") {
-		alert("승인되지 않은 사원입니다.");
+		$("#snackbar").html("승인되지 않은 사원입니다.");
+		myFunction();
 		return;
 	} else if(mAuth==cAuth){
 		return;
@@ -161,7 +162,23 @@ function fn_auth_change(mAuth, cAuth, seq) {
 		ajax(param, "employee_auth_ok.php",auth_result);
 	}
 }
+function delete_user(seq) {
+	var param = {};
+	if(confirm("삭제한 사원은 복구할 수 없습니다.\n삭제하시겠습니까?")==true) {
+		param["mode"] = "delete";
+		param["seq"] = seq;
+		ajax(param
+			,	"employee_delete.php"
+			,	function(result){ 
+			alert(result); 
+			location.reload();
+			});
+	} else {
+		return;
+	}
+}
 /* CALLBACK METHOD */ 
+
 function auth_result(result) {
 	var str = "";
 	if(result=="approve") {
