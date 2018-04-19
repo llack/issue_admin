@@ -48,7 +48,11 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
   ?>
   <div class="card">
     <div class="content">
-      <div class="right floated" onclick="delete_user('<?=$row_user[seq]?>')"><i class="close red icon" style="cursor:pointer"></i></div>
+      <div id="delete_user" onclick="delete_user('<?=$row_user[seq]?>')" data-tooltip="사원 삭제" data-position="right center" data-inverted="">
+	      <div class="right floated" >
+	      	<i class="close red icon" style="cursor:pointer"></i>
+	      </div>
+      </div>
       <div class="header">
 		<?=$row_user[user_name]?>
 		<? if($row_user[user_level]!="") {?>
