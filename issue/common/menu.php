@@ -64,8 +64,8 @@
       </div>
     </div>
     <div class="column"> <!-- 내정보 -->
-		성명 : <?=$row_info[user_name]?> / 
-		직책 : <?=$row_info[position]?><br/><br/>
+		<div class="ui purple basic label">성명</div> <?=$row_info[user_name]?> 
+		<div class="ui purple basic label">직책</div> <?=$row_info[position]?><br/><br/>
 		<div id="copy_clip" onclick="fn_copy('user_phone')"data-tooltip="클립보드로 복사하기" data-position="left center" style="float:left;padding:0px">
 		<i class="inverted phone big icon purple"></i>
 		</div>
