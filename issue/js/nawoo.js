@@ -27,3 +27,9 @@ function setJson() {
 function move(url) {
 	location.href= url;
 }
+
+function fn_copy(id) {
+	var copyText = document.getElementById(id);
+	  copyText.select();
+	  document.execCommand("Copy");
+} 

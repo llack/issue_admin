@@ -49,16 +49,21 @@
       </div>
     </div>
     <div class="column"> <!-- 내정보 -->
-		<img class="ui image avatar" style="width: 50px;height:50px"src="/img/img.jpg"><span><?=$row_info[user_name]?></span>
-		<button class="ui purple mini button right floated"><i class="user icon"></i>정보 수정</button>
-		<br/><br/>
-		<div id="copy_clip" onclick="copy_email()"data-tooltip="클립보드로 복사하기" style="float:left;padding:0px">
+		성명 : <?=$row_info[user_name]?> / 
+		직책 : <?=$row_info[position]?><br/><br/>
+		<div id="copy_clip" onclick="fn_copy('user_phone')"data-tooltip="클립보드로 복사하기" style="float:left;padding:0px">
+		<i class="inverted phone big icon purple"></i>
+		</div>
+		<input type="text" value="<?=$row_info[hp]?>" style="border:none;height:30px" id="user_phone" readonly/>
+		<br/>
+		<div id="copy_clip" onclick="fn_copy('user_email')"data-tooltip="클립보드로 복사하기" style="float:left;padding:0px">
 		<i class="inverted purple big copy outline icon"></i>
 		</div>
 		E-mail : <input type="text" value="<?=$row_info[user_email]?>" style="border:none;height:30px" id="user_email" readonly/>
-		<br/>
+		<br/><br/>
 		<a href="">미완료 업무 : 4건</a>
 		<button class="negative ui small button right floated" onclick="logout()"><i class="share square outline icon"></i>로그아웃</button>
+		<button class="purple ui small button right floated" onclick="modify_userInfo()"><i class="user icon"></i></i>정보수정</button>
     </div> <!-- /내정보 -->
   </div>
 </div>
@@ -75,13 +80,9 @@ $('#topmenu').popup({
 	 });
 	 
 $("#copy_clip").popup();
-
-function copy_email() {
-	var copyText = document.getElementById("user_email");
-	  copyText.select();
-	  document.execCommand("Copy");
+function modify_userInfo() {
+	alert("정보수정");
 }
-
 function logout() {
 	var param = {};
 	ajax(param,"/common/logout.php",logout_callback);
