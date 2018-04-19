@@ -1,8 +1,6 @@
 <?
 session_start();
-if($_SESSION["USER_NAME"]=="") {
-	header("Location:/common/login.php");
-}
+
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 
 ?>

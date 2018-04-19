@@ -3,7 +3,7 @@ session_start();
 if($_SESSION["USER_NAME"]=="") {
 	header("Location:/common/login.php");
 }
-if($_SESSION["USER_ID"]!="admin") {
+if($_SESSION["USER_LEVEL"]!="A") {
 	echo "<script>alert('권한이 없습니다.');
 		history.back();
 		</script>";

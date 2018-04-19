@@ -1,6 +1,8 @@
 <? 
 session_start();
-
+if($_SESSION["USER_NAME"]=="") {
+	header("Location:/common/login.php");
+}
 header ("Content-Type: text/html; charset=UTF-8");		#다국어지원을 위한 설정
 
 include_once($_SERVER["DOCUMENT_ROOT"]."/conf/config.db.conn.php");//디비연결

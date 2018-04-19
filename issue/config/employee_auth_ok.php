@@ -1,7 +1,7 @@
 <?php
 session_start();
 header ("Content-Type: text/html; charset=UTF-8");		#다국어지원을 위한 설정
-if($_SESSION["USER_ID"]!="admin") {
+if($_SESSION["USER_LEVEL"]!="A") {
 	exit;
 }
 include_once($_SERVER["DOCUMENT_ROOT"]."/conf/config.db.conn.php");//디비연결
