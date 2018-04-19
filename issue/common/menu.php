@@ -83,6 +83,11 @@ $("#copy_clip").popup();
 function modify_userInfo() {
 	alert("정보수정");
 }
+function fn_copy(id) {
+	var copyText = document.getElementById(id);
+	  copyText.select();
+	  document.execCommand("Copy");
+} 
 function logout() {
 	var param = {};
 	ajax(param,"/common/logout.php",logout_callback);
