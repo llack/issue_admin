@@ -3,6 +3,21 @@
 	$res_info = mysql_query($que_info) or die(mysql_error());
 	$row_info = mysql_fetch_array($res_info);
 ?>
+<script src="/js/nawoo.js"></script>
+<style>
+#login_form2 {
+	position: absolute;
+	 width: 400px;
+	 height: 480px;
+	 left: 50%;
+	 top: 50%;
+	 margin-left: -250px;
+	 margin-top: -250px;
+	 border: solid #a333c8 2px;
+	 border-radius: 25px;
+	 padding : 1rem;
+}
+</style>
 <div id="topmenu" class="ui menu item four">
   <a class="browse item">
     업무관리
@@ -63,10 +78,81 @@
 		<br/><br/>
 		<a href="">미완료 업무 : 4건</a>
 		<button class="negative ui small button right floated" onclick="logout()"><i class="share square outline icon"></i>로그아웃</button>
-		<button class="purple ui small button right floated" onclick="modify_userInfo()"><i class="user icon"></i></i>정보수정</button>
+		<button class="purple ui small button right floated" onclick="modify_userInfo()"><i class="user icon"></i>정보수정</button>
     </div> <!-- /내정보 -->
   </div>
 </div>
+
+<!-- 정보 수정 modal --> 
+<div class="ui basic modal">
+  <div class="content">
+  	<div id="login_form2">
+	<div class="login header">
+		<div style="text-align:right !important">내 정 보 수 정</div>
+	</div>
+	<br/><br/>
+	<form class="ui fluid form" name="form2">
+  <div class="field">
+  <div class="inline field">
+    <div class="ui ribbon  purple basic label">
+      이름
+    </div>
+    <input type="text" name="user_name" value="<?=$row_info[user_name]?>">
+  </div>
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      아이디
+    </div>
+    <?=$row_info[user_id]?>
+  </div>
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      	비밀번호
+    </div>
+    <input type="password" name="user_pwd" value="<?=$row_info[user_pw]?>" onfocus="this.value=''">
+  </div>
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      	비밀번호확인
+    </div>
+    <input type="password" name="user_pwd2" value="">
+  </div>
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      	직책
+    </div>
+    <input type="text" name="position" value="<?=$row_info[position]?>">
+  </div>
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      	이메일
+    </div>
+    <input type="text" name="user_email" size="30" value="<?=$row_info[user_email]?>">
+  </div>
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      	전화번호
+    </div>
+    <input type="text" name="hp" value="<?=$row_info[hp]?>">
+  </div>
+  </div>
+  <input type="hidden" name="seq" value="<?=$row_info[seq]?>"/>
+</form>
+  <!-- /  -->
+</div>
+  </div>
+  <div class="actions">
+    <div class="ui red basic cancel inverted button">
+      <i class="remove icon"></i>
+      취소
+    </div>
+    <div class="ui green ok inverted button">
+      <i class="checkmark icon"></i>
+      수정
+    </div>
+  </div>
+</div>
+<!-- / 정보 수정 modal  -->
 <script>
 $('#topmenu').popup({
 	inline   : true,
@@ -78,21 +164,72 @@ $('#topmenu').popup({
 	  hide: 100
 	 }
 	 });
-	 
-//$("#copy_clip").popup();
+
 function modify_userInfo() {
-	alert("정보수정");
+	$('#topmenu').popup('hide');
+	$('.ui.basic.modal').modal({
+		//closable : false,
+		onDeny : function() { // true가 닫힘
+			location.reload();
+			return true;
+		}
+		,onApprove : function(e) {
+				if(e.hasClass('ok')) {
+					return sign_submit(document.form2);
+				}
+			}
+		, onHide : function () {
+			location.reload();
+			return true;
+			}
+		})
+		.modal('show');
 }
-function fn_copy(id) {
-	var copyText = document.getElementById(id);
-	  copyText.select();
-	  document.execCommand("Copy");
-} 
+
+function trim_chk(value,name,msg) {
+	if(value.trim()=="") {
+		$("input[name='"+name+"']").closest("div").addClass("error");
+		$("input[name='"+name+"']").val("");
+		$("input[name='"+name+"']").focus();
+		if(msg){
+			alert(msg);
+		}
+		return false;
+	} else {
+		return true;
+	}
+}
+function sign_submit(frm) {
+	
+	if(!trim_chk(frm.user_name.value,"user_name","이름을 입력해주세요")){
+		return false;
+	}
+	
+	
+	if(!trim_chk(frm.user_pwd.value,"user_pwd","비밀번호를 입력해주세요")){
+		return false;
+	}
+
+	if(!trim_chk(frm.user_pwd2.value,"user_pwd2","비밀번호확인을 입력해주세요")){
+		return false;
+	}
+	
+	if(frm.user_pwd.value.trim() != frm.user_pwd2.value.trim()){
+		alert("비밀번호가 일치하지 않습니다");
+		frm.user_pwd2.value="";
+		$("input[name='user_pwd2']").closest("div").addClass("error");
+		frm.user_pwd2.focus();
+		return false;
+	}
+	var param = setJson(frm,"user_name","seq","user_pwd","user_pwd2","position","hp","user_email");
+	ajax(param,"/config/employee_modify.php",function(result){ alert(result);});
+}
+
+//$("#copy_clip").popup();
+
 function logout() {
 	var param = {};
-	ajax(param,"/common/logout.php",logout_callback);
+	ajax(param,"/common/logout.php",function(result){ move(result.url); });
 }
-function logout_callback(result) {
-	move(result.url);
-}
+
 </script>

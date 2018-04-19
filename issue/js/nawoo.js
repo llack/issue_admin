@@ -1,14 +1,14 @@
 window.undefined ="";
-function ajax(params, url, callback, method){
+function ajax(params, url, callback, data, method){
 	//var params = JSON.stringify(pParams);
 	$.ajax({
 		type : method ? method:"POST"
 	,   url      : url
-	,   dataType : "json"
+	,   dataType : data ? data : "json"
 	,   data     : params
 	,   success : callback
 	,   error : function(xhr, status, e) {
-			console.log("에러 : "+e);
+			alert("에러 : "+e);
 	},
 	complete  : function() {
 	}
@@ -28,3 +28,8 @@ function move(url) {
 	location.href= url;
 }
 
+function fn_copy(id) {
+	var copyText = document.getElementById(id);
+	  copyText.select();
+	  document.execCommand("Copy");
+} 

@@ -65,12 +65,16 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 		<?=$row_user[position]?>
       </div><br/>
       <div class="description">
-      <i class="envelope outline icon purple"></i>
-       <?=$row_user[user_email]?>
+	      <div onclick="fn_copy('<?=$row_user[user_id]?>_email')"data-tooltip="클립보드로 복사하기" data-position="right center" style="float:left;padding:0px;cursor:pointer">
+	      <i class="envelope outline icon purple"></i>
+	       <input type="text" value="<?=$row_user[user_email]?>" style="border:none;height:20px;cursor:pointer" id="<?=$row_user[user_id]?>_email" readonly/>
+	       </div>
       </div>
        <div class="description">
-        <i class="phone icon purple"></i>
-        <?=$row_user[hp]?>
+	       <div onclick="fn_copy('<?=$row_user[user_id]?>_hp')"data-tooltip="클립보드로 복사하기" data-position="right center" style="float:left;padding:0px;cursor:pointer">
+	        <i class="phone icon purple"></i>
+	        <input type="text" value="<?=$row_user[hp]?>" style="border:none;height:20px;cursor:pointer" id="<?=$row_user[user_id]?>_hp" readonly/>
+	        </div>
       </div>
     </div>
     <div class="extra content">
