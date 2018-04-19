@@ -35,7 +35,7 @@ if($_SESSION["USER_NAME"]!="") {
 #login_form2 {
 	position: absolute;
 	 width: 400px;
-	 height: 400px;
+	 height: 480px;
 	 left: 50%;
 	 top: 50%;
 	 margin-left: -250px;
@@ -123,9 +123,21 @@ if($_SESSION["USER_NAME"]!="") {
   </div>
   <div class="inline field">
     <div class="ui ribbon purple basic label">
+      	직책
+    </div>
+    <input type="text" name="position" id="position">
+  </div>
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
       	이메일
     </div>
     <input type="text" name="user_email" id="user_email" size="30">
+  </div>
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      	전화번호
+    </div>
+    <input type="text" name="hp" id="hp">
   </div>
   </div>
 </form>
@@ -242,7 +254,7 @@ function sign_submit(frm) {
 		frm.user_pwd2.focus();
 		return false;
 	}
-	var param = setJson(frm,"user_name","user_id","user_pwd","user_pwd2","user_email");
+	var param = setJson(frm,"user_name","user_id","user_pwd","user_pwd2","position","hp","user_email");
 	ajax(param,"member_register.php",test_callback);
 }
 /* CALLBACK METHOD */
