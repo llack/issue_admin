@@ -3,7 +3,7 @@
 	$res_info = mysql_query($que_info) or die(mysql_error());
 	$row_info = mysql_fetch_array($res_info);
 ?>
-<script src="/js/nawoo.js"></script>
+
 <style>
 #login_form2 {
 	position: absolute;
@@ -17,6 +17,48 @@
 	 border-radius: 25px;
 	 padding : 1rem;
 }
+#modify_result {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    top: 30px;
+    font-size: 17px;
+}
+
+#modify_result.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
+}
+
+@keyframes fadeout {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
+}
+
 </style>
 <div id="topmenu" class="ui menu item four">
   <a class="browse item">
@@ -115,7 +157,7 @@
     <div class="ui ribbon purple basic label">
       	비밀번호확인
     </div>
-    <input type="password" name="user_pwd2" value="">
+    <input type="password" name="user_pwd2" value="" onfocus="this.value=''">
   </div>
   <div class="inline field">
     <div class="ui ribbon purple basic label">
@@ -153,6 +195,7 @@
   </div>
 </div>
 <!-- / 정보 수정 modal  -->
+<div id="modify_result"></div>
 <script>
 $('#topmenu').popup({
 	inline   : true,
@@ -179,7 +222,9 @@ function modify_userInfo() {
 				}
 			}
 		, onHide : function () {
-			location.reload();
+			setTimeout(function(){
+				location.reload();
+			},500);
 			return true;
 			}
 		})
@@ -222,10 +267,14 @@ function sign_submit(frm) {
 		return false;
 	}
 	var param = setJson(frm,"user_name","seq","user_pwd","user_pwd2","position","hp","user_email");
-	ajax(param,"/config/employee_modify.php",function(result){ alert(result);});
+	ajax(param, "/config/employee_modify.php", modify_callback);
 }
 
-//$("#copy_clip").popup();
+function modify_callback(result) {
+	$("#modify_result").html(result);
+	$("#modify_result").css("background-color","#54c8ff");
+	snackbar("modify_result");
+}
 
 function logout() {
 	var param = {};

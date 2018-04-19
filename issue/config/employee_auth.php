@@ -121,7 +121,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
   <? } ?>
   <!-- /card end  -->
 </div>
-<div id="snackbar">Some text some message..</div>
+<div id="snackbar"></div>
 <!-- /<!-- card container end -->
 </div>
 </body>
@@ -159,7 +159,7 @@ function fn_auth_change(mAuth, cAuth, seq) {
 	var param = {};
 	if(mAuth=="없음") {
 		$("#snackbar").html("승인되지 않은 사원입니다.");
-		myFunction();
+		snackbar("snackbar");
 		return;
 	} else if(mAuth==cAuth){
 		return;
@@ -200,18 +200,14 @@ function auth_result(result) {
 		$("#snackbar").css("background-color","grey");
 	}
 	$("#snackbar").html(str);
-	myFunction();
+	snackbar("snackbar");
 	setTimeout(function(){
 		location.reload();
 	},500);
 }
 
 /* == CALLBACK METHOD  == */
-function myFunction() {
-    var x = document.getElementById("snackbar");
-    x.className = "show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 500);
-}
+
 </script>
 </html>
 

@@ -33,3 +33,9 @@ function fn_copy(id) {
 	  copyText.select();
 	  document.execCommand("Copy");
 } 
+
+function snackbar(id) {
+    var x = document.getElementById(id);
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 500);
+}
