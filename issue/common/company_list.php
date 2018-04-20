@@ -146,11 +146,13 @@ $(document).ready(function(){
 function search_callback(result) {
 	var company_list = [];
 	company_list.push(result);
+	
 	$("#com_search").search({
-		source : company_list[0],
-		error : {
+		source : company_list[0]
+		,error : {
 			noResults   : "<font color='red'>검색결과 없음<font>",
 			}
+		,searchDelay : 0
 	});
 }
 
