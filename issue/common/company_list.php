@@ -11,22 +11,22 @@
 	</div>
 	<!-- /사이드바 헤더 -->
 	
+	<!-- 업체추가  -->
+   <div class="item" >
+    <button class="ui button floated purple" style="width:100%">
+    <i class="building outline icon "></i>업체 추가 + </button>
+  <!-- /업체추가 -->
+  
 	<!-- 검색창 -->
-  <div id="com_search" class="item">
+  <div id="com_search" class="item ui search" style="">
     <div class="ui icon input">
-    	<input class="prompt" type="text" placeholder="Search...">
+    	<input class="prompt" type="text" placeholder="업체 검색">
     	<i class="search icon"></i>
     </div>
     <div class="results"></div>
   </div>
-  <!-- /검색창 -->
-  
-  <!-- 업체추가  -->
-   <div class="item" >
-    <button class="ui button floated purple" style="width:100%">
-    <i class="building outline icon "></i>업체 추가 + </button>
   </div>
-  <!-- /업체추가 -->
+  <!-- /검색창 -->
   
   <!-- 사이드바 업체리스트  -->
   <div style="overflow-y:auto;height:78%;">
@@ -139,5 +139,26 @@
   <!-- / 사이드바 업체리스트  -->
 </div>
 <script>
+$(document).ready(function(){
+	var param = {};
+	ajax(param, "/common/company_search.php",search_callback);
+});
+function search_callback(result) {
+	var company_list = [];
+	company_list.push(result);
+	$("#com_search").search({
+		source : company_list[0],
+		error : {
+			noResults   : "<font color='red'>검색결과 없음<font>",
+			}
+	});
+}
+
 
 </script>
+
+
+
+
+
+

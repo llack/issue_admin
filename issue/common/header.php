@@ -39,6 +39,10 @@ body {
 /* 	border:1px solid; */
 	padding:1rem;
 }
+#com_search {
+	padding-right:0px;
+	padding-left:0px;
+}
 </style>
 
 <? include $_SERVER['DOCUMENT_ROOT']."/common/menu.php";?>
