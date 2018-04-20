@@ -20,7 +20,7 @@
 	<!-- 검색창 -->
   <div id="com_search" class="item ui search" style="">
     <div class="ui icon input">
-    	<input class="prompt" type="text" placeholder="업체 검색">
+    	<input class="prompt search_area" type="text" placeholder="업체 검색">
     	<i class="search icon"></i>
     </div>
     <div class="results"></div>
@@ -142,17 +142,24 @@
 $(document).ready(function(){
 	var param = {};
 	ajax(param, "/common/company_search.php",search_callback);
+	$(".search_area").on("keydown",function(){
+		$("#com_search").addClass("loading");	
+	});
 });
 function search_callback(result) {
 	var company_list = [];
 	company_list.push(result);
-	
+	var delay = 300; 
 	$("#com_search").search({
 		source : company_list[0]
 		,error : {
 			noResults   : "<font color='red'>검색결과 없음<font>",
 			}
-		,searchDelay : 0
+		,searchDelay : delay
+		,onResultsClose : function() {
+			$("#com_search").removeClass("loading");;
+		}
+		,selectFirstResult : true
 	});
 }
 
