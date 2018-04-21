@@ -130,7 +130,7 @@
   <div class="content">
   	<div id="login_form2">
 	<div class="login header">
-		<div style="text-align:right !important">내 정 보 수 정</div>
+		<div style="text-align:right !important"><i class="user icon"></i>내 정 보 수 정</div>
 	</div>
 	<br/><br/>
 	<form class="ui fluid form" name="form2">
@@ -197,6 +197,9 @@
 <!-- / 정보 수정 modal  -->
 <div id="modify_result"></div>
 <script>
+$(document).ready(function(){
+	enter_afterIndex("form2");
+});
 $('#topmenu').popup({
 	inline   : true,
 	hoverable: true,

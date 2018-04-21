@@ -13,12 +13,12 @@
 	
 	<!-- 업체추가  -->
    <div class="item" >
-    <button class="ui button floated purple" style="width:100%">
-    <i class="building outline icon "></i>업체 추가 + </button>
+    <button class="ui button basic purple" style="width:100%" id="company_add_btn">
+    <i class="building outline icon"></i>업체 추가 + </button>
   <!-- /업체추가 -->
   
 	<!-- 검색창 -->
-  <div id="com_search" class="item ui search" style="">
+  <div id="com_search" class="item ui search">
     <div class="ui icon input">
     	<input class="prompt search_area" type="text" placeholder="업체 검색">
     	<i class="search icon"></i>
@@ -30,139 +30,54 @@
   
   <!-- 사이드바 업체리스트  -->
   <div style="overflow-y:auto;height:78%;">
-	  
-	  <a class="item active purple">
-	    Spam
-	    <div class="ui label  left pointing purple">51</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    Updates
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
-	  <a class="item purple">
-	    마지막
-	    <div class="ui label left pointing purple">1</div>
-	  </a>
+	  	<? 
+	  	$cnt = count($cs_list);
+	  	$issue = 6;
+	  	for($i = 0; $i < $cnt; $i++ ) { ?>
+	  	<a class="item purple" href="/">
+	  	<?=$cs_list[$i][title]?>
+	  	<? if(0 < $issue) { 
+	  		if(3 <= $issue) {
+	  			$importance = "red";
+	  		} else {
+	  			$importance = "green";
+	  		}
+	  		?>
+	    <div class="ui label <?=$importance?> basic left pointing"><?=$issue?></div>
+	  	</a>
+	  	<? } ?>
+	  	<? $issue--;}  ?>
   </div>
   <!-- / 사이드바 업체리스트  -->
 </div>
 <script>
 $(document).ready(function(){
-	var param = {};
-	ajax(param, "/common/company_search.php",search_callback);
-	$(".search_area").on("keydown",function(){
-		$("#com_search").addClass("loading");	
+	$(".search_area").on("keyup",function(){
+		if($(this).val()!="") {
+			$("#com_search").addClass("loading");
+		}	
+	});
+	
+	$("#company_add_btn").on({
+		mouseenter : function() {
+			$(this).removeClass("basic");
+		}
+		,mouseleave : function() {
+			$(this).addClass("basic");
+		}
 	});
 });
-function search_callback(result) {
-	var company_list = [];
-	company_list.push(result);
-	var delay = 300; 
-	$("#com_search").search({
-		source : company_list[0]
-		,error : {
-			noResults   : "<font color='red'>검색결과 없음<font>",
-			}
-		,searchDelay : delay
-		,onResultsClose : function() {
-			$("#com_search").removeClass("loading");;
+$("#com_search").search({
+	source : <?=json_encode($cs_list)?>
+	,error : {
+		noResults   : "<font color='red'>검색결과 없음<font>",
 		}
-		,selectFirstResult : true
-	});
-}
-
+	,searchDelay : 300
+	,onResultsClose : function() {
+		$("#com_search").removeClass("loading");;
+	}
+	,selectFirstResult : true
+});
 
 </script>
 

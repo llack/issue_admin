@@ -1,4 +1,4 @@
-window.undefined ="";
+
 function ajax(params, url, callback, data, method){
 	//var params = JSON.stringify(pParams);
 	$.ajax({
@@ -8,7 +8,7 @@ function ajax(params, url, callback, data, method){
 	,   data     : params
 	,   success : callback
 	,   error : function(xhr, status, e) {
-			alert("에러 : "+e);
+			console.log("에러 : "+e);
 	},
 	complete  : function() {
 	}
@@ -27,15 +27,26 @@ function setJson() {
 function move(url) {
 	location.href= url;
 }
-
+/*클립보드 fn_copy(input's id)*/
 function fn_copy(id) {
 	var copyText = document.getElementById(id);
 	  copyText.select();
 	  document.execCommand("Copy");
 } 
-
+/* create snackbar  <div id='id'></div>  + html,css self */
 function snackbar(id) {
     var x = document.getElementById(id);
     x.className = "show";
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 500);
+}
+
+function enter_afterIndex(name) {
+	$("form[name='"+name+"']").on("keydown","input",function(e) {
+		if(e.which==13) {
+			var index = $("input").index(this)+1;
+			$("input").eq(index).focus();
+		}
+	}).on("focus","input",function(e){
+		$(this).select();
+	});
 }

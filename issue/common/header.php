@@ -7,6 +7,8 @@ header ("Content-Type: text/html; charset=UTF-8");		#다국어지원을 위한 �
 
 include_once($_SERVER["DOCUMENT_ROOT"]."/conf/config.db.conn.php");//디비연결
 include $_SERVER["DOCUMENT_ROOT"]."/lib/nawoo.php";
+$fn = new json_select();
+$cs_list = $fn->cs_list();
 ?>
 <!DOCTYPE>
 <html>
@@ -15,11 +17,11 @@ include $_SERVER["DOCUMENT_ROOT"]."/lib/nawoo.php";
 <meta charset="UTF-8">
 <link rel="stylesheet" href="/css/semantic.min.css">
 <link rel="stylesheet" href="/css/datatables.min.css">
+<script src="/js/nawoo.js"></script> 
 <script src="/js/jquery-3.2.1.js"></script>
 <script src="/js/semantic.min.js"></script>
 <script src="/js/datatables.min.js"></script>
 <script src="/js/docs.js"></script>
-<script src="/js/nawoo.js"></script> 
 <title><?=TITLE?></title>
 </head>
 <style>
@@ -44,6 +46,5 @@ body {
 	padding-left:0px;
 }
 </style>
-
 <? include $_SERVER['DOCUMENT_ROOT']."/common/menu.php";?>
 

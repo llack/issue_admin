@@ -164,10 +164,17 @@ $(document).ready(function(){
 	$("input").keyup(function(){
 		$(this).closest("div").removeClass('error');
 	});
-	
+
 	$(".login_info").keyup(function(e){
 		if(e.keyCode==13) {
 			login_event();
+		}
+	});
+
+	$("form[name='form2']").on("keydown","input",function(e) {
+		if(e.which==13) {
+			var index = $("input").index(this)+1;
+			$("input").eq(index).focus();
 		}
 	});
 });

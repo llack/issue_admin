@@ -35,7 +35,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 </h4>
 </form>
 <!-- card start -->
-<div class="ui cards" style="padding-left:7%">
+<div class="ui cards" style="padding-left:2%">
   <? 
   	$que_user = " select * from member order by user_level desc";
   	$res_user = mysql_query($que_user) or die(mysql_error());
