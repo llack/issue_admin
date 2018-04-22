@@ -5,7 +5,7 @@ if($_SESSION["USER_LEVEL"]!="A") {
 	exit;
 }
 include_once($_SERVER["DOCUMENT_ROOT"]."/conf/config.db.conn.php");//디비연결
-include_once($_SERVER["DOCUMENT_ROOT"]."/lib/lib_public.php");//공통라이브러리
+
 if($_REQUEST[mode]=="approve") {
 	$user_level = "U";
 } else if($_REQUEST[mode]=="deny"){

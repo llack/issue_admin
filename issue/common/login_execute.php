@@ -3,9 +3,7 @@ session_start();
 header ("Content-Type: text/html; charset=UTF-8");		#다국어지원을 위한 설정
 
 include_once($_SERVER["DOCUMENT_ROOT"]."/conf/config.db.conn.php");//디비연결
-include_once($_SERVER["DOCUMENT_ROOT"]."/lib/lib_public.php");//공통라이브러리
 
-$dbms = new dbms();
 $result = array();
 $que = "select * from member where user_id = '" . mysql_escape_string($_REQUEST[id]) . "' and user_pw = '" . mysql_escape_string(addslashes(htmlspecialchars($_REQUEST[password]))) . "'";
 $res = mysql_query($que);
@@ -40,8 +38,14 @@ else {
 	$_SESSION["USER_LEVEL"] = $row[user_level];
 	$_SESSION["HOST"] = $HTTP_HOST;
 	
-	$dbms->execute("update member set user_login = '$logtime',lastIP='$REMOTE_ADDR' where user_id = '$row[user_id]'");
-	$result = array("url"=>"/");
-	echo json_encode($result);
-	exit;
+	$que_up = "update member set user_login = '$logtime',lastIP='$REMOTE_ADDR' where user_id = '$row[user_id]'";
+	$res_up = mysql_query($que_up) or die(mysql_error());
+	if($res_up==1) {
+		$result = array("url"=>"/");
+		echo json_encode($result);
+		exit;
+	} else {
+		exit;
+	}
 }
+?>

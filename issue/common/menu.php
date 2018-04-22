@@ -1,7 +1,6 @@
 <? 
-	$que_info = " select * from member where user_id = '".$_SESSION["USER_ID"]."' ";
-	$res_info = mysql_query($que_info) or die(mysql_error());
-	$row_info = mysql_fetch_array($res_info);
+$row_info = $fn->userInfo($_SESSION["USER_ID"]);
+$row_info = $row_info[0];
 ?>
 
 <style>
@@ -83,7 +82,7 @@
     <div class="column" align="center">
       <h4 class="ui header">업무관리</h4>
       <div class="ui link list">
-        <a class="item">업무현황</a>
+        <a class="item" href="/">업무현황</a>
         <a class="item">메뉴2</a>
         <a class="item">메뉴3</a>
       </div>

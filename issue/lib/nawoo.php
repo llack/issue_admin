@@ -15,5 +15,29 @@ class json_select {
 		
 		return $result;
 	}
+	
+	function param_to_array2($param) {
+		$arr = array();
+		$param = explode("_",$param);
+		array_push($arr,$param[0],$param[1]);
+		return $arr;
+	}
+	
+	function add_nbsp($num) {
+		
+		echo str_repeat("&nbsp;",$num);
+	}
+	
+	function userInfo($user_id="") {
+		if($user_id != "") {
+			$where = " where user_id = '".$user_id."' ";
+		}
+		$que = " select * from member $where order by user_level desc";
+		$res = mysql_query($que) or die(mysql_error());
+		while($row = mysql_fetch_array($res)) {
+			$result[] = $row; 
+		}
+		return $result;
+	}
 }
 ?>

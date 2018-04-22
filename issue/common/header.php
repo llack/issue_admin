@@ -15,6 +15,8 @@ $cs_list = $fn->cs_list();
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
+<link rel="icon" href="/img/spider_web.jpg" type="image/x-icon" />
+
 <link rel="stylesheet" href="/css/semantic.min.css">
 <link rel="stylesheet" href="/css/datatables.min.css">
 <script src="/js/nawoo.js"></script> 
@@ -29,13 +31,13 @@ body {
 	padding : 1rem;
 }
 .ui.container.side {
-	width:15%;
+	width:17%;
 	height:94%;
 	overflow:hidden;
 	float:left;
 }
 .ui.container.table {
-	width: 85%;
+	width: 83%;
 	height:94%;
 	overflow-y:auto;
 /* 	border:1px solid; */

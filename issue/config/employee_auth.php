@@ -10,34 +10,105 @@ if($_SESSION["USER_LEVEL"]!="A") {
 }
 	
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
+$_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) : $fn->param_to_array2("전체_blue");
 
 ?>
 <link rel="stylesheet" href="/css/snackbar.css">
 <body>
-<div class="ui container side ">
+<div class="ui container side" >
 <? include $_SERVER["DOCUMENT_ROOT"]."/common/company_list.php"; ?>
 </div>
 <!-- card container start -->
 <div class="ui container table purple segment">
-<div class="right aligned">
+<div class="right aligned" >
 	<a class="ui tag label">menu</a>
 	<a class="ui red tag label">사원관리</a>
 	<a class="ui teal tag label">사원 권한관리</a>
 </div>
-<h2 class="ui header" style="margin-top: 0px">
+<h2 class="ui header" style="margin-top: 0px;margin-bottom:0px">
 
 <i class="circular purple users icon icon"></i>
 <div class="content">사원 권한관리</div>
 </h2>
-<form name="form">
-<h4 class="ui header center aligned">
-음.. 이부분은 뭘로 해야될지 모르겠네~
-</h4>
+<form name="form" method="POST">
+<div class="ui center aligned" style="padding-left:0.5%">
+<!-- 등급별 검색 -->
+<div id="user_search" class="ui floating labeled icon dropdown button basic" onchange="fn_submit(document.form)">
+<!-- <div class="ui sub header center aligned">권한등급</div>  -->
+  <input type="hidden" name="auth" value="<?=$_REQUEST[auth][0]."_".$_REQUEST[auth][1]?>">
+  <i class="filter purple icon"></i>
+  
+  <span class="text"> 
+  <div class="ui <?=$_REQUEST[auth][1]?> empty circular label"></div><?=$_REQUEST[auth][0]?>
+  </span>
+  
+  <div class="menu">
+    <div class="header">
+      <i class="tags icon"></i>
+      Filter by tag
+    </div>
+    <div class="divider"></div>
+    <div class="item" data-value="전체_blue">
+      <div class="ui blue empty circular label"></div>
+	전체
+    </div>
+    <div class="item" data-value="A_purple">
+      <div class="ui purple empty circular label"></div>
+      A
+    </div>
+    <div class="item" data-value="U_grey">
+      <div class="ui grey empty circular label"></div>
+      U
+    </div>
+    <div class="item" data-value="승인_green">
+      <div class="ui green empty circular label"></div>
+	승인
+    </div>
+    <div class="item" data-value="미승인_red">
+      <div class="ui red empty circular label"></div>
+	미승인
+    </div>
+  </div>
+</div><?=$fn->add_nbsp(3)?>
+<!-- /등급별 검색 -->
+<!-- 유저 이름 검색  -->
+   <?
+   $user_list = $fn->userInfo();
+   $user_list_cnt = count($user_list);
+   ?>
+<i class="user icon purple"></i>유저검색 : <?=$fn->add_nbsp(3)?>
+<select id="user_name" name="user" class="ui search dropdown" onchange="fn_submit(document.form)" style="width: 200px">
+	<option value="unset">선택하세요</option>
+	<?
+		for($i = 0; $i < $user_list_cnt; $i++) { 
+			if($_REQUEST[user]==$user_list[$i][seq]) {
+				$selected = "selected";
+			} else {
+				$selected = "";
+			}
+		?>
+			<option value="<?=$user_list[$i][seq]?>" <?=$selected?>><?=$user_list[$i][user_name]?></option>	
+	<? } ?>
+</select>
+<!-- /유저 이름 검색  -->
+</div>
 </form>
 <!-- card start -->
-<div class="ui cards" style="padding-left:2%">
+<div class="ui cards" style="padding-left:0.5%">
   <? 
-  	$que_user = " select * from member order by user_level desc";
+  	$where = "";
+  	if($_REQUEST[auth][0]!="" && $_REQUEST[auth][0]!="전체") {
+  		$where .= " and user_level = '".$_REQUEST[auth][0]."' ";
+  		if($_REQUEST[auth][0]=="미승인") {
+  			$where = " and user_level = '' ";
+  		} elseif($_REQUEST[auth][0]=="승인") {
+  			$where = " and user_level <> '' ";
+  		}
+  	}
+  	if($_REQUEST[user]!="" && $_REQUEST[user]!="unset") {
+  		$where .= " and seq = '".$_REQUEST[user]."' ";
+  	}
+  	$que_user = " select * from member where 1=1 $where order by user_level desc ";
   	$res_user = mysql_query($que_user) or die(mysql_error());
   	while($row_user = mysql_fetch_array($res_user)) {
   		if($row_user[user_level]=="A") {
@@ -48,7 +119,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
   ?>
   <div class="card">
     <div class="content">
-      <div id="delete_user" onclick="delete_user('<?=$row_user[seq]?>')" data-tooltip="사원 삭제" data-position="right center" data-inverted="">
+      <div id="delete_user" onclick="delete_user('<?=$row_user[seq]?>','<?=$row_user[user_name]?>')" data-tooltip="사원 삭제" data-position="right center" data-inverted="">
 	      <div class="right floated" >
 	      	<i class="close red icon" style="cursor:pointer"></i>
 	      </div>
@@ -63,7 +134,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
       </div>
       <div class="meta">
 		<?=$row_user[position]?>
-      </div><br/>
+      </div>
       <div class="description">
 	      <div onclick="fn_copy('<?=$row_user[user_id]?>_email')"data-tooltip="클립보드로 복사하기" data-position="right center" style="float:left;padding:0px;cursor:pointer">
 	      <i class="envelope outline icon purple"></i>
@@ -118,7 +189,17 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
       </div>
     </div>
   </div>
-  <? } ?>
+  <? } 
+	if(mysql_num_rows($res_user)==0) { ?>
+	<br/>
+	<h2 class="ui icon header center aligned">
+  <i class="ban red icon"></i>
+  <div class="content">
+    검색결과 없음!
+    <div class="sub header">검색 조건을 확인해주세요</div>
+  </div>
+</h2>
+	<? } ?>
   <!-- /card end  -->
 </div>
 <div id="snackbar"></div>
@@ -126,6 +207,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 </div>
 </body>
 <script>
+
 $(document).ready(function(){
 	$('.auth_popup')
 	  .popup({
@@ -133,8 +215,19 @@ $(document).ready(function(){
 	    on : 'click'
 	  })
 	;
+	$("#user_search").dropdown();
+	$("#user_name").dropdown({
+		forceSelection: false
+		,message : {
+			noResults     : "검색 결과 없음"
+		}
+		,selectOnKeydown : false
+		,fullTextSearch: true
+	});
 });
-
+function fn_submit(frm) {
+	frm.submit();
+}
 function fn_auth(mode,auth,seq) {
 	var param = {};
 	if(mode=="approve") {
@@ -170,9 +263,9 @@ function fn_auth_change(mAuth, cAuth, seq) {
 		ajax(param, "employee_auth_ok.php",auth_result);
 	}
 }
-function delete_user(seq) {
+function delete_user(seq,user_name) {
 	var param = {};
-	if(confirm("삭제한 사원은 복구할 수 없습니다.\n삭제하시겠습니까?")==true) {
+	if(confirm("삭제한 사원은 복구할 수 없습니다.\n사원(사원명 : "+user_name+")을 삭제하시겠습니까?")==true) {
 		param["mode"] = "delete";
 		param["seq"] = seq;
 		ajax(param
