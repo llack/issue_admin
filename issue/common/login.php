@@ -11,6 +11,8 @@ if($_SESSION["USER_NAME"]!="") {
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
+<link rel="icon" href="/img/spider_web.jpg" type="image/x-icon" />
+
 <link rel="stylesheet" href="/css/semantic.min.css">
 <script src="/js/jquery-3.2.1.js"></script>
 <script src="/js/semantic.min.js"></script>
