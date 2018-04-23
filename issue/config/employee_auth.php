@@ -93,6 +93,7 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
 <!-- /유저 이름 검색  -->
 </div>
 </form>
+<br/><br/>
 <!-- card start -->
 <div class="ui cards" style="padding-left:0.5%">
   <? 
@@ -202,20 +203,24 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
 	<? } ?>
   <!-- /card end  -->
 </div>
-<div class="ui pagination menu center aligned">
-  <a class="item">
-    1
-  </a>
-  <a class="item">
-    2
-  </a>
-  <a class="item">
-    3
-  </a>
-  <a class="item">
-    4
-  </a>
-</div>
+<br/>
+	<div class="ui container"> 
+		<div class="ui borderless menu pagination">
+		<a class="item">
+		    ◀
+		  </a>
+		<?
+			for($p= 1; $p<=10; $p++ ) {
+		?>
+		  <a class="item">
+		    <?=$p?>
+		  </a>
+		  <? } ?>
+		  <a class="item active purple">
+		    ▶
+		  </a>
+		</div>
+	</div>
 <div id="snackbar"></div>
 <!-- /<!-- card container end -->
 </div>
