@@ -198,17 +198,18 @@ $row_info = $row_info[0];
 <script>
 $(document).ready(function(){
 	enter_afterIndex("form2");
+
+	$('#topmenu').popup({
+		inline   : true,
+		hoverable: true,
+		position : 'bottom center',
+		lastResort : 'bottom center',
+		delay: {
+		  show: 100,
+		  hide: 100
+		 }
+	});
 });
-$('#topmenu').popup({
-	inline   : true,
-	hoverable: true,
-	position : 'bottom center',
-	lastResort : 'bottom center',
-	delay: {
-	  show: 100,
-	  hide: 100
-	 }
-	 });
 
 function modify_userInfo() {
 	$('#topmenu').popup('hide');

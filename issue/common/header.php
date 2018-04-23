@@ -40,7 +40,6 @@ body {
 	width: 83%;
 	height:94%;
 	overflow-y:auto;
-/* 	border:1px solid; */
 	padding:1rem;
 }
 #com_search {

@@ -22,7 +22,6 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 	</h2>
 	<form name="form">
 	<h4 class="ui header center aligned">
-	음.. 이부분은 뭘로 해야될지 모르겠네~
 	</h4>
 	</form>
 </div>

@@ -66,17 +66,18 @@ $(document).ready(function(){
 			$(this).addClass("basic");
 		}
 	});
-});
-$("#com_search").search({
-	source : <?=json_encode($cs_list)?>
-	,error : {
-		noResults   : "<font color='red'>검색결과 없음<font>",
+	
+	$("#com_search").search({
+		source : <?=json_encode($cs_list)?>
+		,error : {
+			noResults   : "<font color='red'>검색결과 없음<font>",
+			}
+		,searchDelay : 300
+		,onResultsClose : function() {
+			$("#com_search").removeClass("loading");;
 		}
-	,searchDelay : 300
-	,onResultsClose : function() {
-		$("#com_search").removeClass("loading");;
-	}
-	,selectFirstResult : true
+		,selectFirstResult : true
+	});
 });
 
 </script>

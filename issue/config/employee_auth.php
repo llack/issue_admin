@@ -202,6 +202,20 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
 	<? } ?>
   <!-- /card end  -->
 </div>
+<div class="ui pagination menu center aligned">
+  <a class="item">
+    1
+  </a>
+  <a class="item">
+    2
+  </a>
+  <a class="item">
+    3
+  </a>
+  <a class="item">
+    4
+  </a>
+</div>
 <div id="snackbar"></div>
 <!-- /<!-- card container end -->
 </div>
@@ -209,12 +223,10 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
 <script>
 
 $(document).ready(function(){
-	$('.auth_popup')
-	  .popup({
+	$('.auth_popup').popup({
 	    popup: '.auth_popup_target',
 	    on : 'click'
-	  })
-	;
+	  });
 	$("#user_search").dropdown();
 	$("#user_name").dropdown({
 		forceSelection: false
