@@ -7,7 +7,11 @@ header ("Content-Type: text/html; charset=UTF-8");		#다국어지원을 위한 �
 
 include_once($_SERVER["DOCUMENT_ROOT"]."/conf/config.db.conn.php");//디비연결
 include $_SERVER["DOCUMENT_ROOT"]."/lib/nawoo.php";
-$fn = new json_select();
+
+$limit      = ($_REQUEST['limit']!="") ? $_REQUEST['limit'] : 10;
+$page       = ($_REQUEST['page']!="") ? $_REQUEST['page'] : 1;
+
+$fn = new Json_select();
 $cs_list = $fn->cs_list();
 ?>
 <!DOCTYPE>
@@ -45,6 +49,15 @@ body {
 #com_search {
 	padding-right:0px;
 	padding-left:0px;
+}
+.nowPage {
+	background : white !important;
+	color : purple !important;
+	border : 2px solid;
+}
+.pagination a:hover:not(.nowPage){
+	background : white !important;
+	color : purple !important;
 }
 </style>
 <? include $_SERVER['DOCUMENT_ROOT']."/common/menu.php";?>

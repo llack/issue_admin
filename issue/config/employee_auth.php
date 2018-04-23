@@ -11,7 +11,6 @@ if($_SESSION["USER_LEVEL"]!="A") {
 	
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) : $fn->param_to_array2("전체_blue");
-
 ?>
 <link rel="stylesheet" href="/css/snackbar.css">
 <body>
@@ -204,23 +203,34 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
   <!-- /card end  -->
 </div>
 <br/>
-	<div class="ui container"> 
-		<div class="ui borderless menu pagination">
-		<a class="item">
-		    ◀
-		  </a>
-		<?
-			for($p= 1; $p<=10; $p++ ) {
-		?>
-		  <a class="item">
-		    <?=$p?>
-		  </a>
-		  <? } ?>
-		  <a class="item active purple">
-		    ▶
-		  </a>
-		</div>
-	</div>
+<!-- 페이징  -->
+<? 
+include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
+$pagenator = new Paginator("select * from member ");
+$results = $pagenator->getData($page,$limit);
+?>
+<table class="table table-striped table-condensed table-bordered table-rounded">
+                        <thead>
+                                <tr>
+                                <th>이름</th>
+                                <th width="20%">직책</th>
+                                <th width="20%">이메일</th>
+                                <th width="25%">레벨</th>
+                        </tr>
+                        </thead>
+                        <? 
+                        	for($i = 0; $i < count($results->data); $i++) {?>
+                        		<tr>
+                        			<td><?=$results->data[$i][user_name]?></td>
+                        			<td><?=$results->data[$i][position]?></td>
+                        			<td><?=$results->data[$i][user_email]?></td>
+                        			<td><?=$results->data[$i][user_level]?></td>
+                        		</tr>
+                        	<?}
+                        ?>
+                        <tbody></tbody>
+                </table>
+                <? echo $pagenator->createLinks('ui borderless menu pagination floated right inverted purple'); ?>
 <div id="snackbar"></div>
 <!-- /<!-- card container end -->
 </div>

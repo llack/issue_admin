@@ -1,7 +1,7 @@
 <?php
 define("TITLE","스파이더");
 
-class json_select { 
+class Json_select { 
 	function cs_list() {
 		$que = " select * from erp_ocsinfo order by cs_name ";
 		$res = mysql_query($que) or die(mysql_error());
