@@ -31,6 +31,7 @@
   <!-- 사이드바 업체리스트  -->
   <div style="overflow-y:auto;height:78%;">
 	  	<? 
+	  	$cs_list = $fn->cs_list();
 	  	$cnt = count($cs_list);
 	  	$issue = 6;
 	  	for($i = 0; $i < $cnt; $i++ ) { ?>

@@ -11,7 +11,6 @@ include $_SERVER["DOCUMENT_ROOT"]."/lib/nawoo.php";
 $limit = ($_REQUEST['limit']!="") ? $_REQUEST['limit'] : 10;
 $page = ($_REQUEST['page']!="") ? $_REQUEST['page'] : 1;
 $fn = new Json_select();
-$cs_list = $fn->cs_list();
 ?>
 <!DOCTYPE>
 <html>

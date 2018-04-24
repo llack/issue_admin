@@ -205,7 +205,7 @@ $(document).ready(function(){
 		position : 'bottom center',
 		lastResort : 'bottom center',
 		delay: {
-		  show: 100,
+		  show: 50,
 		  hide: 100
 		 }
 	});
