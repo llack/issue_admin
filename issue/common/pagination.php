@@ -43,7 +43,8 @@ class Paginator{
 		$last       = ceil( $this->_total / $this->_limit );
 		$start      = ( ( $this->_page - $links ) > 0 ) ? $this->_page - $links : 1;
 		$end        = ( ( $this->_page + $links ) < $last ) ? $this->_page + $links : $last;
-		$html       = '<div class="ui borderless menu pagination floated right inverted purple"> ';
+		$html		= '<div class="ui bottom attached label" style="background-color:white">';
+		$html       .= '<div class="ui borderless menu pagination floated right inverted purple"> ';
 		
 		$href = ( $this->_page == 1 ) ? '' : 'href="?limit=' . $this->_limit . '&page=' . ( $this->_page - 1 ) . '"';
 		$html       .= '<a  '.$href.'class="item page">◀</a>';
@@ -64,7 +65,7 @@ class Paginator{
 		
 		$href = ( $this->_page == $last ) ? '' : 'href="?limit=' . $this->_limit . '&page=' . ( $this->_page + 1 ) . '"';
 		$html       .= '<a '.$href.' class="item page" >▶</a>';
-		$html       .= '</div>';
+		$html       .= '</div></div>';
 		return $html;
 	}
 }

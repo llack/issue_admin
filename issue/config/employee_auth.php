@@ -8,9 +8,9 @@ if($_SESSION["USER_LEVEL"]!="A") {
 		history.back();
 		</script>";
 }
-	
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
+
 $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) : $fn->param_to_array2("전체_blue");
 ?>
 <link rel="stylesheet" href="/css/snackbar.css">
@@ -210,6 +210,7 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
 <br/>
 <!-- 페이징  -->
 <? echo $pagenator->createLinks(); ?>
+</div>
 <!-- /페이징 -->
 <div id="snackbar"></div>
 <!-- /<!-- card container end -->
