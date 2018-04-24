@@ -31,6 +31,7 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
 <div class="content">사원 권한관리</div>
 </h2>
 <form name="form" method="POST">
+<input type="hidden" name="page" value="1"/>
 <div class="ui center aligned" style="padding-left:0.5%">
 <!-- 등급별 검색 -->
 <div id="user_search" class="ui floating labeled icon dropdown button basic" onchange="fn_submit(document.form)">
@@ -113,7 +114,6 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
   	$pagenator = new Paginator($que_user);
   	$results = $pagenator->getData($page,$limit);
   	$max_result = count($results->data);
-  	
   	for($loop = 0; $loop < $max_result; $loop++) {
   		$row_user = $results->data[$loop];
   		if($row_user[user_level]=="A") {
