@@ -19,7 +19,7 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
 <? include $_SERVER["DOCUMENT_ROOT"]."/common/company_list.php"; ?>
 </div>
 <!-- card container start -->
-<div class="ui container table purple segment">
+<div class="ui container table purple segment" style="overflow-x:hidden">
 <div class="right aligned" >
 	<a class="ui tag label">menu</a>
 	<a class="ui red tag label">사원관리</a>
@@ -124,7 +124,7 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
   ?>
   <div class="card">
     <div class="content">
-      <div id="delete_user" onclick="delete_user('<?=$row_user[seq]?>','<?=$row_user[user_name]?>')" data-tooltip="사원 삭제" data-position="right center" data-inverted="">
+      <div id="delete_user" onclick="delete_user('<?=$row_user[seq]?>','<?=$row_user[user_name]?>')" data-tooltip="X" data-position="right center" data-inverted="">
 	      <div class="right floated" >
 	      	<i class="close red icon" style="cursor:pointer"></i>
 	      </div>
@@ -141,13 +141,13 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
 		<?=$row_user[position]?>
       </div>
       <div class="description">
-	      <div onclick="fn_copy('<?=$row_user[user_id]?>_email')"data-tooltip="클립보드로 복사하기" data-position="right center" style="float:left;padding:0px;cursor:pointer">
+	      <div onclick="fn_copy('<?=$row_user[user_id]?>_email')"data-tooltip="복사" data-position="right center" style="float:left;padding:0px;cursor:pointer" data-inverted="">
 	      <i class="envelope outline icon purple"></i>
 	       <input type="text" value="<?=$row_user[user_email]?>" style="border:none;height:20px;cursor:pointer" id="<?=$row_user[user_id]?>_email" readonly/>
 	       </div>
       </div>
        <div class="description">
-	       <div onclick="fn_copy('<?=$row_user[user_id]?>_hp')"data-tooltip="클립보드로 복사하기" data-position="right center" style="float:left;padding:0px;cursor:pointer">
+	       <div onclick="fn_copy('<?=$row_user[user_id]?>_hp')"data-tooltip="복사" data-position="right center" style="float:left;padding:0px;cursor:pointer" data-inverted="">
 	        <i class="phone icon purple"></i>
 	        <input type="text" value="<?=$row_user[hp]?>" style="border:none;height:20px;cursor:pointer" id="<?=$row_user[user_id]?>_hp" readonly/>
 	        </div>
