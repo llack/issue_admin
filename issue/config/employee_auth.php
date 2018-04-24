@@ -209,7 +209,7 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
 </div>
 <br/>
 <!-- 페이징  -->
-<? echo $pagenator->createLinks(); ?>
+<?=$pagenator->createLinks(); ?>
 </div>
 <!-- /페이징 -->
 <div id="snackbar"></div>

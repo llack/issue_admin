@@ -37,36 +37,37 @@ class Paginator{
 	}
 	
 	public function createLinks($links = 10) {
-		if ( $this->_limit == 'all' ) {
+		if ( $this->_limit == 'all' || $this->_total==0) {
 			return '';
+		} else {
+			$last       = ceil( $this->_total / $this->_limit );
+			$start      = ( ( $this->_page - $links ) > 0 ) ? $this->_page - $links : 1;
+			$end        = ( ( $this->_page + $links ) < $last ) ? $this->_page + $links : $last;
+			$html		= '<div class="ui bottom attached label" style="background-color:rgba(0,0,0,.05)">';
+			$html       .= '<div class="ui borderless menu pagination floated right inverted purple"> ';
+			
+			$href = ( $this->_page == 1 ) ? '' : 'href="?page=' . ( $this->_page - 1 ) . '"';//limit=' . $this->_limit . '&
+			$html       .= '<a  '.$href.'class="item page">◀</a>';
+			
+			if ( $start > 1 ) {
+				$html   .= '<a href="?page=1" class="item page">1</a>'; //1 page limit=' . $this->_limit . '&
+			}
+			
+			for ( $i = $start ; $i <= $end; $i++ ) {
+				$class  = ( $this->_page == $i ) ? "nowPage" : "";
+				$href  = ( $this->_page == $i ) ? '' : 'href="?page=' . ( $i) . '"'; //limit=' . $this->_limit . '&
+				$html   .= '<a '.$href.' class="item page '.$class.'">' . $i . '</a>'; // 중간들
+			}
+			
+			if ( $end < $last ) {
+				$html   .= '<a href="?page=' . $last . '" class="item page">' . $last . '</a></li>'; //limit=' . $this->_limit . '&
+			}
+			
+			$href = ( $this->_page == $last ) ? '' : 'href="?page=' . ( $this->_page + 1 ) . '"'; //limit=' . $this->_limit . '&
+			$html       .= '<a '.$href.' class="item page" >▶</a>';
+			$html       .= '</div></div>';
+			return $html;
 		}
-		$last       = ceil( $this->_total / $this->_limit );
-		$start      = ( ( $this->_page - $links ) > 0 ) ? $this->_page - $links : 1;
-		$end        = ( ( $this->_page + $links ) < $last ) ? $this->_page + $links : $last;
-		$html		= '<div class="ui bottom attached label" style="background-color:white">';
-		$html       .= '<div class="ui borderless menu pagination floated right inverted purple"> ';
-		
-		$href = ( $this->_page == 1 ) ? '' : 'href="?limit=' . $this->_limit . '&page=' . ( $this->_page - 1 ) . '"';
-		$html       .= '<a  '.$href.'class="item page">◀</a>';
-		
-		if ( $start > 1 ) {
-			$html   .= '<a href="?limit=' . $this->_limit . '&page=1" class="item page">1</a>'; //1 page
-		}
-		
-		for ( $i = $start ; $i <= $end; $i++ ) {
-			$class  = ( $this->_page == $i ) ? "nowPage" : "";
-			$href  = ( $this->_page == $i ) ? '' : 'href="?limit=' . $this->_limit . '&page=' . ( $i) . '"';
-			$html   .= '<a '.$href.' class="item page '.$class.'">' . $i . '</a>'; // 중간들
-		}
-		
-		if ( $end < $last ) {
-			$html   .= '<a href="?limit=' . $this->_limit . '&page=' . $last . '" class="item page">' . $last . '</a></li>';
-		}
-		
-		$href = ( $this->_page == $last ) ? '' : 'href="?limit=' . $this->_limit . '&page=' . ( $this->_page + 1 ) . '"';
-		$html       .= '<a '.$href.' class="item page" >▶</a>';
-		$html       .= '</div></div>';
-		return $html;
 	}
 }
 ?>
