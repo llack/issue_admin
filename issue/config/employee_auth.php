@@ -10,6 +10,7 @@ if($_SESSION["USER_LEVEL"]!="A") {
 }
 	
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
+include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) : $fn->param_to_array2("전체_blue");
 ?>
 <link rel="stylesheet" href="/css/snackbar.css">
@@ -109,8 +110,12 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
   		$where .= " and seq = '".$_REQUEST[user]."' ";
   	}
   	$que_user = " select * from member where 1=1 $where order by user_level desc ";
-  	$res_user = mysql_query($que_user) or die(mysql_error());
-  	while($row_user = mysql_fetch_array($res_user)) {
+  	$pagenator = new Paginator($que_user);
+  	$results = $pagenator->getData($page,$limit);
+  	$max_result = count($results->data);
+  	
+  	for($loop = 0; $loop < $max_result; $loop++) {
+  		$row_user = $results->data[$loop];
   		if($row_user[user_level]=="A") {
   			$level_color = "purple";
   		} else {
@@ -190,7 +195,7 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
     </div>
   </div>
   <? } 
-	if(mysql_num_rows($res_user)==0) { ?>
+  if($max_result==0) { ?>
 	<br/>
 	<h2 class="ui icon header center aligned">
   <i class="ban red icon"></i>
@@ -204,33 +209,8 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
 </div>
 <br/>
 <!-- 페이징  -->
-<? 
-include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
-$pagenator = new Paginator("select * from member ");
-$results = $pagenator->getData($page,$limit);
-?>
-<table class="table table-striped table-condensed table-bordered table-rounded">
-                        <thead>
-                                <tr>
-                                <th>이름</th>
-                                <th width="20%">직책</th>
-                                <th width="20%">이메일</th>
-                                <th width="25%">레벨</th>
-                        </tr>
-                        </thead>
-                        <? 
-                        	for($i = 0; $i < count($results->data); $i++) {?>
-                        		<tr>
-                        			<td><?=$results->data[$i][user_name]?></td>
-                        			<td><?=$results->data[$i][position]?></td>
-                        			<td><?=$results->data[$i][user_email]?></td>
-                        			<td><?=$results->data[$i][user_level]?></td>
-                        		</tr>
-                        	<?}
-                        ?>
-                        <tbody></tbody>
-                </table>
-                <? echo $pagenator->createLinks('ui borderless menu pagination floated right inverted purple'); ?>
+<? echo $pagenator->createLinks(); ?>
+<!-- /페이징 -->
 <div id="snackbar"></div>
 <!-- /<!-- card container end -->
 </div>

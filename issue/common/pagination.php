@@ -22,7 +22,6 @@ class Paginator{
 		} else {
 			$query = $this->_query . " LIMIT " . ( ( $this->_page - 1 ) * $this->_limit ) . ", $this->_limit";
 		}
-		echo $query;
 		$res = mysql_query($query) or die(mysql_error());
 		while ( $row = mysql_fetch_array($res) ) {
 			$results[]  = $row;
@@ -37,14 +36,14 @@ class Paginator{
 		return $result;
 	}
 	
-	public function createLinks( $list_class , $links = 10) {
+	public function createLinks($links = 10) {
 		if ( $this->_limit == 'all' ) {
 			return '';
 		}
 		$last       = ceil( $this->_total / $this->_limit );
 		$start      = ( ( $this->_page - $links ) > 0 ) ? $this->_page - $links : 1;
 		$end        = ( ( $this->_page + $links ) < $last ) ? $this->_page + $links : $last;
-		$html       = '<div class="' . $list_class . '"> ';
+		$html       = '<div class="ui borderless menu pagination floated right inverted purple"> ';
 		
 		$href = ( $this->_page == 1 ) ? '' : 'href="?limit=' . $this->_limit . '&page=' . ( $this->_page - 1 ) . '"';
 		$html       .= '<a  '.$href.'class="item page">◀</a>';
