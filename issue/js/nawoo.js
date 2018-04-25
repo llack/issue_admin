@@ -1,4 +1,4 @@
-
+<script>
 function ajax(params, url, callback, data, method){
 	//var params = JSON.stringify(pParams);
 	$.ajax({
@@ -47,11 +47,9 @@ function enter_afterIndex(name) {
 			$("input").eq(index).focus();
 		}
 	}).on("focus","input",function(e){
-		$(this).select();
+		$(this).select();//dddd
 	});
-}
+};
 
-$(".checkall").on("click",function(){    
-	$("input[id=chk]").prop("checked",true);
-	//$("input[id=chk]").prop("checked",false);
-});
+
+</script>

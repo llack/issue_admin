@@ -24,6 +24,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 		  <i class="check circle icon"></i>
 		  전체선택
 		</button>
+		<input type="checkbox" id="checkall" style="display:none;"/>
 		<button class="ui button inverted red">
 		  <i class="check trash alternate icon"></i>
 		  선택삭제
@@ -95,6 +96,22 @@ $(document).ready(function(){
 			$(this).removeClass("positive");
 		}
 	});
+
+	$(".checkall").click(function(){
+		var a = $("#checkall");
+		var c = $("input[id='chk']");
+		var str = "";
+		if(a.prop("checked")===false) {
+			a.prop("checked",true);
+			c.prop("checked",true);
+			str = "선택해제";			
+		} else {
+			a.prop("checked",false);
+			c.prop("checked",false);
+			str = "전체선택";
+		}
+		$(this).html("<i class='check circle icon'></i>"+str);
+	});  
 	
 });
 
