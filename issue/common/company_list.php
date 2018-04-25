@@ -2,7 +2,7 @@
 	<!-- 사이드바 헤더 -->
 	<div class="item">
 		<h4 align="center">
-		<div class="ui vertical mini animated button floated left purple" tabindex="0" onclick="location.href='/' ">
+		<div class="ui vertical mini animated button floated left inverted purple" tabindex="0" onclick="location.href='/' ">
 		  <div class="hidden content">HOME</div>
 		  <div class="visible content">
 		    <i class="home icon"></i>
@@ -11,16 +11,17 @@
 	</div>
 	<!-- /사이드바 헤더 -->
 	
-	<!-- 업체추가  -->
-   <div class="item" >
+	<!-- 업체추가 
     <button class="ui button basic purple" style="width:100%" id="company_add_btn">
     <i class="building outline icon"></i>업체 추가 + </button>
-  <!-- /업체추가 -->
+  /업체추가 -->
   
 	<!-- 검색창 -->
+   <br/>
+   <div class="item" >
   <div id="com_search" class="item ui search">
     <div class="ui icon input">
-    	<input class="prompt search_area" type="text" placeholder="업체 검색">
+    	<input class="prompt search_area" type="text" placeholder="업체 업무상세 바로가기">
     	<i class="search icon"></i>
     </div>
     <div class="results"></div>

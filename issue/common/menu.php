@@ -80,7 +80,7 @@ $row_info = $row_info[0];
 <div class="ui fluid popup bottom left transition hidden">
   <div class="ui four column relaxed equal height divided grid">
     <div class="column" align="center">
-      <h4 class="ui header">업무관리</h4>
+      <h4 class="ui header">업무</h4>
       <div class="ui link list">
         <a class="item" href="/">업무현황</a>
         <a class="item">메뉴2</a>
@@ -88,16 +88,16 @@ $row_info = $row_info[0];
       </div>
     </div>
     <div class="column" align="center">
-      <h4 class="ui header">업체관리</h4>
+      <h4 class="ui header">업체</h4>
       <div class="ui link list">
-        <a class="item">업체추가</a>
+        <a class="item" href="/config/company_info.php">업체관리</a>
         <a class="item">메뉴1</a>
         <a class="item">메뉴2</a>
         <a class="item">메뉴3</a>
       </div>
     </div>
     <div class="column" align="center">
-      <h4 class="ui header">사원관리</h4>
+      <h4 class="ui header">사원</h4>
       <div class="ui link list">
         <a class="item" href="/config/employee_auth.php">권한관리 (관리자)</a>
         <a class="item">메뉴1</a>

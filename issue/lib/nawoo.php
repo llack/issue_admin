@@ -9,7 +9,7 @@ class Json_select {
 		while($row = mysql_fetch_array($res)) {
 			$result[$i]["title"] = $row[cs_name]."";
 			$result[$i]["description"] = $row[cs_code]."";
-			$result[$i]["url"] = "?cs_code=".$row[cs_code]."";
+			$result[$i]["url"] = "/?cs_code=".$row[cs_code]."";
 			$i++;
 		}
 		

@@ -27,7 +27,7 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
 </div>
 <h2 class="ui header" style="margin-top: 0px;margin-bottom:0px">
 
-<i class="circular purple users icon icon"></i>
+<i class="circular purple id card outline icon"></i>
 <div class="content">사원 권한관리</div>
 </h2>
 <form name="form" method="POST">
@@ -111,9 +111,12 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
   		$where .= " and seq = '".$_REQUEST[user]."' ";
   	}
   	$que_user = " select * from member where 1=1 $where order by user_level desc ";
+  	
   	$pagenator = new Paginator($que_user);
   	$results = $pagenator->getData($page,$limit);
+  	
   	$max_result = count($results->data);
+  	
   	for($loop = 0; $loop < $max_result; $loop++) {
   		$row_user = $results->data[$loop];
   		if($row_user[user_level]=="A") {
@@ -122,7 +125,7 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
   			$level_color = "";
   		}
   ?>
-  <div class="card">
+  <div class="card card_content">
     <div class="content">
       <div id="delete_user" onclick="delete_user('<?=$row_user[seq]?>','<?=$row_user[user_name]?>')" data-tooltip="X" data-position="right center" data-inverted="">
 	      <div class="right floated" >
@@ -232,6 +235,15 @@ $(document).ready(function(){
 		,selectOnKeydown : false
 		,fullTextSearch: true
 	});
+
+	$(".card_content").on({
+		mouseover : function() {
+			$(this).addClass("purple segment");
+		},
+		mouseout : function() {
+			$(this).removeClass("purple segment");
+		}
+	})
 });
 function fn_submit(frm) {
 	frm.submit();

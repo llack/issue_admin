@@ -50,3 +50,8 @@ function enter_afterIndex(name) {
 		$(this).select();
 	});
 }
+
+$(".checkall").on("click",function(){    
+	$("input[id=chk]").prop("checked",true);
+	//$("input[id=chk]").prop("checked",false);
+});

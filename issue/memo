@@ -1,17 +1,29 @@
 <?
 session_start();
-if($_SESSION["USER_NAME"]=="") {
-	header("Location:/common/login.php");
-}
+
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 
 ?>
 <body>
-<div class="ui container side purple segment">
+<div class="ui container side">
 <? include $_SERVER["DOCUMENT_ROOT"]."/common/company_list.php"; ?>
 </div>
+<!-- 메인 테이블  -->
 <div class="ui container table purple segment">
-메인
+	<div class="right aligned">
+		<a class="ui tag label">menu</a>
+		<a class="ui red tag label">업무관리</a>
+		<a class="ui teal tag label">업무현황</a>
+	</div>
+	<h2 class="ui header" style="margin-top: 0px">
+	
+	<i class="circular purple users icon"></i>
+	<div class="content">이슈 리스트</div>
+	</h2>
+	<form name="form">
+	<h4 class="ui header center aligned">
+	</h4>
+	</form>
 </div>
 </body>
 </html>
