@@ -59,7 +59,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 	  <tr class="tr_mouse">
 	  	<td>
 	  		<div class="ui toggle checkbox">
-			  <input type="checkbox" name="chk[]" id="chk">
+			  <input type="checkbox" name="chk[]" id="chk" value="<?=$row[seq]?>">
 			  <label></label>
 			</div>
 	  	</td>
@@ -98,6 +98,7 @@ $(document).ready(function(){
 	});
 
 	$(".checkall").click(function(){
+		
 		var a = $("#checkall");
 		var c = $("input[id='chk']");
 		var str = "";
