@@ -39,5 +39,21 @@ class Json_select {
 		}
 		return $result;
 	}
+	
+}
+class Simple_query {
+	function delete_complete($table, $column,$del_data) {
+		if(is_array($del_data)) {
+			foreach ($del_data as $del) {
+				$que = " delete from {$table} where {$column} = '{$del}' ";
+				mysql_query($que) or die(mysql_error());
+			}
+			return count($del_data);
+		} else {
+			$que = " delete from {$table} where {$column} = '{$del_data}' ";
+			mysql_query($que) or die(mysql_error());
+			return "삭제되었습니다.";
+		}
+	}
 }
 ?>

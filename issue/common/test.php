@@ -12,6 +12,7 @@ $links      = ($_REQUEST['links']!="") ? $_REQUEST['links'] : 10;
 $query      = " select * from member ";
 $paginator  = new Paginator($query);
 $results = $paginator->getData($page,$limit);
+
 ?>
     <body>
         <div class="container">

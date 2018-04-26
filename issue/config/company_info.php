@@ -25,7 +25,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 		  전체선택
 		</button>
 		<input type="checkbox" id="checkall" style="display:none;"/>
-		<button class="ui button inverted red">
+		<button class="ui button inverted red" onclick="delete_company()">
 		  <i class="check trash alternate icon"></i>
 		  선택삭제
 		</button>
@@ -81,7 +81,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 	  <tr class="tr_hover">
 	  	<td>
 	  		<div class="ui toggle checkbox">
-			  <input type="checkbox" name="chk[]" id="chk" value="<?=$row[seq]?>">
+			  <input type="checkbox" id="chk" value="<?=$row[seq]?>">
 			  <label></label>
 			</div>
 	  	</td>
@@ -117,7 +117,14 @@ $("#cs_code").dropdown({
 	,selectOnKeydown : false
 	,fullTextSearch: true
 });
-
+function delete_company(seq,user_name) {
+	var param = {};
+	if(confirm("삭제한 업체는 복구할 수 없습니다.\n총 "+$("#chk:checked").length+"건 삭제하시겠습니까?")==true) {
+		fn_delete("erp_ocsinfo","seq");
+	} else {
+		return;
+	}
+}
 function fn_submit(frm) {
 	frm.submit();
 }

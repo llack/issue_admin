@@ -50,6 +50,33 @@ function enter_afterIndex(name) {
 	});
 };
 
+function fn_delete(table,column,chk) {
+	var param = {};
+	
+	if(!chk) {
+		var c = $("input[id='chk']:checked");
+		if(c.length==0) {
+			alert("삭제 대상이 없습니다.");
+			return;
+		}
+		var a = []
+		c.each(function(i,e){
+			a.push($(e).val());
+		});
+		param["chk"] = a;
+	} else {
+		param["chk"] = chk;
+	} 
+	param["table"] = table;
+	param["column"] = column;
+	ajax(param
+		,	"/common/simple_delete.php"
+		,	function(result){ 
+		alert(result); 
+		location.reload();
+	});
+}
+
 $(function(){
 	
 	$(".tr_hover").on({

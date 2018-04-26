@@ -286,14 +286,7 @@ function fn_auth_change(mAuth, cAuth, seq) {
 function delete_user(seq,user_name) {
 	var param = {};
 	if(confirm("삭제한 사원은 복구할 수 없습니다.\n사원(사원명 : "+user_name+")을 삭제하시겠습니까?")==true) {
-		param["mode"] = "delete";
-		param["seq"] = seq;
-		ajax(param
-			,	"employee_delete.php"
-			,	function(result){ 
-			alert(result); 
-			location.reload();
-			});
+		fn_delete("member","seq",seq);
 	} else {
 		return;
 	}
