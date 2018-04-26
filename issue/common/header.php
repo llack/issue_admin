@@ -22,8 +22,8 @@ $fn = new Json_select();
 
 <link rel="stylesheet" href="/css/semantic.min.css">
 <link rel="stylesheet" href="/css/datatables.min.css">
-<script src="/js/nawoo.js"></script> 
 <script src="/js/jquery-3.2.1.js"></script>
+<script src="/js/nawoo.js"></script> 
 <script src="/js/semantic.min.js"></script>
 <script src="/js/datatables.min.js"></script>
 <script src="/js/docs.js"></script>

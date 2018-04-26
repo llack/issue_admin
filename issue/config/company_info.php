@@ -19,7 +19,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 	<i class="circular purple sitemap icon"></i>
 	<div class="content">업체관리</div>
 	</h2>
-	<h4 class="ui header left aligned">
+	<div class="ui left aligned">
 		<button class="ui button inverted purple checkall">
 		  <i class="check circle icon"></i>
 		  전체선택
@@ -29,14 +29,32 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 		  <i class="check trash alternate icon"></i>
 		  선택삭제
 		</button>
-	<form name="form">
-	</h4>
+		<? $cs_list = $fn->cs_list();
+		$cs_list_cnt = count($cs_list);
+		?>
+	<form name="form" method="POST" style="margin:0px;float:right">
+	<input type="hidden" value="1" name="page"/>
+	<i class="search icon purple"></i>업체검색 : <?=$fn->add_nbsp(3)?>
+	<select id="cs_code" name="cs_code" class="ui search dropdown" onchange="fn_submit(document.form)" style="width: 200px">
+		<option value="unset">선택하세요</option>
+		<?
+			for($i = 0; $i < $cs_list_cnt; $i++) { 
+				if($_REQUEST[cs_code]==$cs_list[$i][description]) {
+					$selected = "selected";
+				} else {
+					$selected = "";
+				}
+			?>
+				<option value="<?=$cs_list[$i][description]?>" <?=$selected?>><?=$cs_list[$i][title]?></option>	
+		<? } ?>
+	</select>
+	</div>
 	</form>
 
 	<!-- 업체리스트 -->
 	<table id="test" class="ui definition table fixed center aligned">
 	  <thead>
-		  <tr style="background-color:#a333c8">
+		  <tr style="background-color:#a333c8;" >
 		    <th width="70px"><i class="large building icon" style="color:white!important"></i></th>
 			<th width="70px">No.</th>
 			<th>회사명</th>
@@ -49,14 +67,18 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 	  </thead>
 	  <tbody>
 	  <?
-	  	$que = " select * from erp_ocsinfo order by cs_name ";
+	  	$where = ""; 
+	  	if($_REQUEST[cs_code] != "" && $_REQUEST[cs_code]!="unset") {
+	  		$where .= " and cs_code = '".$_REQUEST[cs_code]."' ";
+	  	}
+	  	$que = " select * from erp_ocsinfo where 1=1 $where order by cs_name ";
 	  	$pagenator = new Paginator($que);
 	  	$results = $pagenator->getData($page,$limit);
 	  	$max = count($results->data);
 	  	for($i = 0; $i < $max; $i++) {
 	  		$row = $results->data[$i];
 	  ?>
-	  <tr class="tr_mouse">
+	  <tr class="tr_hover">
 	  	<td>
 	  		<div class="ui toggle checkbox">
 			  <input type="checkbox" name="chk[]" id="chk" value="<?=$row[seq]?>">
@@ -87,35 +109,18 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 <!-- /페이징 -->
 </body>
 <script>
-$(document).ready(function(){
-	$(".tr_mouse").on({
-		mouseover : function(){
-			$(this).addClass("positive");
-		},
-		mouseout : function() {
-			$(this).removeClass("positive");
-		}
-	});
-
-	$(".checkall").click(function(){
-		
-		var a = $("#checkall");
-		var c = $("input[id='chk']");
-		var str = "";
-		if(a.prop("checked")===false) {
-			a.prop("checked",true);
-			c.prop("checked",true);
-			str = "선택해제";			
-		} else {
-			a.prop("checked",false);
-			c.prop("checked",false);
-			str = "전체선택";
-		}
-		$(this).html("<i class='check circle icon'></i>"+str);
-	});  
-	
+$("#cs_code").dropdown({
+	forceSelection: false
+	,message : {
+		noResults     : "검색 결과 없음"
+	}
+	,selectOnKeydown : false
+	,fullTextSearch: true
 });
 
+function fn_submit(frm) {
+	frm.submit();
+}
 function editOrRemove(seq,mode,cs_name) {
 	if(mode =="modify") {
 
