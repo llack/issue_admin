@@ -1,4 +1,3 @@
-<script>
 function ajax(params, url, callback, data, method){
 	//var params = JSON.stringify(pParams);
 	$.ajax({
@@ -50,6 +49,20 @@ function enter_afterIndex(name) {
 		$(this).select();//dddd
 	});
 };
+$(".checkall").click(function(){
+	
+	var a = $("#checkall");
+	var c = $("input[id='chk']");
+	var str = "";
+	if(a.prop("checked")===false) {
+		a.prop("checked",true);
+		c.prop("checked",true);
+		str = "선택해제";			
+	} else {
+		a.prop("checked",false);
+		c.prop("checked",false);
+		str = "전체선택";
+	}
+	$(this).html("<i class='check circle icon'></i>"+str);
+});  
 
-
-</script>
