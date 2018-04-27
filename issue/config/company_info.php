@@ -4,6 +4,20 @@ session_start();
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 ?>
+<style>
+#company_info {
+	position: absolute;
+	 width: 400px;
+	 height: 480px;
+	 left: 50%;
+	 top: 50%;
+	 margin-left: -250px;
+	 margin-top: -250px;
+	 border: solid #a333c8 2px;
+	 border-radius: 25px;
+	 padding : 1rem;
+}
+</style>
 <body>
 <div class="ui container side">
 <? include $_SERVER["DOCUMENT_ROOT"]."/common/company_list.php"; ?>
@@ -52,7 +66,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 	</form>
 
 	<!-- 업체리스트 -->
-	<table id="test" class="ui definition table fixed center aligned">
+	<table id="test" class="ui definition table fixed center aligned small">
 	  <thead>
 		  <tr style="background-color:#a333c8;" >
 		    <th width="70px"><i class="large building icon" style="color:white!important"></i></th>
@@ -103,6 +117,45 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 	 </tbody>
 	</table>
 	<!-- /업체리스트 -->
+<!--  업체 수정 팝업 -->
+<div id="company_modify"class="ui basic modal">
+  <div class="content">
+  	<div id="company_info">
+	<div class="login header">
+		<div style="text-align:right !important"><i class="user icon"></i>업 체 정 보 수 정</div>
+	</div>
+	<br/><br/>
+	<form class="ui fluid form" name="form2">
+  <div class="field">
+  <div class="inline field">
+    <div class="ui ribbon  purple basic label">
+      회사명
+    </div>
+    <input type="text" name="cs_name" value="" onfocus="this.setSelectionRange(this.value.length, this.value.length)">
+  </div>
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      회사코드
+    </div>
+   <input type="text" name="cs_code" value="">
+  </div>
+  </div>
+  <input type="hidden" name="seq" value=""/>
+</form>
+  <!-- /  -->
+</div>
+  </div>
+  <div class="actions">
+    <div class="ui red basic cancel inverted button">
+      <i class="remove icon"></i>
+      취소
+    </div>
+    <div class="ui green ok inverted button">
+      <i class="checkmark icon"></i>
+      수정
+    </div>
+  </div>
+</div>
 <!-- 페이징  -->
 <?=$pagenator->createLinks(); ?>
 </div>
@@ -117,6 +170,9 @@ $("#cs_code").dropdown({
 	,selectOnKeydown : false
 	,fullTextSearch: true
 });
+
+
+	
 function delete_company(seq,user_name) {
 	var param = {};
 	if(confirm("삭제한 업체는 복구할 수 없습니다.\n총 "+$("#chk:checked").length+"건 삭제하시겠습니까?")==true) {
@@ -130,10 +186,38 @@ function fn_submit(frm) {
 }
 function editOrRemove(seq,mode,cs_name) {
 	if(mode =="modify") {
-
+		$('#company_modify').modal({
+			//closable : false,
+			onShow : function() {
+				var param = {};
+				param["table"] = "erp_ocsinfo";
+				param["where"] = " and seq = " + seq;
+				ajax(param
+					,"/common/simple_select.php"
+					,function(result){
+						console.log(result[0]);
+					});
+			}
+			,onDeny : function() { // true가 닫힘
+				location.reload();
+				return true;
+			}
+			,onApprove : function(e) {
+					if(e.hasClass('ok')) {
+						return sign_submit(document.form2);
+					}
+				}
+			, onHide : function () {
+				setTimeout(function(){
+					location.reload();
+				},500);
+				return true;
+				}
+			})
+			.modal('show');
 	} else {
 		if(confirm("삭제한 업체는 복구할 수 없습니다.\n업체(업체명: "+cs_name+")를 삭제하시겠습니까?")==true) {
-			
+			fn_delete("erp_ocsinfo","seq",seq);
 		} else {
 			return;
 		}	

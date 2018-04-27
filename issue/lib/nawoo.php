@@ -55,5 +55,14 @@ class Simple_query {
 			return "삭제되었습니다.";
 		}
 	}
+	
+	function simple_select($table,$where) {
+		$que = " select * from {$table} where 1=1 {$where}";
+		$res = mysql_query($que) or die(mysql_error());
+		while ($row = mysql_fetch_assoc($res)) {
+			$result[] = $row;
+		}
+		return $result;
+	}
 }
 ?>
