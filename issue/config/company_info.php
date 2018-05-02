@@ -195,7 +195,10 @@ function editOrRemove(seq,mode,cs_name) {
 				ajax(param
 					,"/common/simple_select.php"
 					,function(result){
-						console.log(result[0]);
+						var set = result[0];
+						$("input[name='cs_name']").val(set.cs_name);
+						$("input[name='cs_code']").val(set.cs_code);
+						$("input[name='seq']").val(set.seq);
 					});
 			}
 			,onDeny : function() { // true가 닫힘
