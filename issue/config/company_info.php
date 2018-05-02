@@ -7,7 +7,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 <style>
 #company_info {
 	position: absolute;
-	 width: 400px;
+	 width: 480px;
 	 height: 480px;
 	 left: 50%;
 	 top: 50%;
@@ -16,6 +16,46 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 	 border: solid #a333c8 2px;
 	 border-radius: 25px;
 	 padding : 1rem;
+}
+#cs_modify {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    top: 30px;
+    font-size: 17px;
+}
+#cs_modify.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
+}
+
+@keyframes fadeout {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
 }
 </style>
 <body>
@@ -125,13 +165,13 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 		<div style="text-align:right !important"><i class="user icon"></i>업 체 정 보 수 정</div>
 	</div>
 	<br/><br/>
-	<form class="ui fluid form" name="form2">
+	<form class="ui fluid form" name="cs_modify">
   <div class="field">
   <div class="inline field">
     <div class="ui ribbon  purple basic label">
       회사명
     </div>
-    <input type="text" name="cs_name" value="" onfocus="this.setSelectionRange(this.value.length, this.value.length)">
+    <input type="text" name="cs_name" value="" onfocus="this.setSelectionRange(this.value.length, this.value.length)" size="40">
   </div>
   <div class="inline field">
     <div class="ui ribbon purple basic label">
@@ -160,6 +200,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 <?=$pagenator->createLinks(); ?>
 </div>
 <!-- /페이징 -->
+<div id="cs_modify"></div>
 </body>
 <script>
 $("#cs_code").dropdown({
@@ -195,10 +236,11 @@ function editOrRemove(seq,mode,cs_name) {
 				ajax(param
 					,"/common/simple_select.php"
 					,function(result){
-						var set = result[0];
-						$("input[name='cs_name']").val(set.cs_name);
-						$("input[name='cs_code']").val(set.cs_code);
-						$("input[name='seq']").val(set.seq);
+						var data = result[0];
+						var max = Object.keys(result[0]).length;
+						for(var key in data) {
+							$("input[name='"+key+"']").val(data[key]);
+						}
 					});
 			}
 			,onDeny : function() { // true가 닫힘
@@ -207,7 +249,22 @@ function editOrRemove(seq,mode,cs_name) {
 			}
 			,onApprove : function(e) {
 					if(e.hasClass('ok')) {
-						return sign_submit(document.form2);
+						var param = {};
+						var data = {};
+						$("form[name='cs_modify'] input").each(function(i,e){
+							var name = $(e).attr("name");
+							data[name] = $(e).val();
+						});
+						param["param"] = data;
+						param["table"] = "erp_ocsinfo";
+						param["id"] = "seq";
+						ajax(param
+							, "/common/simple_update.php"
+							,function(result){ 
+							$("#cs_modify").html(result);
+							$("#cs_modify").css("background-color","#54c8ff");
+							snackbar("cs_modify");
+						});
 					}
 				}
 			, onHide : function () {

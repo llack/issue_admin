@@ -125,14 +125,14 @@ $row_info = $row_info[0];
 </div>
 
 <!-- 정보 수정 modal --> 
-<div class="ui basic modal">
+<div id="modify_userInfo" class="ui basic modal">
   <div class="content">
   	<div id="login_form2">
 	<div class="login header">
 		<div style="text-align:right !important"><i class="user icon"></i>내 정 보 수 정</div>
 	</div>
 	<br/><br/>
-	<form class="ui fluid form" name="form2">
+	<form class="ui fluid form" name="user_info">
   <div class="field">
   <div class="inline field">
     <div class="ui ribbon  purple basic label">
@@ -213,7 +213,7 @@ $(document).ready(function(){
 
 function modify_userInfo() {
 	$('#topmenu').popup('hide');
-	$('.ui.basic.modal').modal({
+	$('#modify_userInfo').modal({
 		//closable : false,
 		onDeny : function() { // true가 닫힘
 			location.reload();
@@ -221,7 +221,7 @@ function modify_userInfo() {
 		}
 		,onApprove : function(e) {
 				if(e.hasClass('ok')) {
-					return sign_submit(document.form2);
+					return sign_submit(document.user_info);
 				}
 			}
 		, onHide : function () {
