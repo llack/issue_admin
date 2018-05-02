@@ -77,7 +77,7 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
    $user_list = $fn->userInfo();
    $user_list_cnt = count($user_list);
    ?>
-<i class="user icon purple"></i>유저검색 : <?=$fn->add_nbsp(3)?>
+<i class="user icon purple"></i>사원검색 : <?=$fn->add_nbsp(3)?>
 <select id="user_name" name="user" class="ui search dropdown" onchange="fn_submit(document.form)" style="width: 200px">
 	<option value="unset">선택하세요</option>
 	<?
