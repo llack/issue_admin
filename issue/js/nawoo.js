@@ -50,7 +50,7 @@ function enter_afterIndex(name) {
 	});
 };
 
-function fn_delete(table,column,chk) {
+function fn_delete(table,id,chk) {
 	var param = {};
 	
 	if(!chk) {
@@ -68,7 +68,7 @@ function fn_delete(table,column,chk) {
 		param["chk"] = chk;
 	} 
 	param["table"] = table;
-	param["column"] = column;
+	param["id"] = id;
 	ajax(param
 		,	"/common/simple_delete.php"
 		,	function(result){ 
