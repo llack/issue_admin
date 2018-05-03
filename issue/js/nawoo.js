@@ -47,13 +47,14 @@ function fn_copy(id) {
 	  copyText.select();
 	  document.execCommand("Copy");
 } 
+
 /* create snackbar  <div id='id'></div>  + html,css self */
 function snackbar(id) {
     var x = document.getElementById(id);
     x.className = "show";
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 500);
 }
-
+/* 간편 인덱스 */
 function enter_afterIndex(name) {
 	$("form[name='"+name+"']").on("keydown","input",function(e) {
 		if(e.which==13) {
@@ -61,10 +62,11 @@ function enter_afterIndex(name) {
 			$("input").eq(index).focus();
 		}
 	}).on("focus","input",function(e){
-		$(this).select();//dddd
+		$(this).select();
 	});
 };
 
+/* 간편 삭제 */
 function fn_delete(table,id,chk) {
 	var param = {};
 	
@@ -92,16 +94,19 @@ function fn_delete(table,id,chk) {
 	});
 }
 
-$(function(){
-	
-	$(".tr_hover").on({
+/* mouse hover 효과 간단적용  */ 
+function hoverMaster(selector, apply) {
+	$("."+selector+"").on({
 		mouseover : function(){
-			$(this).addClass("positive");
+			$(this).addClass(apply);
 		},
 		mouseout : function() {
-			$(this).removeClass("positive");
+			$(this).removeClass(apply);
 		}
 	});
+}
+
+$(function(){
 	
 	$(".checkall").click(function(){
 		

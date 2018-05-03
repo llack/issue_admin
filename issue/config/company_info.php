@@ -203,17 +203,19 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 <div id="cs_modify"></div>
 </body>
 <script>
-$("#cs_code").dropdown({
-	forceSelection: false
-	,message : {
-		noResults     : "검색 결과 없음"
-	}
-	,selectOnKeydown : false
-	,fullTextSearch: true
+$(document).ready(function(){
+	$("#cs_code").dropdown({
+		forceSelection: false
+		,message : {
+			noResults     : "검색 결과 없음"
+		}
+		,selectOnKeydown : false
+		,fullTextSearch: true
+	});
+
+	hoverMaster("tr_hover","positive");
+	enter_afterIndex("cs_modify");
 });
-
-
-	
 function delete_company(seq,user_name) {
 	var param = {};
 	if(confirm("삭제한 업체는 복구할 수 없습니다.\n총 "+$("#chk:checked").length+"건 삭제하시겠습니까?")==true) {

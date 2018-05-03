@@ -198,8 +198,9 @@ $row_info = $row_info[0];
 <div id="modify_result"></div>
 <script>
 $(document).ready(function(){
-	enter_afterIndex("form2");
-
+	
+	enter_afterIndex("user_info");
+	
 	$('#topmenu').popup({
 		inline   : true,
 		hoverable: true,

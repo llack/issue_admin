@@ -235,15 +235,7 @@ $(document).ready(function(){
 		,selectOnKeydown : false
 		,fullTextSearch: true
 	});
-
-	$(".card_content").on({
-		mouseover : function() {
-			$(this).addClass("purple segment");
-		},
-		mouseout : function() {
-			$(this).removeClass("purple segment");
-		}
-	})
+	hoverMaster("card_content","purple segment");
 });
 function fn_submit(frm) {
 	frm.submit();
