@@ -133,6 +133,7 @@ $row_info = $row_info[0];
 	</div>
 	<br/><br/>
 	<form class="ui fluid form" name="user_info">
+	<input type="hidden" name="user_id" value="<?=$_SESSION["USER_ID"]?>"/>
   <div class="field">
   <div class="inline field">
     <div class="ui ribbon  purple basic label">
@@ -269,11 +270,18 @@ function sign_submit(frm) {
 		frm.user_pwd2.focus();
 		return false;
 	}
-	var param = setJson(frm,"user_name","seq","user_pwd","user_pwd2","position","hp","user_email");
-	ajax(param, "/config/employee_modify.php", modify_callback);
+	var param = {};
+	param["param"] = jsonBot("user_info");
+	param["table"] = "member";
+	param["id"] = "seq,user_id";
+	console.log(param);
+	return false;
+	//ajax(param, "/common/simple_update.php", modify_callback);
 }
 
 function modify_callback(result) {
+	console.log(result);
+	return false;
 	$("#modify_result").html(result);
 	$("#modify_result").css("background-color","#54c8ff");
 	snackbar("modify_result");

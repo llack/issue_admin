@@ -77,7 +77,7 @@ class Simple_query {
 		}
 		$que = $que.substr($que_mid,1)." where 1=1 and $id = '$target' ";
 		mysql_query($que) or die(mysql_error());
-		return "수정되었습니다.";
+		return $que;
 	}
 }
 ?>

@@ -23,6 +23,16 @@ function setJson() {
 	return param;
 }
 
+//폼 name값 넣으면 input아이들을 json으로 *컬럼명만 맞추면 됨.
+function jsonBot(name) { 
+	var param = {};
+	$("form[name='"+name+"'] input").each(function(i,e){
+		var name = $(e).attr("name");
+		param[name] = $(e).val();
+	});
+	return param;
+}
+
 function move(url) {
 	location.href= url;
 }

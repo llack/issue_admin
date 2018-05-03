@@ -251,11 +251,7 @@ function editOrRemove(seq,mode,cs_name) {
 					if(e.hasClass('ok')) {
 						var param = {};
 						var data = {};
-						$("form[name='cs_modify'] input").each(function(i,e){
-							var name = $(e).attr("name");
-							data[name] = $(e).val();
-						});
-						param["param"] = data;
+						param["param"] = jsonBot("cs_modify");
 						param["table"] = "erp_ocsinfo";
 						param["id"] = "seq";
 						ajax(param
