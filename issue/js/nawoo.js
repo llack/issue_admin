@@ -62,7 +62,8 @@ function enter_afterIndex(name) {
 			$("input").eq(index).focus();
 		}
 	}).on("focus","input",function(e){
-		$(this).select();
+		this.setSelectionRange(this.value.length, this.value.length);
+
 	});
 };
 
