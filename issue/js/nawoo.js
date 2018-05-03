@@ -23,12 +23,17 @@ function setJson() {
 	return param;
 }
 
-//폼 name값 넣으면 input아이들을 json으로 *컬럼명만 맞추면 됨.
-function jsonBot(name) { 
+// (폼 name값, 미전송 type=array) *컬럼명만 맞추면 됨.
+function jsonBot(name,deleteEle) { 
 	var param = {};
+	if(!deleteEle) {
+		deleteEle = [];
+	}
 	$("form[name='"+name+"'] input").each(function(i,e){
 		var name = $(e).attr("name");
-		param[name] = $(e).val();
+		if(deleteEle.indexOf(name) === -1) {
+			param[name] = $(e).val();
+		}
 	});
 	return param;
 }

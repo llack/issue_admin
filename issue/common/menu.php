@@ -151,7 +151,7 @@ $row_info = $row_info[0];
     <div class="ui ribbon purple basic label">
       	비밀번호
     </div>
-    <input type="password" name="user_pwd" value="<?=$row_info[user_pw]?>">
+    <input type="password" name="user_pw" value="<?=$row_info[user_pw]?>">
   </div>
   <div class="inline field">
     <div class="ui ribbon purple basic label">
@@ -255,7 +255,7 @@ function sign_submit(frm) {
 	}
 	
 	
-	if(!trim_chk(frm.user_pwd.value,"user_pwd","비밀번호를 입력해주세요")){
+	if(!trim_chk(frm.user_pw.value,"user_pw","비밀번호를 입력해주세요")){
 		return false;
 	}
 
@@ -263,7 +263,7 @@ function sign_submit(frm) {
 		return false;
 	}
 	
-	if(frm.user_pwd.value.trim() != frm.user_pwd2.value.trim()){
+	if(frm.user_pw.value.trim() != frm.user_pwd2.value.trim()){
 		alert("비밀번호가 일치하지 않습니다");
 		frm.user_pwd2.value="";
 		$("input[name='user_pwd2']").closest("div").addClass("error");
@@ -271,17 +271,13 @@ function sign_submit(frm) {
 		return false;
 	}
 	var param = {};
-	param["param"] = jsonBot("user_info");
+	param["param"] = jsonBot("user_info",["user_pwd2"]);
 	param["table"] = "member";
-	param["id"] = "seq,user_id";
-	console.log(param);
-	return false;
-	//ajax(param, "/common/simple_update.php", modify_callback);
+	param["id"] = ["seq","user_id"];
+	ajax(param, "/common/simple_update.php", modify_callback);
 }
 
 function modify_callback(result) {
-	console.log(result);
-	return false;
 	$("#modify_result").html(result);
 	$("#modify_result").css("background-color","#54c8ff");
 	snackbar("modify_result");

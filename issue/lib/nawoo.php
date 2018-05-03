@@ -65,19 +65,21 @@ class Simple_query {
 		return $result;
 	}
 	
-	function simple_update($param, $table, $id) {
-		$que = " update {$table} set ";
-		$target = $param[$id]; //나중에 where 조건 추가 될수도 일단 하나만 
-		
-		unset($param[$id]); 
-		
+	function simple_update($param, $table, $id) { //$id = array
 		$que_mid = "";
+		$que_end = "";
+		$que = " update {$table} set ";
 		foreach($param as $key => $value) {
-			$que_mid .= ", $key = '$value' ";
+			if(!in_array($key,$id)) { 
+				$que_mid .= ", $key = '$value' ";
+				
+			} else if(in_array($key,$id)) {
+				$que_end .= " and {$key} = '$value' ";
+			}
 		}
-		$que = $que.substr($que_mid,1)." where 1=1 and $id = '$target' ";
+		$que = $que.substr($que_mid,1)." where 1=1 ".$que_end;
 		mysql_query($que) or die(mysql_error());
-		return $que;
+		return "수정되었습니다";
 	}
 }
 ?>

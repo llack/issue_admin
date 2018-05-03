@@ -253,7 +253,7 @@ function editOrRemove(seq,mode,cs_name) {
 						var data = {};
 						param["param"] = jsonBot("cs_modify");
 						param["table"] = "erp_ocsinfo";
-						param["id"] = "seq";
+						param["id"] = ["seq"];
 						ajax(param
 							, "/common/simple_update.php"
 							,function(result){ 
