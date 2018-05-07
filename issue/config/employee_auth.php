@@ -13,6 +13,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 
 $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) : $fn->param_to_array2("전체_blue");
 $link = $fn->auto_link("auth","user");
+
 ?>
 <link rel="stylesheet" href="/css/snackbar.css">
 <body>
@@ -264,8 +265,7 @@ function fn_auth(mode,auth,seq) {
 function fn_auth_change(mAuth, cAuth, seq) {
 	var param = {};
 	if(mAuth=="없음") {
-		$("#snackbar").html("승인되지 않은 사원입니다.");
-		snackbar("snackbar");
+		snackbar("snackbar","","승인되지 않은 사원입니다.");
 		return;
 	} else if(mAuth==cAuth){
 		return;
@@ -288,18 +288,18 @@ function delete_user(seq,user_name) {
 
 function auth_result(result) {
 	var str = "";
+	var color = "";
 	if(result=="approve") {
 		str = "승인 되었습니다.";
-		$("#snackbar").css("background-color","#21ba45");
+		color = "#21ba45";
 	} else if(result=="deny"){
 		str = "미승인 되었습니다.";
-		$("#snackbar").css("background-color","#db2828");
+		color = "#db2828";
 	} else {
 		str = "권한이 변경되었습니다.";
-		$("#snackbar").css("background-color","grey");
+		color = "#grey";
 	}
-	$("#snackbar").html(str);
-	snackbar("snackbar");
+	snackbar("snackbar",color,str);
 	setTimeout(function(){
 		location.reload();
 	},500);

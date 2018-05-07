@@ -47,6 +47,7 @@ function fn_copy(id) {
 	  copyText.select();
 	  document.execCommand("Copy");
 } 
+
 /*팝업 메서드  */
 function popupDeny() { // true가 닫힘
 	location.reload();
@@ -58,16 +59,18 @@ function popupHide () {
 		location.reload();
 	},500);
 	return true;
-	}
-
+}
 /*팝업 메서드*/
 
-/* create snackbar  <div id='id'></div>  + html,css self */
-function snackbar(id) {
-    var x = document.getElementById(id);
-    x.className = "show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 500);
+/* create snackbar  <div id='id'></div> */
+function snackbar(id,color,text) {
+ 	var x = $("#" + id + "");
+	x.html(text);
+	x.css("background-color",color);
+	x.addClass("show");
+    setTimeout(function(){ x.removeClass("show"); }, 500);
 }
+
 /* 간편 인덱스 */
 function enter_afterIndex(name) {
 	$("form[name='"+name+"']").on("keydown","input",function(e) {

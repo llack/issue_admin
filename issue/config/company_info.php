@@ -270,9 +270,7 @@ function editOrRemove(seq,mode,cs_name) {
 						ajax(param
 							, "/common/simple_update.php"
 							,function(result){ 
-							$("#cs_modify").html(result);
-							$("#cs_modify").css("background-color","#54c8ff");
-							snackbar("cs_modify");
+							snackbar("cs_modify","#54c8ff",result);
 						});
 					}
 				}
@@ -301,9 +299,7 @@ function editOrRemove(seq,mode,cs_name) {
 					ajax(param
 						,"/common/simple_insert.php"
 						,function(result){ 
-						$("#cs_modify").html(result);
-						$("#cs_modify").css("background-color","#21ba45");
-						snackbar("cs_modify");
+						snackbar("cs_modify","#21ba45",result);
 					});
 					
 					}

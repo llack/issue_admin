@@ -271,9 +271,7 @@ function sign_submit(frm) {
 }
 
 function modify_callback(result) {
-	$("#modify_result").html(result);
-	$("#modify_result").css("background-color","#54c8ff");
-	snackbar("modify_result");
+	snackbar("modify_result","#54c8ff",result);
 }
 
 function logout() {

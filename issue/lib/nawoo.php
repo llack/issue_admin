@@ -17,9 +17,9 @@ class Json_select {
 	}
 	
 	function param_to_array2($param) {
-		$arr = array();
 		$param = explode("_",$param);
-		array_push($arr,$param[0],$param[1]);
+		$arr[0] = $param[0];
+		$arr[1] = $param[1];
 		return $arr;
 	}
 	
@@ -44,7 +44,12 @@ class Json_select {
 		$str = "";
 		$args = func_get_args();
 		foreach ($args as $arg) {
-			$str .="&$arg=$_REQUEST[$arg]";
+			$str .="&$arg=";
+			if(is_array($_REQUEST[$arg])) {
+				$str .= implode("_",$_REQUEST[$arg]);
+			} else {
+				$str .= $_REQUEST[$arg];
+			}
 		}
 		return $str;
 	}
@@ -74,9 +79,9 @@ class Simple_query {
 	}
 	
 	function simple_update($param, $table, $id) { //$id = array
+		$que = " update {$table} set ";
 		$que_mid = "";
 		$que_end = "";
-		$que = " update {$table} set ";
 		foreach($param as $key => $value) {
 			if(!in_array($key,$id)) { 
 				$que_mid .= ", $key = '$value' ";
