@@ -109,11 +109,15 @@ function fn_delete(table,id,chk) {
 	});
 }
 
-/* mouse hover 효과 간단적용  */ 
+/* mouse hover 적용  */ 
 function hoverMaster(selector, apply) {
-	$("."+selector+"").on("mouseenter mouseleave", function() {
-		  $( this ).toggleClass(apply);
-	});
+	$("."+selector+"").hover(function() {
+		  $( this ).addClass(apply);
+	}
+	,function() {
+		  $( this ).removeClass(apply);
+	}
+	);
 }
 
 /* 공백 체크가 필요할때 */

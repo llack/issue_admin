@@ -27,7 +27,7 @@ $link = $fn->auto_link("cs_code","sdate","edate");
 		  전체선택
 		</button>
 		<input type="checkbox" id="checkall" style="display:none;"/>
-		<button class="ui button inverted red" onclick="delete_company()">
+		<button class="ui button inverted red" onclick="delete_issue()">
 		  <i class="check trash alternate icon"></i>
 		  선택삭제
 		</button>
@@ -81,7 +81,7 @@ $link = $fn->auto_link("cs_code","sdate","edate");
 	<table id="test" class="ui definition table fixed center aligned small">
 	 <thead>
 		  <tr style="background-color:#a333c8;" >
-		    <th width="70px"><i class="large building icon" style="color:white!important"></i></th>
+		    <th width="70px"><i class="large briefcase icon" style="color:white!important"></i></th>
 			<th width="70px">No.</th>
 			<th>회사명</th>
 		    <th>회사코드</th>
@@ -132,6 +132,10 @@ $(document).ready(function(){
 })
 function fn_submit(frm) {
 	frm.submit();
+}
+
+function delete_issue() {
+	alert(1);
 }
 </script>
 </html>
