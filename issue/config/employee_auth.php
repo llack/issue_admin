@@ -4,7 +4,7 @@ if($_SESSION["USER_NAME"]=="") {
 	header("Location:/common/login.php");
 }
 if($_SESSION["USER_LEVEL"]!="A") {
-	echo "<script>alert('권한이 없습니다.');
+	echo "<script>alert('접근 권한이 없습니다.');
 		history.back();
 		</script>";
 }
@@ -12,6 +12,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 
 $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) : $fn->param_to_array2("전체_blue");
+$link = $fn->auto_link("auth","user");
 ?>
 <link rel="stylesheet" href="/css/snackbar.css">
 <body>
@@ -30,7 +31,7 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
 <i class="circular purple id card outline icon"></i>
 <div class="content">사원 권한관리</div>
 </h2>
-<form name="form" method="POST">
+<form name="form" method="GET">
 <input type="hidden" name="page" value="1"/>
 <div class="ui center aligned" style="padding-left:0.5%">
 <!-- 등급별 검색 -->
@@ -212,7 +213,7 @@ $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) :
 </div>
 <br/>
 <!-- 페이징  -->
-<?=$pagenator->createLinks(); ?>
+<?=$pagenator->createLinks($link);?>
 </div>
 <!-- /페이징 -->
 <div id="snackbar"></div>

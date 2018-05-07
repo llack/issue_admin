@@ -71,7 +71,12 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 	</div>
 	<h2 class="ui header" style="margin-top: 0px">
 	<i class="circular purple sitemap icon"></i>
-	<div class="content">업체관리</div>
+	<div class="content">업체관리<?$fn->add_nbsp(2)?>
+		<button class="ui basic blue button" onclick="editOrRemove('','insert')">
+		  <i class="icon plus square"></i>
+		  업체 추가하기
+		</button>
+	</div>
 	</h2>
 	<div class="ui left aligned">
 		<button class="ui button inverted purple checkall">
@@ -106,7 +111,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 	</form>
 
 	<!-- 업체리스트 -->
-	<table id="test" class="ui definition table fixed center aligned small">
+	<table class="ui definition table fixed center aligned small">
 	  <thead>
 		  <tr style="background-color:#a333c8;" >
 		    <th width="70px"><i class="large building icon" style="color:white!important"></i></th>
@@ -162,7 +167,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
   <div class="content">
   	<div id="company_info">
 	<div class="login header">
-		<div style="text-align:right !important"><i class="user icon"></i>업 체 정 보 수 정</div>
+		<div style="text-align:right !important"><i class="user icon"></i>업 체 정 보 <span class="popup_title">수 정</span></div>
 	</div>
 	<br/><br/>
 	<form class="ui fluid form" name="cs_modify">
@@ -188,11 +193,11 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
   <div class="actions">
     <div class="ui red basic cancel inverted button">
       <i class="remove icon"></i>
-      취소
+      취 소
     </div>
     <div class="ui green ok inverted button">
       <i class="checkmark icon"></i>
-      수정
+     <span class="popup_title">수 정</span>
     </div>
   </div>
 </div>
@@ -217,6 +222,11 @@ $(document).ready(function(){
 	enter_afterIndex("cs_modify");
 });
 function delete_company(seq,user_name) {
+	var c = $("input[id='chk']:checked");
+	if(c.length==0) {
+		alert("삭제 대상이 없습니다.");
+		return;
+	}
 	var param = {};
 	if(confirm("삭제한 업체는 복구할 수 없습니다.\n총 "+$("#chk:checked").length+"건 삭제하시겠습니까?")==true) {
 		fn_delete("erp_ocsinfo","seq");
@@ -224,11 +234,13 @@ function delete_company(seq,user_name) {
 		return;
 	}
 }
+
 function fn_submit(frm) {
 	frm.submit();
 }
+
 function editOrRemove(seq,mode,cs_name) {
-	if(mode =="modify") {
+	if(mode =="modify") { // 업체수정
 		$('#company_modify').modal({
 			//closable : false,
 			onShow : function() {
@@ -245,12 +257,11 @@ function editOrRemove(seq,mode,cs_name) {
 						}
 					});
 			}
-			,onDeny : function() { // true가 닫힘
-				location.reload();
-				return true;
-			}
+			,onDeny : popupDeny
 			,onApprove : function(e) {
-					if(e.hasClass('ok')) {
+					if(!trim_chk($("input[name='cs_name']").val(),"cs_name","회사명을 입력해주세요")){
+						return false;
+					}else {
 						var param = {};
 						var data = {};
 						param["param"] = jsonBot("cs_modify");
@@ -265,21 +276,42 @@ function editOrRemove(seq,mode,cs_name) {
 						});
 					}
 				}
-			, onHide : function () {
-				setTimeout(function(){
-					location.reload();
-				},500);
-				return true;
-				}
+			, onHide : popupHide
 			})
 			.modal('show');
-	} else {
+	} else if(mode =="delete"){ // 업체삭제
 		if(confirm("삭제한 업체는 복구할 수 없습니다.\n업체(업체명: "+cs_name+")를 삭제하시겠습니까?")==true) {
 			fn_delete("erp_ocsinfo","seq",seq);
 		} else {
 			return;
 		}	
-	} 
+	} else { // 업체등록 
+		$('#company_modify').modal({
+			onShow : function() {
+				$(".popup_title").text("등 록");
+			}
+			,onDeny : popupDeny
+			,onApprove : function(e) {
+				if(!trim_chk($("input[name='cs_name']").val(),"cs_name","회사명을 입력해주세요")){
+					return false;
+				} else {
+					var param = {};
+					param["param"] = jsonBot("cs_modify",["seq"]);
+					param["table"] = "erp_ocsinfo";
+					ajax(param
+						,"/common/simple_insert.php"
+						,function(result){ 
+						$("#cs_modify").html(result);
+						$("#cs_modify").css("background-color","#21ba45");
+						snackbar("cs_modify");
+					});
+					
+					}
+				}
+			, onHide : popupHide
+			})
+			.modal('show');
+	}
 }
 </script>
 </html>

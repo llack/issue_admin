@@ -9,7 +9,7 @@ class Json_select {
 		while($row = mysql_fetch_array($res)) {
 			$result[$i]["title"] = $row[cs_name]."";
 			$result[$i]["description"] = $row[cs_code]."";
-			$result[$i]["url"] = "/?cs_code=".$row[cs_code]."";
+			$result[$i]["url"] = "/index.php?cs_code=".$row[cs_code]."";
 			$i++;
 		}
 		
@@ -40,6 +40,14 @@ class Json_select {
 		return $result;
 	}
 	
+	function auto_link() {
+		$str = "";
+		$args = func_get_args();
+		foreach ($args as $arg) {
+			$str .="&$arg=$_REQUEST[$arg]";
+		}
+		return $str;
+	}
 }
 class Simple_query {
 	function simple_delete($table, $id,$del_data) {
@@ -80,6 +88,16 @@ class Simple_query {
 		$que = $que.substr($que_mid,1)." where 1=1 ".$que_end;
 		mysql_query($que) or die(mysql_error());
 		return "수정되었습니다";
+	}
+	
+	function simple_insert($param,$table) {
+		$que = "insert into {$table} set ";
+		foreach ($param as $key=>$value) {
+			$que_mid .= ", $key = '$value' ";
+		}
+		$que_mid = substr($que_mid,1);
+		mysql_query($que.$que_mid) or die(mysql_error());
+		return "등록되었습니다.";
 	}
 }
 ?>

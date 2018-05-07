@@ -47,6 +47,20 @@ function fn_copy(id) {
 	  copyText.select();
 	  document.execCommand("Copy");
 } 
+/*팝업 메서드  */
+function popupDeny() { // true가 닫힘
+	location.reload();
+	return true;
+}
+
+function popupHide () {
+	setTimeout(function(){
+		location.reload();
+	},500);
+	return true;
+	}
+
+/*팝업 메서드*/
 
 /* create snackbar  <div id='id'></div>  + html,css self */
 function snackbar(id) {
@@ -67,16 +81,13 @@ function enter_afterIndex(name) {
 	});
 };
 
+
+
 /* 간편 삭제 */
 function fn_delete(table,id,chk) {
+	var c = $("input[id='chk']:checked");
 	var param = {};
-	
 	if(!chk) {
-		var c = $("input[id='chk']:checked");
-		if(c.length==0) {
-			alert("삭제 대상이 없습니다.");
-			return;
-		}
 		var a = []
 		c.each(function(i,e){
 			a.push($(e).val());
@@ -97,14 +108,24 @@ function fn_delete(table,id,chk) {
 
 /* mouse hover 효과 간단적용  */ 
 function hoverMaster(selector, apply) {
-	$("."+selector+"").on({
-		mouseover : function(){
-			$(this).addClass(apply);
-		},
-		mouseout : function() {
-			$(this).removeClass(apply);
-		}
+	$("."+selector+"").on("mouseenter mouseleave", function() {
+		  $( this ).toggleClass(apply);
 	});
+}
+
+/* 공백 체크가 필요할때 */
+function trim_chk(value,name,msg) {
+	if(value.trim()=="") {
+		$("input[name='"+name+"']").closest("div").addClass("error");
+		$("input[name='"+name+"']").val("");
+		$("input[name='"+name+"']").focus();
+		if(msg){
+			alert(msg);
+		}
+		return false;
+	} else {
+		return true;
+	}
 }
 
 $(function(){

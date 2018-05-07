@@ -82,7 +82,7 @@ $row_info = $row_info[0];
     <div class="column" align="center">
       <h4 class="ui header">업무</h4>
       <div class="ui link list">
-        <a class="item" href="/">업무현황</a>
+        <a class="item" href="/index.php">업무현황</a>
         <a class="item">메뉴2</a>
         <a class="item">메뉴3</a>
       </div>
@@ -217,21 +217,13 @@ function modify_userInfo() {
 	$('#topmenu').popup('hide');
 	$('#modify_userInfo').modal({
 		//closable : false,
-		onDeny : function() { // true가 닫힘
-			location.reload();
-			return true;
-		}
+		onDeny : popupDeny
 		,onApprove : function(e) {
 				if(e.hasClass('ok')) {
 					return sign_submit(document.user_info);
 				}
 			}
-		, onHide : function () {
-			setTimeout(function(){
-				location.reload();
-			},500);
-			return true;
-			}
+		, onHide : popupHide
 		})
 		.modal('show');
 }

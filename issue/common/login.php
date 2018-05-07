@@ -224,20 +224,6 @@ function modal_open() {
 		.modal('show');
 }
 
-function trim_chk(value,name,msg) {
-	if(value.trim()=="") {
-		$("input[name='"+name+"']").closest("div").addClass("error");
-		$("input[name='"+name+"']").val("");
-		$("input[name='"+name+"']").focus();
-		if(msg){
-			alert(msg);
-		}
-		return false;
-	} else {
-		return true;
-	}
-}
-
 function sign_submit(frm) {
 	
 	if(!trim_chk(frm.user_name.value,"user_name","이름을 입력해주세요")){

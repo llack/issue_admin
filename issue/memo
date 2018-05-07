@@ -27,3 +27,11 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 </div>
 </body>
 </html>
+
+
+##############################################
+var c = $("input[id='chk']:checked");
+	if(c.length==0) {
+		alert("삭제 대상이 없습니다.");
+		return;
+	}

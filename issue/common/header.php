@@ -10,7 +10,8 @@ include $_SERVER["DOCUMENT_ROOT"]."/lib/nawoo.php";
 
 $limit = ($_REQUEST['limit']!="") ? $_REQUEST['limit'] : 10;
 $page = ($_REQUEST['page']!="") ? $_REQUEST['page'] : 1;
-
+$sdate = ($_REQUEST[sdate]!="") ? $_REQUEST[sdate] : date("Y-m") . "-01";
+$edate = ($_REQUEST[edate]!="") ? $_REQUEST[edate] : date("Y-m-t",strtotime($sdate));
 $fn = new Json_select();
 ?>
 <!DOCTYPE>
@@ -22,9 +23,11 @@ $fn = new Json_select();
 
 <link rel="stylesheet" href="/css/semantic.min.css">
 <link rel="stylesheet" href="/css/datatables.min.css">
+<link rel="stylesheet" href="/css/calendar.min.css">
 <script src="/js/jquery-3.2.1.js"></script>
 <script src="/js/nawoo.js"></script> 
 <script src="/js/semantic.min.js"></script>
+<script src="/js/calendar.min.js"></script>
 <script src="/js/datatables.min.js"></script>
 <script src="/js/docs.js"></script>
 <title><?=TITLE?></title>
@@ -60,5 +63,46 @@ body {
 	color : purple !important;
 }
 </style>
+<script>
+$(document).ready(function(){
+	$('.datepicker').calendar({
+	  type: 'date'
+	, text: {
+	      days: ['일', '월', '화', '수', '목', '금', '토'],
+	      months: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	      monthsShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+	}
+	,formatter: {
+    	date: function (date, settings) {
+            if (!date) return '';
+            var day = date.getDate() + '';
+            if (day.length < 2) {
+                day = '0' + day;
+            }
+            var month = (date.getMonth() + 1) + '';
+            if (month.length < 2) {
+                month = '0' + month;
+            }
+            var year = date.getFullYear();
+            return year + '-' + month + '-' + day;
+        }
+    }
+	, popupOptions: {
+	      position: 'bottom left',
+	      lastResort: 'bottom left',
+	      prefer: 'opposite',
+	      hideOnScroll: true
+	}
+    ,today : true
+    ,touchReadonly : false
+    ,onChange: function (date, text, mode) {
+       var name = $(this).find("input").attr("name");
+       $("input[name='"+name+"']").val(text);
+		$(this).closest("form").submit();
+    },
+    	  
+	});
+});
+</script>
 <? include $_SERVER['DOCUMENT_ROOT']."/common/menu.php";?>
 

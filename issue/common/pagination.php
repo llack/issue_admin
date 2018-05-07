@@ -43,7 +43,7 @@ class Paginator{
 		return $result;
 	}
 	
-	public function createLinks($links = 10) {
+	public function createLinks($url="",$links = 10) {
 		if ( $this->_limit == 'all' || $this->_total<=$this->_limit) {
 			return '';
 		} else {
@@ -53,7 +53,7 @@ class Paginator{
 			$html		= '<div class="ui bottom attached label" style="background-color:rgba(0,0,0,.05)">';
 			$html       .= '<div class="ui borderless menu pagination floated right inverted purple"> ';
 			
-			$href = ( $this->_page == 1 ) ? '' : 'href="?page=' . ( $this->_page - 1 ) . '"';// limit=' . $this->_limit . '&
+			$href = ( $this->_page == 1 ) ? '' : 'href="?page=' . ( $this->_page - 1 ) .$url.'"';// limit=' . $this->_limit . '&
 			$html       .= '<a  '.$href.'class="item page">◀</a>';
 			
 			if ( $start > 1 ) {
@@ -62,15 +62,15 @@ class Paginator{
 			
 			for ( $i = $start ; $i <= $end; $i++ ) {
 				$class  = ( $this->_page == $i ) ? "nowPage" : "";
-				$href  = ( $this->_page == $i ) ? '' : 'href="?page=' . ( $i) . '"'; // limit=' . $this->_limit . '&
-				$html   .= '<a '.$href.' class="item page '.$class.'">' . $i . '</a>'; // 중간들
+				$href  = ( $this->_page == $i ) ? '' : 'href="?page=' . ( $i) .$url.'"'; // limit=' . $this->_limit . '&
+				$html   .= '<a '.$href.' class="item page '.$class.'">' . $i .'</a>'; // 중간들
 			}
 			
 			if ( $end < $last ) {
-				$html   .= '<a href="?page=' . $last . '" class="item page">' . $last . '</a></li>'; // limit=' . $this->_limit . '&
+				$html   .= '<a href="?page=' . $last .$url.'" class="item page">' . $last . '</a></li>'; // limit=' . $this->_limit . '&
 			}
 			
-			$href = ( $this->_page == $last ) ? '' : 'href="?page=' . ( $this->_page + 1 ) . '"'; // limit=' . $this->_limit . '&
+			$href = ( $this->_page == $last ) ? '' : 'href="?page=' . ( $this->_page + 1 ) .$url.'"'; // limit=' . $this->_limit . '&
 			$html       .= '<a '.$href.' class="item page" >▶</a>';
 			$html       .= '</div></div>';
 			return $html;

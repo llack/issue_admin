@@ -2,7 +2,7 @@
 	<!-- 사이드바 헤더 -->
 	<div class="item">
 		<h4 align="center">
-		<div class="ui vertical mini animated button floated left inverted purple" tabindex="0" onclick="location.href='/' ">
+		<div class="ui vertical mini animated button floated left inverted purple" tabindex="0" onclick="location.href='/index.php' ">
 		  <div class="hidden content">HOME</div>
 		  <div class="visible content">
 		    <i class="home icon"></i>
@@ -36,7 +36,7 @@
 	  	$cnt = count($cs_list);
 	  	$issue = 6;
 	  	for($i = 0; $i < $cnt; $i++ ) { ?>
-	  	<a class="item purple" href="/">
+	  	<a class="item purple" href="<?=$cs_list[$i][url]?>">
 	  	<?=$cs_list[$i][title]?>
 	  	<? if(0 < $issue) { 
 	  		if(3 <= $issue) {
