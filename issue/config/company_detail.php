@@ -7,6 +7,60 @@ $row = $simple->simple_select(" erp_ocsinfo "," and seq = '$_REQUEST[seq]' ");
 $row = $row[0];
 $link = $fn->auto_link("seq");
 ?>
+<style>
+#employee_info {
+	position: absolute;
+	 width: 480px;
+	 height: 480px;
+	 left: 50%;
+	 top: 50%;
+	 margin-left: -250px;
+	 margin-top: -250px;
+	 border: solid #a333c8 2px;
+	 border-radius: 25px;
+	 padding : 1rem;
+}
+#employee {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    top: 30px;
+    font-size: 17px;
+}
+#employee.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
+}
+
+@keyframes fadeout {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
+}
+</style>
 <body>
 <div class="ui container side">
 <? include $_SERVER["DOCUMENT_ROOT"]."/common/company_list.php"; ?>
@@ -137,7 +191,9 @@ $link = $fn->auto_link("seq");
 		</div>
 		<div class="ui bottom attached button primary clone" style="display: none" onclick="addRow(1)">한 줄 추가하기</div>
 		<div class="ui bottom attached button positive clone" style="display: none;margin-bottom:100px" onclick="saveInfo()">저장</div>
+		<!-- 페이징 -->
 		<?=$pagenator->createLinks($link); ?><br/><br/>
+		<!-- /페이징 -->
 		<h2 class="ui icon header right aligned">
 			<button class="ui inverted purple button" onclick="location.href='company_info.php'">목록</button>
 		</h2>
@@ -168,14 +224,65 @@ $link = $fn->auto_link("seq");
       <button class="ui inverted red button removeRow">삭제</button>
       </div>
     </div>
-<!-- clone -->
 </div>
+<!-- clone -->
+<!--  업체 수정 팝업 -->
+<div id="employee_modify"class="ui basic modal">
+  <div class="content">
+  	<div id="employee_info">
+	<div class="login header">
+		<div style="text-align:right !important"><i class="user icon"></i>사 원 정 보 수 정</div>
+	</div>
+	<br/><br/>
+	<form class="ui fluid form" name="employee_form">
+  <div class="field">
+  <div class="inline field">
+    <div class="ui ribbon  purple basic label">
+      성명
+    </div>
+    <input type="text" name="name" value="" onfocus="this.setSelectionRange(this.value.length, this.value.length)">
+  </div>
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      회사코드
+    </div>
+   <input type="text" name="level" value="">
+  </div>
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      연락처
+    </div>
+   <input type="text" name="phone" value="">
+  </div>
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      이메일
+    </div>
+   <input type="text" name="email" value="">
+  </div>
+  </div>
+  <input type="hidden" name="seq" value=""/>
+</form>
+</div>
+  </div>
+  <div class="actions">
+    <div class="ui red basic cancel inverted button">
+      <i class="remove icon"></i>
+      취 소
+    </div>
+    <div class="ui green ok inverted button">
+      <i class="checkmark icon"></i>수 정</div>
+  </div>
+</div>
+
+<div id="employee"></div>
 
 </body>
 </html>
 <script>
 $(document).on("click","#addRow,.addrow",function(e){
 	e.preventDefault();
+	
 	addRow();
 });
 
@@ -263,6 +370,7 @@ function saveInfo() {
 				var value = $(this).val();
 				if(name == "name" && value.trim().length == 0) {
 					alert("성명은 필수항목입니다.");
+					console.log($(this));
 					$(this).focus();
 					out = false;
 					return out;
@@ -293,6 +401,52 @@ function delete_employee() {
 	}
 }
 
+function editOrRemove(seq,mode,name) {
+	if(mode =="modify") { 
+		$('#employee_modify').modal({
+			onShow : function() {
+				var param = {};
+				param["table"] = "employee_list";
+				param["where"] = " and seq = " + seq;
+				ajax(param
+					,"/common/simple_select.php"
+					,function(result){
+						var data = result[0];
+						var max = Object.keys(result[0]).length;
+						for(var key in data) {
+							console.log( key + "," + data[key]);
+							$("form[name='employee_form'] input[name='"+key+"']").val(data[key]);
+						}
+					});
+			}
+			,onDeny : popupDeny
+			,onApprove : function(e) {
+					if(!trim_chk($("form[name='employee_form'] input[name='name']").val(),"name","성명을 입력해주세요")){
+						return false;
+					}else {
+						var param = {};
+						var data = {};
+						param["param"] = jsonBot("employee_form");
+						param["table"] = "employee_list";
+						param["id"] = ["seq"];
+						ajax(param
+							, "/common/simple_update.php"
+							,function(result){ 
+							snackbar("employee","#54c8ff",result);
+						});
+					}
+				}
+			, onHide : popupHide
+			})
+			.modal('show');
+	} else if(mode =="delete"){
+		if(confirm("삭제한 사원는 복구할 수 없습니다.\n사원(사원명: "+name+")를 삭제하시겠습니까?")==true) {
+			fn_delete("employee_list","seq",seq);
+		} else {
+			return;
+		}	
+	}
+}
 /* CALLBACK */
 function companyModify(result) {
 	alert(result);

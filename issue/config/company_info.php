@@ -252,7 +252,6 @@ function fn_submit(frm) {
 function editOrRemove(seq,mode,cs_name) {
 	if(mode =="modify") { // 업체수정
 		$('#company_modify').modal({
-			//closable : false,
 			onShow : function() {
 				var param = {};
 				param["table"] = "erp_ocsinfo";
