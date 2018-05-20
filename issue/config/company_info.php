@@ -116,8 +116,8 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 		  <tr style="background-color:#a333c8;" >
 		    <th width="70px"><i class="large building icon" style="color:white!important"></i></th>
 			<th width="70px">No.</th>
-			<th>회사명</th>
-		    <th>회사코드</th>
+			<th>업체명</th>
+		    <th>업체코드</th>
 		    <th>정보1</th>
 		    <th>정보2</th>
 		    <th>정보3</th>
