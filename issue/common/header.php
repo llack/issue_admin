@@ -7,6 +7,7 @@ header ("Content-Type: text/html; charset=UTF-8");		#다국어지원을 위한 �
 
 include_once($_SERVER["DOCUMENT_ROOT"]."/conf/config.db.conn.php");//디비연결
 include $_SERVER["DOCUMENT_ROOT"]."/lib/nawoo.php";
+include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 
 $limit = ($_REQUEST['limit']!="") ? $_REQUEST['limit'] : 10;
 $page = ($_REQUEST['page']!="") ? $_REQUEST['page'] : 1;

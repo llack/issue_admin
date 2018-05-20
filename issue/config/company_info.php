@@ -2,7 +2,6 @@
 session_start();
 
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
-include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 ?>
 <style>
 #company_info {
@@ -109,7 +108,18 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 	</select>
 	</div>
 	</form>
-
+	 <?
+	  	$where = ""; 
+	  	if($_REQUEST[cs_code] != "" && $_REQUEST[cs_code]!="unset") {
+	  		$where .= " and cs_code = '".$_REQUEST[cs_code]."' ";
+	  	}
+	  	$que = " select * from erp_ocsinfo where 1=1 $where order by cs_name ";
+	  	$pagenator = new Paginator($que);
+	  	$results = $pagenator->getData($page,$limit);
+	  	if($results->data) {
+	  	$max = count($results->data);
+	  	
+	  ?>
 	<!-- 업체리스트 -->
 	<table class="ui definition table fixed center aligned small">
 	  <thead>
@@ -125,16 +135,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 		  </tr>
 	  </thead>
 	  <tbody>
-	  <?
-	  	$where = ""; 
-	  	if($_REQUEST[cs_code] != "" && $_REQUEST[cs_code]!="unset") {
-	  		$where .= " and cs_code = '".$_REQUEST[cs_code]."' ";
-	  	}
-	  	$que = " select * from erp_ocsinfo where 1=1 $where order by cs_name ";
-	  	$pagenator = new Paginator($que);
-	  	$results = $pagenator->getData($page,$limit);
-	  	$max = count($results->data);
-	  	for($i = 0; $i < $max; $i++) {
+	 <? for($i = 0; $i < $max; $i++) {
 	  		$row = $results->data[$i];
 	  ?>
 	  <tr class="tr_hover">
@@ -161,6 +162,15 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 	  <? } ?>
 	 </tbody>
 	</table>
+	<? } else { ?>
+	<h2 class="ui icon header center aligned">
+	  <i class="ban red icon"></i>
+	  <div class="content">
+	    검색결과 없음!
+	    <div class="sub header">업체를 추가해주세요</div>
+	  </div>
+	</h2>
+	<? } ?>
 	<!-- /업체리스트 -->
 <!--  업체 수정 팝업 -->
 <div id="company_modify"class="ui basic modal">

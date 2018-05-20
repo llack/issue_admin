@@ -13,7 +13,7 @@ if($_REQUEST[mode]=="approve") {
 } else {
 	$user_level = $_REQUEST[user_level];
 }
-$que = "update member set user_level = '".$user_level."' where seq = '".$_REQUEST[seq]."' ";
+$que = "update member set user_level = '".$user_level."' where no = '".$_REQUEST[no]."' ";
 mysql_query($que) or die(mysql_error());
 
 echo json_encode($_REQUEST[mode]);

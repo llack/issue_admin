@@ -9,7 +9,6 @@ if($_SESSION["USER_LEVEL"]!="A") {
 		</script>";
 }
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
-include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 
 $_REQUEST[auth] = ($_REQUEST[auth]!="")? $fn->param_to_array2($_REQUEST[auth]) : $fn->param_to_array2("전체_blue");
 $link = $fn->auto_link("auth","user");
@@ -129,7 +128,7 @@ $link = $fn->auto_link("auth","user");
   ?>
   <div class="card card_content">
     <div class="content">
-      <div id="delete_user" onclick="delete_user('<?=$row_user[seq]?>','<?=$row_user[user_name]?>')" data-tooltip="X" data-position="right center" data-inverted="">
+      <div id="delete_user" onclick="delete_user('<?=$row_user[no]?>','<?=$row_user[user_name]?>')" data-tooltip="X" data-position="right center" data-inverted="">
 	      <div class="right floated" >
 	      	<i class="close red icon" style="cursor:pointer"></i>
 	      </div>
@@ -169,8 +168,8 @@ $link = $fn->auto_link("auth","user");
       		$deny = "";
       	}
       ?>
-        <div class="ui <?=$approve?> green button" onclick="fn_auth('approve','<?=$approve?>','<?=$row_user[seq]?>')">승인</div>
-        <div class="ui <?=$deny?> red button" onclick="fn_auth('deny','<?=$deny?>','<?=$row_user[seq]?>')">미승인</div>
+        <div class="ui <?=$approve?> green button" onclick="fn_auth('approve','<?=$approve?>','<?=$row_user[no]?>')">승인</div>
+        <div class="ui <?=$deny?> red button" onclick="fn_auth('deny','<?=$deny?>','<?=$row_user[no]?>')">미승인</div>
         <div class="ui basic grey button auth_popup">권한</div>
 		<!-- 권한팝업 -->
         <div class="ui flowing popup top left transition hidden auth_popup_target" style="width:300px">
@@ -188,10 +187,10 @@ $link = $fn->auto_link("auth","user");
         	?>
 		  <div class="ui two column divided center aligned grid">
 		    <div class="column">
-		      <div class="ui <?=$admin?> button" onclick="fn_auth_change('<?=$row_user[user_level]?>','A','<?=$row_user[seq]?>')">관리자</div>
+		      <div class="ui <?=$admin?> button" onclick="fn_auth_change('<?=$row_user[user_level]?>','A','<?=$row_user[no]?>')">관리자</div>
 		    </div>
 		    <div class="column">
-		      <div class="ui <?=$user?> button" onclick="fn_auth_change('<?=$row_user[user_level]?>','U','<?=$row_user[seq]?>')">유저</div>
+		      <div class="ui <?=$user?> button" onclick="fn_auth_change('<?=$row_user[user_level]?>','U','<?=$row_user[no]?>')">유저</div>
 		    </div>
 		  </div>
 		</div>
@@ -242,14 +241,14 @@ $(document).ready(function(){
 function fn_submit(frm) {
 	frm.submit();
 }
-function fn_auth(mode,auth,seq) {
+function fn_auth(mode,auth,no) {
 	var param = {};
 	if(mode=="approve") {
 		if(auth=="") {
 			return;
 		} else {
 			param["mode"] = "approve";
-			param["seq"] = seq;
+			param["no"] = no;
 			ajax(param,"employee_auth_ok.php",auth_result);
 		}
 	} else {
@@ -257,12 +256,12 @@ function fn_auth(mode,auth,seq) {
 			return;
 		} else {
 			param["mode"] = "deny";
-			param["seq"] = seq;
+			param["no"] = no;
 			ajax(param,"employee_auth_ok.php",auth_result);
 		}
 	}
 }
-function fn_auth_change(mAuth, cAuth, seq) {
+function fn_auth_change(mAuth, cAuth, no) {
 	var param = {};
 	if(mAuth=="없음") {
 		snackbar("snackbar","","승인되지 않은 사원입니다.");
@@ -272,14 +271,14 @@ function fn_auth_change(mAuth, cAuth, seq) {
 	} else {
 		param["mode"] = "modify";
 		param["user_level"] = cAuth;
-		param["seq"] = seq;
+		param["no"] = no;
 		ajax(param, "employee_auth_ok.php",auth_result);
 	}
 }
-function delete_user(seq,user_name) {
+function delete_user(no,user_name) {
 	var param = {};
 	if(confirm("삭제한 사원은 복구할 수 없습니다.\n사원(사원명 : "+user_name+")을 삭제하시겠습니까?")==true) {
-		fn_delete("member","seq",seq);
+		fn_delete("member","no",no);
 	} else {
 		return;
 	}

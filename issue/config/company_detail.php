@@ -5,6 +5,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 $simple = new Simple_query();
 $row = $simple->simple_select(" erp_ocsinfo "," and seq = '$_REQUEST[seq]' ");
 $row = $row[0];
+$link = $fn->auto_link("seq");
 ?>
 <body>
 <div class="ui container side">
@@ -18,10 +19,12 @@ $row = $row[0];
 		<a class="ui teal tag label"><?=$row[cs_name]?></a>
 	</div>
 	<h2 class="ui header" style="margin-top: 0px">
-	
-	<i class="circular purple sitemap icon icon"></i>
-	<div class="content"><?=$row[cs_name]?></div>
+		<i class="circular purple sitemap icon icon"></i>
+		<div class="content"><?=$row[cs_name]?></div>
 	</h2>
+	<div class="right aligned">
+		<button class="ui inverted purple button" onclick="location.href='company_info.php'">목록</button>
+	</div>
 	<form name="form">
 		<input type="hidden" name="seq" value="<?=$_REQUEST[seq]?>"/>
 		<div class="ui inverted segment">
@@ -63,17 +66,64 @@ $row = $row[0];
 				</button>
 			</div>
 		</h2>
-		<div id="cloneTarget" class="ui segment clone" style="display: none">
+		<? 
+		$que_emp = "select * from employee_list where refseq = '$_REQUEST[seq]' order by name" ;
+		$pagenator = new Paginator($que_emp);
+		$results = $pagenator->getData($page,$limit);
+		if($results->data) {
+		$max = count($results->data);
+		?>
+		<div class="ui left aligned">
+		<button class="ui button inverted purple checkall">
+		  <i class="check circle icon"></i>
+		  전체선택
+		</button>
+		<input type="checkbox" id="checkall" style="display:none;"/>
+		<button class="ui button inverted red" onclick="delete_employee()">
+		  <i class="check trash alternate icon"></i>
+		  선택삭제
+		</button>
 		</div>
-		<div class="ui bottom attached button primary clone" style="display: none" onclick="addRow(1)">한 줄 추가하기</div>
-		<div class="ui bottom attached button positive clone" style="display: none;margin-bottom:300px" onclick="saveInfo()">저장</div>
-		<? if(1==0) {?>
-		<div class="ui inverted segment">
-			<div class="ui inverted form">
-				
-			</div>
-		</div>
-		<? } else {?>
+		<table id="test" class="ui definition table fixed center aligned small">
+			 <thead>
+				  <tr style="background-color:#a333c8;" >
+				    <th width="70px"><i class="large user icon" style="color:white!important"></i></th>
+					<th width="70px">No.</th>
+					<th>성명</th>
+				    <th>직책</th>
+				    <th>연락처</th>
+				    <th>이메일</th>
+				    <th><i class="large edit icon"></i>or <i class="large ban icon"></i></th>
+				  </tr>
+			  </thead>
+			  <tbody>
+			  <? for($i = 0; $i < $max; $i++) {
+			  	$employee = $results->data[$i];
+			  ?>
+			  <tr class="tr_hover">
+			  	<td>
+			  		<div class="ui toggle checkbox">
+					  <input type="checkbox" id="chk" value="<?=$employee[seq]?>">
+					  <label></label>
+					</div>
+			  	</td>
+			  	<td><a class="ui grey circular label"><?=($i+1)?></a></td>
+			  	<td><?=$employee[name]?></td>
+			  	<td><?=$employee[level]?></td>
+			  	<td><?=$employee[phone]?></td>
+			  	<td><?=$employee[email]?></td>
+			  	<td>
+				  	<div class="ui tiny buttons">
+					  <button class="ui inverted blue button" onclick="editOrRemove('<?=$employee[seq]?>','modify')">수정</button>
+					  <div class="or"></div>
+					  <button class="ui inverted red button" onclick="editOrRemove('<?=$employee[seq]?>','delete','<?=$employee[name]?>')">삭제</button>
+					</div>
+			  	</td>
+			  </tr>
+			  <? } ?>
+			  </tbody>
+			</table>
+		<? }else {?>
 			<h2 class="ui icon header center aligned" id="emptyMsg">
 			  <i class="ban red icon"></i>
 			  <div class="content">
@@ -82,9 +132,19 @@ $row = $row[0];
 			  </div>
 			</h2>
 		<? } ?>
+		
+		<div id="cloneTarget" class="ui segment clone" style="display: none">
+		</div>
+		<div class="ui bottom attached button primary clone" style="display: none" onclick="addRow(1)">한 줄 추가하기</div>
+		<div class="ui bottom attached button positive clone" style="display: none;margin-bottom:100px" onclick="saveInfo()">저장</div>
+		<?=$pagenator->createLinks($link); ?><br/><br/>
+		<h2 class="ui icon header right aligned">
+			<button class="ui inverted purple button" onclick="location.href='company_info.php'">목록</button>
+		</h2>
 </div>
 <!-- clone -->
 <div class="ui form" id="cloneForm" data-idx="0" style="display:none">
+	<input type="hidden" name="refseq" value="<?=$_REQUEST[seq]?>"/>
 	<div class="six fields inline">
       <a class="ui grey circular label"><span id="cloneCnt"></span></a><?$fn->add_nbsp(5)?>
       <div class="field">
@@ -117,7 +177,7 @@ $row = $row[0];
 $(document).on("click","#addRow,.addrow",function(e){
 	e.preventDefault();
 	addRow();
-})
+});
 
 $(document).on("click",".removeRow",function(e){
 	e.preventDefault();
@@ -133,7 +193,7 @@ $(document).on("click",".removeRow",function(e){
 		$(".clone").css("display","none");
 		$("#emptyMsg").css("display","");
 	}
-})
+});
 
 function addRow(addOne) {
 	if(addOne) {
@@ -185,7 +245,7 @@ function makeDiv(num) {
 	var cnt = "cloneCnt" + (num+1);
 	cl.prop("id", next ).attr("data-idx",(num+1)); //id,index값 +1 바꾸고
 	cl.find("#cloneCnt" + num + "").prop("id",cnt);// 로우 넘버
-	cl.find("input").val("");
+	cl.find("input[type!='hidden']").val("");
 	cl.insertAfter(id);
 	$("#" + cnt).text((num+1));
 	$("#" + next + "").css("display","");
@@ -193,21 +253,52 @@ function makeDiv(num) {
 
 function saveInfo() {
 	var param = {};
+	var out = true;
 	$("div[id*='cloneContent']").each(function(i,e){
 		var save = {};
 		var id = $(this).attr("id");
-		$("#" + id +" input").each(function(){
-			var name = $(this).attr("name");
-			save[name] = $(this).val();
-		});
-		param[i] = save;
+		if(out===true) {
+			$("#" + id +" input").each(function(){
+				var name = $(this).attr("name");
+				var value = $(this).val();
+				if(name == "name" && value.trim().length == 0) {
+					alert("성명은 필수항목입니다.");
+					$(this).focus();
+					out = false;
+					return out;
+				}
+				save[name] = $(this).val();
+			});
+			param[i] = save;
+		}
 	});
-	var info = jsonBot("form");
-	var obj = {};
-	obj["employee"] = param;
-	obj["info"] = info;
-	ajax(obj, "company_detail_ok.php",function(result){ location.reload();});
+	if(out === true) {
+		var obj = {};
+		obj["employee"] = param;
+		ajax(obj, "company_detail_ok.php",companyModify);
+	}
 }
+
+function delete_employee() {
+	var c = $("input[id='chk']:checked");
+	if(c.length==0) {
+		alert("삭제 대상이 없습니다.");
+		return;
+	}
+	var param = {};
+	if(confirm("삭제한 사원은 복구할 수 없습니다.\n총 "+$("#chk:checked").length+"건 삭제하시겠습니까?")==true) {
+		fn_delete("employee_list","seq");
+	} else {
+		return;
+	}
+}
+
+/* CALLBACK */
+function companyModify(result) {
+	alert(result);
+	location.reload();
+}
+/* CALLBACK */
 </script>
 
 
