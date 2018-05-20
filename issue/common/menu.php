@@ -178,7 +178,7 @@ $row_info = $row_info[0];
     <input type="text" name="hp" value="<?=$row_info[hp]?>">
   </div>
   </div>
-  <input type="hidden" name="seq" value="<?=$row_info[seq]?>"/>
+  <input type="hidden" name="no" value="<?=$row_info[no]?>"/>
 </form>
   <!-- /  -->
 </div>
@@ -266,7 +266,7 @@ function sign_submit(frm) {
 	var param = {};
 	param["param"] = jsonBot("user_info",["user_pwd2"]);
 	param["table"] = "member";
-	param["id"] = ["seq","user_id"];
+	param["id"] = ["no","user_id"];
 	ajax(param, "/common/simple_update.php", modify_callback);
 }
 

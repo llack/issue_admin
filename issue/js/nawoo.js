@@ -31,8 +31,10 @@ function jsonBot(name,deleteEle) {
 	}
 	$("form[name='"+name+"'] input").each(function(i,e){
 		var name = $(e).attr("name");
-		if(deleteEle.indexOf(name) === -1) {
-			param[name] = $(e).val();
+		if (name) {
+			if(deleteEle.indexOf(name) === -1) {
+				param[name] = $(e).val();
+			}
 		}
 	});
 	return param;
@@ -118,6 +120,11 @@ function hoverMaster(selector, apply) {
 		  $( this ).removeClass(apply);
 	}
 	);
+}
+/* 페이지 이동 */
+function moveInfo(page,param) {
+	alert(page);
+	console.log(param);
 }
 
 /* 공백 체크가 필요할때 */

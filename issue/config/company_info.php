@@ -145,8 +145,8 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/pagination.php";
 			</div>
 	  	</td>
 	  	<td><a class="ui grey circular label"><?=($i+1)?></a></td>
-	  	<td><?=$row[cs_name]?></td>
-	  	<td><?=$row[cs_code]?></td>
+	  	<td><a href="javascript:void(0)" onclick="move('company_detail.php?seq=<?=$row[seq]?>')"><?=$row[cs_name]?></a></td>
+	  	<td><a href="javascript:void(0)" onclick="move('company_detail.php?seq=<?=$row[seq]?>')"><?=$row[cs_code]?></a></td>
 	  	<td></td>
 	  	<td></td>
 	  	<td></td>
