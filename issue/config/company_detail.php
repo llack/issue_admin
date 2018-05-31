@@ -120,6 +120,11 @@ $link = $fn->auto_link("seq");
 				</button>
 			</div>
 		</h2>
+		<!-- 사원입력창 -->
+		<div id="cloneTarget" class="ui segment clone" style="display: none"></div>
+		<div class="ui bottom attached button primary clone" style="display: none" onclick="addRow(1)">한 줄 추가하기</div>
+		<div class="ui bottom attached button positive clone" style="display: none;margin-bottom:30px" onclick="saveInfo()">저장</div>
+		<!-- 사원입력창 -->
 		<? 
 		$que_emp = "select * from employee_list where refseq = '$_REQUEST[seq]' order by name" ;
 		$pagenator = new Paginator($que_emp);
@@ -187,10 +192,6 @@ $link = $fn->auto_link("seq");
 			</h2>
 		<? } ?>
 		
-		<div id="cloneTarget" class="ui segment clone" style="display: none">
-		</div>
-		<div class="ui bottom attached button primary clone" style="display: none" onclick="addRow(1)">한 줄 추가하기</div>
-		<div class="ui bottom attached button positive clone" style="display: none;margin-bottom:100px" onclick="saveInfo()">저장</div>
 		<!-- 페이징 -->
 		<?=$pagenator->createLinks($link); ?><br/><br/>
 		<!-- /페이징 -->
