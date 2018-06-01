@@ -10,6 +10,7 @@ class Json_select {
 			$result[$i]["title"] = $row[cs_name]."";
 			$result[$i]["description"] = $row[cs_code]."";
 			$result[$i]["url"] = "/index.php?cs_code=".$row[cs_code]."";
+			$result[$i]["seq"] = $row[seq];
 			$i++;
 		}
 		

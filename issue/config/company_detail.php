@@ -205,23 +205,23 @@ $link = $fn->auto_link("seq");
 	<div class="six fields inline">
       <a class="ui grey circular label"><span id="cloneCnt"></span></a><?$fn->add_nbsp(5)?>
       <div class="field">
-        <label>성명</label>
+        <label>성명</label><br/>
         <input type="text" name="name">
       </div>
       <div class="field">
-        <label>직책</label>
+        <label>직책(array)</label><br/>
         <input type="text" name="level">
       </div>
       <div class="field">
-        <label>연락처</label>
+        <label>연락처</label><br/>
         <input type="text" name="phone">
       </div>
       <div class="field">
-        <label>이메일</label>
+        <label>이메일</label><br/>
         <input type="text" name="email">
       </div>
       <div class="field">
-        <label><?$fn->add_nbsp(1)?></label>
+        <label><?$fn->add_nbsp(1)?></label><br/>
       <button class="ui inverted red button removeRow">삭제</button>
       </div>
     </div>
@@ -283,7 +283,6 @@ $link = $fn->auto_link("seq");
 <script>
 $(document).on("click","#addRow,.addrow",function(e){
 	e.preventDefault();
-	
 	addRow();
 });
 
@@ -302,7 +301,6 @@ $(document).on("click",".removeRow",function(e){
 		$("#emptyMsg").css("display","");
 	}
 });
-
 function addRow(addOne) {
 	if(addOne) {
 		var num = 0;
@@ -345,7 +343,6 @@ function addRow(addOne) {
 		}
 	}
 }
-
 function makeDiv(num) {
 	var next = "cloneContent"+(num+1);
 	var id = "#cloneContent" + num;
@@ -358,7 +355,6 @@ function makeDiv(num) {
 	$("#" + cnt).text((num+1));
 	$("#" + next + "").css("display","");
 }
-
 function saveInfo() {
 	var param = {};
 	var out = true;

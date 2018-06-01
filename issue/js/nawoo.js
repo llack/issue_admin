@@ -126,7 +126,6 @@ function moveInfo(page,param) {
 	alert(page);
 	console.log(param);
 }
-
 /* 공백 체크가 필요할때 */
 function trim_chk(value,name,msg) {
 	if(value.trim()=="") {
