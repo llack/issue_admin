@@ -83,13 +83,13 @@ $link = $fn->auto_link("auth","user");
 	<option value="unset">선택하세요</option>
 	<?
 		for($i = 0; $i < $user_list_cnt; $i++) { 
-			if($_REQUEST[user]==$user_list[$i][user_name]) {
+			if($_REQUEST[user]==$user_list[$i][no]) {
 				$selected = "selected";
 			} else {
 				$selected = "";
 			}
 		?>
-			<option value="<?=$user_list[$i][user_name]?>" <?=$selected?>><?=$user_list[$i][user_name]?></option>	
+			<option value="<?=$user_list[$i][no]?>" <?=$selected?>><?=$user_list[$i][user_name]?></option>	
 	<? } ?>
 </select>
 <!-- /유저 이름 검색  -->
@@ -109,7 +109,7 @@ $link = $fn->auto_link("auth","user");
   		}
   	}
   	if($_REQUEST[user]!="" && $_REQUEST[user]!="unset") {
-  		$where .= " and user_name = '".$_REQUEST[user]."' ";
+  		$where .= " and no = '".$_REQUEST[user]."' ";
   	}
   	$que_user = " select * from member where 1=1 $where order by user_level desc ";
   	
@@ -235,6 +235,7 @@ $(document).ready(function(){
 		}
 		,selectOnKeydown : false
 		,fullTextSearch: true
+		,match : "text"
 	});
 	hoverMaster("card_content","purple segment");
 });

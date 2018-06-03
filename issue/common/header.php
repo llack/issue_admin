@@ -66,43 +66,8 @@ body {
 </style>
 <script>
 $(document).ready(function(){
-	$('.datepicker').calendar({
-	  type: 'date'
-	, text: {
-	      days: ['일', '월', '화', '수', '목', '금', '토'],
-	      months: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-	      monthsShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-	}
-	,formatter: {
-    	date: function (date, settings) {
-            if (!date) return '';
-            var day = date.getDate() + '';
-            if (day.length < 2) {
-                day = '0' + day;
-            }
-            var month = (date.getMonth() + 1) + '';
-            if (month.length < 2) {
-                month = '0' + month;
-            }
-            var year = date.getFullYear();
-            return year + '-' + month + '-' + day;
-        }
-    }
-	, popupOptions: {
-	      position: 'bottom left',
-	      lastResort: 'bottom left',
-	      prefer: 'opposite',
-	      hideOnScroll: true
-	}
-    ,today : true
-    ,touchReadonly : false
-    ,onChange: function (date, text, mode) {
-       var name = $(this).find("input").attr("name");
-       $("input[name='"+name+"']").val(text);
-		$(this).closest("form").submit();
-    },
-    	  
-	});
+	calendar(".datepicker");
+	 
 });
 </script>
 <? include $_SERVER['DOCUMENT_ROOT']."/common/menu.php";?>

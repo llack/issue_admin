@@ -3,7 +3,7 @@ session_start();
 
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 
-$link = $fn->auto_link("cs_code","sdate","edate");
+$link = $fn->auto_link("cs_seq","sdate","edate");
 ?>
 <body>
 <div class="ui container side">
@@ -31,6 +31,7 @@ $link = $fn->auto_link("cs_code","sdate","edate");
 		<div class="ui bottom attached button primary clone" style="display: none" onclick="addRow(1)">한 줄 추가하기</div>
 		<div class="ui bottom attached button positive clone" style="display: none;margin-bottom:30px" onclick="saveIssue()">저장</div>
 	<!-- 업무입력창 -->
+	
 	<div class="ui left aligned">
 		<button class="ui button inverted purple checkall">
 		  <i class="check circle icon"></i>
@@ -47,17 +48,17 @@ $link = $fn->auto_link("cs_code","sdate","edate");
 	<form name="form" method="POST" style="margin:0px;float:right;padding-right:150px">
 	<input type="hidden" value="1" name="page"/>
 	<i class="search icon purple"></i>업체 검색 : <?=$fn->add_nbsp(3)?>
-	<select id="cs_code" name="cs_code" class="ui search dropdown" onchange="fn_submit(document.form)" style="width: 200px">
+	<select id="cs_seq" name="cs_seq" class="ui search dropdown" onchange="fn_submit(document.form)" style="width: 200px">
 		<option value="unset">선택하세요</option>
 		<?
 			for($i = 0; $i < $cs_list_cnt; $i++) { 
-				if($_REQUEST[cs_code]==$cs_list[$i][description]) {
+				if($_REQUEST[cs_seq]==$cs_list[$i][seq]) {
 					$selected = "selected";
 				} else {
 					$selected = "";
 				}
 			?>
-				<option value="<?=$cs_list[$i][description]?>" <?=$selected?>><?=$cs_list[$i][title]?></option>	
+				<option value="<?=$cs_list[$i][seq]?>" <?=$selected?>><?=$cs_list[$i][title]?></option>	
 		<? } ?>
 	</select>
 	<!-- 일정검색 -->
@@ -69,7 +70,7 @@ $link = $fn->auto_link("cs_code","sdate","edate");
 	       <div class="ui calendar datepicker">
 		    <div class="ui input left icon">
 		      <i class="calendar alternate outline icon"></i>
-		      <input type="text" value="<?=$sdate?>" name="sdate">
+		      <input type="text" value="<?=$sdate?>" name="sdate" id="sdate">
 		    </div>
 		  </div>
 	    </div>
@@ -78,7 +79,7 @@ $link = $fn->auto_link("cs_code","sdate","edate");
 	      <div class="ui calendar datepicker">
 		    <div class="ui input left icon">
 		      <i class="calendar alternate outline icon"></i>
-		      <input type="text" value="<?=$edate?>" name="edate">
+		      <input type="text" value="<?=$edate?>" name="edate" id="edate">
 		    </div>
 		  </div>
 		</div>
@@ -87,77 +88,105 @@ $link = $fn->auto_link("cs_code","sdate","edate");
 	  <!-- /일정검색 -->
 	</div>
 	</form>
-	
-	<table id="test" class="ui definition table fixed center aligned small">
+	<? 
+	$where = "";
+	if($_REQUEST[cs_seq]!="" && $_REQUEST[cs_seq]!="unset") {
+		$where .= " and refseq = '$_REQUEST[cs_seq]' ";
+	}
+	$que = "select * from issue_list where 1=1 and (regdate between '$sdate' and '$edate') $where order by regdate desc ";
+	$pagenator = new Paginator($que);
+	  $results = $pagenator->getData($page,$limit);
+	  if($results->data) {
+	  	$max = count($results->data);
+	  ?>
+	<table class="ui definition table fixed center aligned small">
 	 <thead>
 		  <tr style="background-color:#a333c8;" >
 		    <th width="70px"><i class="large briefcase icon" style="color:white!important"></i></th>
 			<th width="70px">No.</th>
-			<th>회사명</th>
-		    <th>회사코드</th>
-		    <th>정보1</th>
-		    <th>정보2</th>
-		    <th>정보3</th>
+			<th>업체명/요청자</th>
+		    <th>업무내용</th>
+		    <th>등록일</th>
+		    <th>마감예정일</th>
+		    <th>담당자</th>
+		    <th>상태</th>
 		    <th><i class="large edit icon"></i>or <i class="large ban icon"></i></th>
 		  </tr>
 	  </thead>
 	  <tbody>
+	  <? for($i = 0; $i < $max; $i++) {
+	  	$issue = $results->data[$i];
+	  ?>
 	  <tr class="tr_hover">
 	  	<td>
 	  		<div class="ui toggle checkbox">
-			  <input type="checkbox" id="chk" value="<?=$row[seq]?>">
+			  <input type="checkbox" id="chk" value="<?=$issue[seq]?>">
 			  <label></label>
 			</div>
 	  	</td>
-	  	<td><a class="ui grey circular label">dd</a></td>
-	  	<td><?=$row[cs_name]?></td>
-	  	<td><?=$row[cs_code]?></td>
-	  	<td></td>
-	  	<td></td>
-	  	<td></td>
+	  	<td><a class="ui grey circular label"><?=($i+1)?></a></td>
+	  	<td><?=$issue[cs_name]?> / <?=$issue[cs_person]?></td>
+	  	<td><?=$issue[memo]?></td>
+	  	<td><?=$issue[regdate]?></td>
+	  	<td><?=$issue[end_date]?></td>
+	  	<td><?=$issue[user_name]?></td>
+	  	<td>
+	  		<div class="ui tiny buttons"><!--  -->
+			  <button class="ui inverted green button">완료</button>
+			  <button class="ui inverted red  button">미완료</button>
+			</div>
+	  	</td>
 	  	<td>
 		  	<div class="ui tiny buttons">
-			  <button class="ui inverted blue button" onclick="editOrRemove('<?=$row[seq]?>','modify')">수정</button>
+			  <button class="ui inverted blue button" onclick="editOrRemove('<?=$issue[seq]?>','modify')">수정</button>
 			  <div class="or"></div>
-			  <button class="ui inverted red button" onclick="editOrRemove('<?=$row[seq]?>','delete','<?=$row[cs_name]?>')">삭제</button>
+			  <button class="ui inverted red button" onclick="editOrRemove('<?=$issue[seq]?>','delete','<?=$issue[cs_name]?>')">삭제</button>
 			</div>
 	  	</td>
 	  </tr>
+	  <? } ?>
 	  </tbody>
 	</table>
+	<? } else {?>
+	<h2 class="ui icon header center aligned">
+		  <i class="ban red icon"></i>
+		  <div class="content">
+		    검색결과 없음!
+		    <div class="sub header">검색 조건을 확인 해주세요</div>
+		  </div>
+		</h2>
+	<? } ?>
 	</div>
 <!--  -->
 <!-- clone -->
-<div class="ui form" id="cloneForm" data-idx="0" style="display:none">
-	<div class="six fields inline">
-      <a class="ui grey circular label"><span id="cloneCnt"></span></a><?$fn->add_nbsp(5)?>
+<div class="ui form" id="cloneContent0" data-idx="0" style="display:none">
+	<input type="hidden" name="cs_name" id="cs_name0" value=""/>
+	<div class="seven fields inline">
+      <a class="ui grey circular label"><span id="cloneCnt0"></span></a><?$fn->add_nbsp(5)?>
+      
       <div class="field">
         <label>업체</label><br/>
          <div class="ui fluid">
-			<select name="refseq" class="fluid" id="csCnt" onchange="loadEmployee(this.id,this.value)">
+			<select name="refseq" class="fluid" id="csCnt0" onchange="loadEmployee(this.id,this.value)">
 				<option value="unset">선택하세요</option>
-			<?	for($i = 0; $i < $cs_list_cnt; $i++) {	?>
-				<option value="<?=$cs_list[$i][seq]?>"><?=$cs_list[$i][title]?></option>	
+			<?	for($i = 0; $i < $cs_list_cnt; $i++) {	
+					$cs = $cs_list[$i];
+				?>
+				<option value="<?=$cs[seq]?>"><?=$cs[title]?></option>	
 			<? } ?>
 			</select>
 		</div>
       </div>
-      <div class="field">
-        <label>업무내용</label><br/>
-        <div class="ui fluid input">
-		  <input type="text" name="memo">
-		</div>
-      </div>
-      <?$fn->add_nbsp(5)?>
+      
       <div class="field selectDiv error">
         <label>요청자</label><br/>
         <div class="ui fluid">
-        	<select name="cs_person" class="fluid" id="csPerson">
+        	<select name="cs_person" class="fluid" id="csPerson0">
         		<option value="unset">업체 미선택</option>
         	</select>
         </div>
-        <!-- <input type="text" name="cs_person"> -->
       </div>
+      
       <div class="field">
         <label>업무담당자</label><br/>
         <div class="ui fluid">
@@ -173,94 +202,109 @@ $link = $fn->auto_link("cs_code","sdate","edate");
         	</select>
         </div>
       </div>
+      
+      <div class="field">
+        <label>업무내용</label><br/>
+        <div class="ui fluid">
+		  <input type="text" name="memo" class="fluid">
+		</div>
+      </div>
+      
       <div class="field">
       	<label>등록일</label><br/>
-      	<div class="ui calendar datepicker">
-		    <div class="ui input left icon">
-		      <i class="calendar alternate outline icon"></i>
-		      <input type="text" value="<?=date("Y-m-d")?>" name="regdate">
-		    </div>
+      	<div class="ui fluid">
+	      	<div class="ui calendar datepicker">
+			    <div class="ui input left icon">
+			      <i class="calendar alternate outline icon purple"></i>
+			      <input type="text" value="<?=date("Y-m-d")?>" name="regdate" id="regdate0" style="width:100%">
+			    </div>
+			  </div>
 		  </div>
       </div>
+      
+      <div class="field">
+      	<label>마감예정일</label><br/>
+      	<div class="ui fluid">
+	      	<div class="ui calendar datepicker end_date">
+			    <div class="ui input left icon">
+			      <i class="calendar alternate outline icon purple"></i>
+			      <input type="text" value="" name="end_date" id="end_date0" style="width:100%">
+			    </div>
+			  </div>
+		  </div>
+      </div>
+      
       <div class="field">
         <label><?$fn->add_nbsp(1)?></label><br/>
       <button class="ui inverted red button removeRow">삭제</button>
       </div>
+      
     </div>
 </div>
 <!-- clone -->	
 </body>
 <script>
+$(document).ready(function(){
+
+});
 $(document).on("click","#addRow,.addrow",function(e){
 	e.preventDefault();
 	addRow();
-});
 
+});
 $(document).on("click",".removeRow",function(e){
 	e.preventDefault();
-	var sort = "div[id*='cloneContent']";
+	var sort = "div[id*='cloneContent']:visible";
 	$(this).closest(sort).remove();
 	$(sort).each(function(i){
-		$(this).prop("id","cloneContent"+(i+1));
-		$(this).attr("data-idx",(i+1));
-		$(this).find("span[id*=cloneCnt]").prop("id","cloneCnt"+(i+1));
-		$(this).find("select[id*=csCnt]").prop("id","csCnt"+(i+1));
-		$(this).find("select[id*=csPerson]").prop("id","csPerson"+(i+1));
-		$("#cloneCnt" + (i+1)).text((i+1));
+		num = i+1;
+		$(this).prop("id","cloneContent"+num);
+		$(this).attr("data-idx",num);
+		$(this).find("input[id*=regdate]").prop("id","regdate"+num);
+		$(this).find("input[id*=cs_name]").prop("id","cs_name"+num);
+		$(this).find("input[id*=end_date]").prop("id","end_date"+num);
+		$(this).find("span[id*=cloneCnt]").prop("id","cloneCnt"+num);
+		$(this).find("select[id*=csCnt]").prop("id","csCnt"+num);
+		$(this).find("select[id*=csPerson]").prop("id","csPerson"+num);
+		$("#cloneCnt" + num).text(num);
 	});
 	if($(sort).length==0) {
 		$(".clone").css("display","none");
-		$("#emptyMsg").css("display","");
 	}
 });
-
 $(document).ready(function(){
 
-	$("#cs_code").dropdown({
+	$("#cs_seq").dropdown({
 		forceSelection: false
 		,message : {
 			noResults     : "검색 결과 없음"
 		}
 		,selectOnKeydown : false
 		,fullTextSearch: true
+		,match : "text"
 	});
+
+	hoverMaster("tr_hover","positive");
 })
 
 function addRow(addOne) {
+
+	var num = 0;
+	$("div[id*='cloneContent']:visible").each(function(i){
+		num++;
+	});
+	
 	if(addOne) {
-		var num = 0;
-		$("div[id*='cloneContent']").each(function(i){
-			num++;
-		});
 		makeDiv(num);
 	} else {
 		var popup = prompt("추가할 업무수를 입력하세요\n* 숫자만 입력할 수 있습니다.","1");
 		if(popup != null && popup.trim()!=0 && isNaN(popup)===false) {
-			var num = 0;
-			$("div[id*='cloneContent']").each(function(i){
-				num++;
-			});
 			for(var i = num; i < num+(popup*1); i++) {
-				
-				var next = "cloneContent"+(i+1);
-				var id = "#cloneContent" + i;
-				
-				if(i == 0) {
-					var cl = $("#cloneForm").clone(); 
-					
-					cl.prop("id", next).attr("data-idx",(i+1)); //id,index값 +1 바꾸고
-					cl.find("#cloneCnt").prop("id","cloneCnt1"); // 로우 넘버
-					cl.find("#csCnt").prop("id","csCnt1"); 
-					cl.find("#csPerson").prop("id","csPerson1");
-					cl.appendTo("#cloneTarget"); //적용
-					$("#" + next + "").css("display","");
-					$("#cloneCnt1").text(1);
-				} else {
-					makeDiv(i);
-				}
+				makeDiv(i);
 			}
+			
 			$(".clone").css("display","");
-			$("#emptyMsg").css("display","none");
+			
 		} else if(popup ==null) {
 			return;
 		} else {
@@ -276,26 +320,84 @@ function makeDiv(num) {
 	var cnt = "cloneCnt" + (num+1);
 	cl.prop("id", next ).attr("data-idx",(num+1)); //id,index값 +1 바꾸고
 	cl.find("#cloneCnt" + num + "").prop("id",cnt);// 로우 넘버
-	cl.find("input[type!='hidden']").val("");
+	cl.find("input").val("");
+	cl.find("input[id*='cs_name']").prop("id","cs_name" + (num+1));
 	/* select Box */
 	cl.find("#csCnt" + num + "").prop("id","csCnt"+(num+1));
 	cl.find("#csPerson" + num + "").prop("id","csPerson"+(num+1));
 	cl.find(".selectDiv").addClass("error");
 	cl.find("select[id*=csPerson]").html("<option value='unset'>업체 미선택</option>");
-	/* == select Box == */
-	cl.insertAfter(id);
+
+	/*datepicker*/
+	cl.find("input[id*='regdate']").prop("id","regdate"+(num+1)).val("<?=date("Y-m-d")?>");
+	cl.find("input[id*='end_date']").prop("id","end_date"+(num+1)).val("<?=date("Y-m-d")?>");
+	
+	if(num!=0) {
+		cl.insertAfter(id);
+	} else {
+		cl.appendTo("#cloneTarget"); //처음
+	}
+	calendar(cl.find(".datepicker"));
 	$("#" + cnt).text((num+1));
 	$("#" + next + "").css("display","");
 }
 function loadEmployee(id,refseq) {
+	var i = id.substr(5);
 	if(refseq != "unset") {
+		/* 사원 불러오기 */
 		var param = {};
 		param["table"] = "employee_list";
 		param["where"] = " and refseq = '" + refseq + "' order by name";
 		ajax(param,"/common/simple_select.php",function(result){ makeSelect(id,result) });
+
+		/* 업체명 리스트에서 사용하려고 .. */
+		var csName = {};
+		csName["table"] = "erp_ocsinfo";
+		csName["where"] = " and seq = " + refseq;
+		ajax(csName
+			,"/common/simple_select.php"
+			,function(result){
+			$("#cs_name" + i +"").val(result[0].cs_name);
+		});
+		
 	} else {
-		$("#csPerson" + id.substr(5) +"").html("<option value=''>업체미선택</option>");
-		$("#csPerson" + id.substr(5) +"").closest(".selectDiv").addClass("error");
+		$("#csPerson" + i +"").html("<option value=''>업체미선택</option>");
+		$("#csPerson" + i +"").closest(".selectDiv").addClass("error");
+		$("#cs_name" + i +"").val("");
+	}
+}
+function saveIssue(){
+	var param = {};
+	var out = true;
+	$("div[id*='cloneContent']:visible").each(function(i,e){
+		var save = {};
+		var id = $(this).attr("id");
+		$("#" + id +" select").each(function(){
+			var name = $(this).attr("name");
+			var value = $(this).val();
+			if(name=="refseq" && value == "unset") {
+				alert("업체 선택은 필수항목 입니다.");
+				$(this).focus();
+				out = false;
+			}
+			save[name] = $(this).val();
+		});
+
+		$("#" + id +" input").each(function(){
+			var name = $(this).attr("name");
+			var value = $(this).val();
+			save[name] = $(this).val();
+		});
+		if(out== true) {	
+			param[i] = save;
+		} else {
+			return out;
+		}
+	});
+	if(out == true) { 
+		var obj = {};
+		obj["issue"] = param;
+		ajax(obj, "issue_add_ok.php",issueCallback);
 	}
 }
 function fn_submit(frm) {
@@ -307,7 +409,8 @@ function delete_issue() {
 }
 /* CALLBACK*/ 
  function makeSelect(id,result) {
-	 var csPerson = $("#csPerson" + id.substr(5) +"");
+	 var id = id.substr(5); 
+	 var csPerson = $("#csPerson" + id +"");
 	 if(result) {
 		 var option = "<option value='unset'>선택하세요</option>";
 		 max = result.length;
@@ -320,6 +423,10 @@ function delete_issue() {
 		 csPerson.html("<option value=''>사원등록 수 : 0</option>");
 		 csPerson.closest(".selectDiv").addClass("error");
 	}
+}
+function issueCallback(result) {
+	alert(result);
+	location.reload();
 }
 /* == CALLBACK ==*/
 </script>

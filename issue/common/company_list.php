@@ -34,21 +34,18 @@
 	  	<? 
 	  	$cs_list = $fn->cs_list();
 	  	$cnt = count($cs_list);
-	  	$issue = 6;
-	  	for($i = 0; $i < $cnt; $i++ ) { ?>
-	  	<a class="item purple" href="<?=$cs_list[$i][url]?>">
-	  	<?=$cs_list[$i][title]?>
+	  	//$issue = 6;
+	  	for($i = 0; $i < $cnt; $i++ ) { 
+	  		$issue = count_issue($cs_list[$i][seq]);
+	  	?>
+	  	<a class="item purple" href="<?=$cs_list[$i][url]?>"><?=$cs_list[$i][title]?>
 	  	<? if(0 < $issue) { 
-	  		if(3 <= $issue) {
-	  			$importance = "red";
-	  		} else {
-	  			$importance = "green";
-	  		}
+	  		$importance = ($issue >= 3) ? "red" : "green";
 	  		?>
 	    <div class="ui label <?=$importance?> basic left pointing"><?=$issue?></div>
 	  	</a>
 	  	<? } ?>
-	  	<? $issue--;}  ?>
+	  	<? }  ?>
   </div>
   <!-- / 사이드바 업체리스트  -->
 </div>
@@ -83,6 +80,14 @@ $(document).ready(function(){
 });
 
 </script>
+<? 
+function count_issue($seq) {
+	$que = " select * from issue_list where refseq = '$seq' ";
+	$res = mysql_query($que) or die(mysql_error());
+	$cnt = mysql_num_rows($res);
+	return $cnt;
+}
+?>
 
 
 

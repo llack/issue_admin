@@ -200,10 +200,10 @@ $link = $fn->auto_link("seq");
 		</h2>
 </div>
 <!-- clone -->
-<div class="ui form" id="cloneForm" data-idx="0" style="display:none">
+<div class="ui form" id="cloneContent0" data-idx="0" style="display:none">
 	<input type="hidden" name="refseq" value="<?=$_REQUEST[seq]?>"/>
 	<div class="six fields inline">
-      <a class="ui grey circular label"><span id="cloneCnt"></span></a><?$fn->add_nbsp(5)?>
+      <a class="ui grey circular label"><span id="cloneCnt0"></span></a><?$fn->add_nbsp(5)?>
       <div class="field">
         <label>성명</label><br/>
         <input type="text" name="name">
@@ -281,6 +281,9 @@ $link = $fn->auto_link("seq");
 </body>
 </html>
 <script>
+$(document).ready(function(){
+	hoverMaster("tr_hover","positive");
+});
 $(document).on("click","#addRow,.addrow",function(e){
 	e.preventDefault();
 	addRow();
@@ -288,13 +291,14 @@ $(document).on("click","#addRow,.addrow",function(e){
 
 $(document).on("click",".removeRow",function(e){
 	e.preventDefault();
-	var sort = "div[id*='cloneContent']";
+	var sort = "div[id*='cloneContent']:visible";
 	$(this).closest(sort).remove();
 	$(sort).each(function(i){
-		$(this).prop("id","cloneContent"+(i+1));
-		$(this).attr("data-idx",(i+1));
-		$(this).find("span[id*=cloneCnt]").prop("id","cloneCnt"+(i+1));
-		$("#cloneCnt" + (i+1)).text((i+1));
+		num = i+1
+		$(this).prop("id","cloneContent"+(num));
+		$(this).attr("data-idx",(num));
+		$(this).find("span[id*=cloneCnt]").prop("id","cloneCnt"+(num));
+		$("#cloneCnt" + (num)).text((num));
 	});
 	if($(sort).length==0) {
 		$(".clone").css("display","none");
@@ -302,36 +306,17 @@ $(document).on("click",".removeRow",function(e){
 	}
 });
 function addRow(addOne) {
+	var num = 0;
+	$("div[id*='cloneContent']:visible").each(function(i){
+		num++;
+	});
 	if(addOne) {
-		var num = 0;
-		$("div[id*='cloneContent']").each(function(i){
-			num++;
-		});
 		makeDiv(num);
 	} else {
 		var popup = prompt("추가할 사원수를 입력하세요\n* 숫자만 입력할 수 있습니다.","1");
 		if(popup != null && popup.trim()!=0 && isNaN(popup)===false) {
-			var num = 0;
-			$("div[id*='cloneContent']").each(function(i){
-				num++;
-			});
 			for(var i = num; i < num+(popup*1); i++) {
-				
-				var next = "cloneContent"+(i+1);
-				var id = "#cloneContent" + i;
-				
-				if(i == 0) {
-					var cl = $("#cloneForm").clone(); 
-					
-					cl.prop("id", next).attr("data-idx",(i+1)); //id,index값 +1 바꾸고
-					cl.find("#cloneCnt").prop("id","cloneCnt1"); // 로우 넘버
-	
-					cl.appendTo("#cloneTarget"); //적용
-					$("#" + next + "").css("display","");
-					$("#cloneCnt1").text(1);
-				} else {
-					makeDiv(i);
-				}
+				makeDiv(i);
 			}
 			$(".clone").css("display","");
 			$("#emptyMsg").css("display","none");
@@ -351,33 +336,39 @@ function makeDiv(num) {
 	cl.prop("id", next ).attr("data-idx",(num+1)); //id,index값 +1 바꾸고
 	cl.find("#cloneCnt" + num + "").prop("id",cnt);// 로우 넘버
 	cl.find("input[type!='hidden']").val("");
-	cl.insertAfter(id);
+	
+	if(num != 0) {
+		cl.insertAfter(id);
+	} else {
+		cl.appendTo("#cloneTarget");
+	}
+	
 	$("#" + cnt).text((num+1));
 	$("#" + next + "").css("display","");
 }
 function saveInfo() {
 	var param = {};
 	var out = true;
-	$("div[id*='cloneContent']").each(function(i,e){
+	$("div[id*='cloneContent']:visible").each(function(i,e){
 		var save = {};
 		var id = $(this).attr("id");
-		if(out===true) {
 			$("#" + id +" input").each(function(){
 				var name = $(this).attr("name");
 				var value = $(this).val();
 				if(name == "name" && value.trim().length == 0) {
 					alert("성명은 필수항목입니다.");
-					console.log($(this));
 					$(this).focus();
 					out = false;
-					return out;
 				}
 				save[name] = $(this).val();
 			});
+		if(out==true) {
 			param[i] = save;
+		} else {
+			return out;
 		}
 	});
-	if(out === true) {
+	if(out == true) { 
 		var obj = {};
 		obj["employee"] = param;
 		ajax(obj, "company_detail_ok.php",companyModify);
