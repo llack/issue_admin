@@ -2,7 +2,8 @@
 session_start();
 
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
-
+$sdate = ($_REQUEST[sdate]!="") ? $_REQUEST[sdate] : date("Y-m-01");
+$edate = ($_REQUEST[edate]!="") ? $_REQUEST[edate] : date("Y-m-t",strtotime($sdate));
 $link = $fn->auto_link("cs_seq","sdate","edate");
 ?>
 <body>
@@ -128,7 +129,9 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	<td><?=$issue[cs_name]?> / <?=$issue[cs_person]?></td>
 	  	<td><?=$issue[memo]?></td>
 	  	<td><?=$issue[regdate]?></td>
-	  	<td><?=$issue[end_date]?></td>
+	  	<td>
+	  		<?=$dDay = ($issue[state]=="N") ? $issue[end_date]." ".dDay($issue[end_date])."" : "";?>
+	  	</td>
 	  	<td><?=$issue[user_name]?></td>
 	  	<td>
 	  		<div class="ui tiny buttons"><!--  -->
@@ -156,6 +159,9 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 		  </div>
 		</h2>
 	<? } ?>
+	<!-- 페이징 -->
+	<?=$pagenator->createLinks($link);?>
+	<!-- 페이징 -->
 	</div>
 <!--  -->
 <!-- clone -->
@@ -213,7 +219,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
       <div class="field">
       	<label>등록일</label><br/>
       	<div class="ui fluid">
-	      	<div class="ui calendar datepicker">
+	      	<div class="ui calendar date">
 			    <div class="ui input left icon">
 			      <i class="calendar alternate outline icon purple"></i>
 			      <input type="text" value="<?=date("Y-m-d")?>" name="regdate" id="regdate0" style="width:100%">
@@ -225,7 +231,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
       <div class="field">
       	<label>마감예정일</label><br/>
       	<div class="ui fluid">
-	      	<div class="ui calendar datepicker end_date">
+	      	<div class="ui calendar date">
 			    <div class="ui input left icon">
 			      <i class="calendar alternate outline icon purple"></i>
 			      <input type="text" value="" name="end_date" id="end_date0" style="width:100%">
@@ -337,7 +343,7 @@ function makeDiv(num) {
 	} else {
 		cl.appendTo("#cloneTarget"); //처음
 	}
-	calendar(cl.find(".datepicker"));
+	calendar(cl.find(".date"));
 	$("#" + cnt).text((num+1));
 	$("#" + next + "").css("display","");
 }
@@ -431,3 +437,18 @@ function issueCallback(result) {
 /* == CALLBACK ==*/
 </script>
 </html>
+<?
+function dDay($date) {
+	$today = strtotime(date("Y-m-d"));
+	$end_date = strtotime(date($date));
+	$dday = intval(($today - $end_date) / 86400);
+	if($dday >0) {
+		return "<font color='red'><strong>(D+" .$dday . ")</strong></font>";
+	} else if($dday < 0) {
+		return "<font color='green'><strong>(D" .$dday . ")</strong></font>";
+	} else {
+		return "<font color='red'>오늘 마감</font>";
+	}
+}
+
+?>

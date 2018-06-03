@@ -232,13 +232,13 @@ $(document).ready(function(){
 	enter_afterIndex("cs_modify");
 });
 function delete_company(seq,user_name) {
-	var c = $("input[id='chk']:checked");
+	var c = $("#chk:checked");
 	if(c.length==0) {
 		alert("삭제 대상이 없습니다.");
 		return;
 	}
 	var param = {};
-	if(confirm("삭제한 업체는 복구할 수 없습니다.\n총 "+$("#chk:checked").length+"건 삭제하시겠습니까?")==true) {
+	if(confirm("삭제한 업체는 복구할 수 없습니다.\n총 "+c.length+"건 삭제하시겠습니까?")==true) {
 		fn_delete("erp_ocsinfo","seq");
 	} else {
 		return;

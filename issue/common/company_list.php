@@ -34,7 +34,6 @@
 	  	<? 
 	  	$cs_list = $fn->cs_list();
 	  	$cnt = count($cs_list);
-	  	//$issue = 6;
 	  	for($i = 0; $i < $cnt; $i++ ) { 
 	  		$issue = count_issue($cs_list[$i][seq]);
 	  	?>

@@ -50,7 +50,9 @@ function calendar(ele) {
 	       var id = $(this).find("input").attr("id");
 	       id = "#" + id;
 	       $(id).val(text);
-			$(this).closest("form").submit();
+	       if(ele == ".datepicker") {
+	    	   $(this).closest("form").submit();
+	       } 
 	    },
 	    	  
 		});
