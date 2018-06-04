@@ -32,11 +32,20 @@ class Json_select {
 	function userInfo($user_id="") {
 		if($user_id != "") {
 			$where = " where user_id = '".$user_id."' ";
-		}
+		} 
 		$que = " select * from member $where order by user_level desc";
 		$res = mysql_query($que) or die(mysql_error());
 		while($row = mysql_fetch_array($res)) {
 			$result[] = $row; 
+		}
+		return $result;
+	}
+	
+	function allowUser() {
+		$que = " select * from member where  user_level <> '' order by user_level desc";
+		$res = mysql_query($que) or die(mysql_error());
+		while($row = mysql_fetch_array($res)) {
+			$result[] = $row;
 		}
 		return $result;
 	}

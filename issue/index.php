@@ -149,7 +149,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	<select id="user_id" name="user_id" class="ui search dropdown" onchange="fn_submit(document.form)" style="width: 200px">
 		<option value="unset">선택하세요</option>
 		<?
-			$u = $fn->userInfo();
+			$u = $fn->allowUser();
 			$u_max = count($u);
 			for($i = 0; $i < $u_max; $i++) { 
 				$selected = ($_REQUEST[user_id]==$u[$i][user_id]) ? "selected" : "";
@@ -323,7 +323,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
         	<select name="user_name" class="fluid">
         		<option value="unset">선택하세요</option>
         		<?
-        			$user_list = $fn->UserInfo();
+        			$user_list = $fn->allowUser();
         			$max = count($user_list);
         			for ($user = 0; $user < $max; $user++) {
         		?>
