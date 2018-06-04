@@ -81,6 +81,16 @@ function jsonBot(name,deleteEle) {
 			}
 		}
 	});
+	
+	$("form[name='"+name+"'] select").each(function(i,e){
+		var name = $(e).attr("name");
+		if (name) {
+			if(deleteEle.indexOf(name) === -1) {
+				param[name] = $(e).val();
+			}
+		}
+	});
+	
 	return param;
 }
 

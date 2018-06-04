@@ -81,7 +81,7 @@ $(document).ready(function(){
 </script>
 <? 
 function count_issue($seq) {
-	$que = " select * from issue_list where refseq = '$seq' ";
+	$que = " select * from issue_list where refseq = '$seq' and state = 'N' ";
 	$res = mysql_query($que) or die(mysql_error());
 	$cnt = mysql_num_rows($res);
 	return $cnt;

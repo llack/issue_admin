@@ -6,6 +6,60 @@ $sdate = ($_REQUEST[sdate]!="") ? $_REQUEST[sdate] : date("Y-m-01");
 $edate = ($_REQUEST[edate]!="") ? $_REQUEST[edate] : date("Y-m-t",strtotime($sdate));
 $link = $fn->auto_link("cs_seq","sdate","edate");
 ?>
+<style>
+#issue_info {
+	position: absolute;
+	 width: 480px;
+	 height: 480px;
+	 left: 50%;
+	 top: 50%;
+	 margin-left: -250px;
+	 margin-top: -250px;
+	 border: solid #a333c8 2px;
+	 border-radius: 25px;
+	 padding : 1rem;
+}
+#issueSnackbar {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 2px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    top: 30px;
+    font-size: 17px;
+}
+#issueSnackbar.show {
+    visibility: visible;
+    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+
+@-webkit-keyframes fadein {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
+}
+
+@keyframes fadein {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
+}
+
+@-webkit-keyframes fadeout {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
+}
+
+@keyframes fadeout {
+    from {top: 0; opacity: 0;} 
+    to {top: 30px; opacity: 1;}
+}
+</style>
 <body>
 <div class="ui container side">
 <? include $_SERVER["DOCUMENT_ROOT"]."/common/company_list.php"; ?>
@@ -34,20 +88,13 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	<!-- 업무입력창 -->
 	
 	<div class="ui left aligned">
-		<button class="ui button inverted purple checkall">
-		  <i class="check circle icon"></i>
-		  전체선택
-		</button>
-		<input type="checkbox" id="checkall" style="display:none;"/>
-		<button class="ui button inverted red" onclick="delete_issue()">
-		  <i class="check trash alternate icon"></i>
-		  선택삭제
-		</button>
 		<? $cs_list = $fn->cs_list();
 		$cs_list_cnt = count($cs_list);
 		?>
-	<form name="form" method="POST" style="margin:0px;float:right;padding-right:150px">
+	<form name="form" method="POST" style="margin:0px;float:left;">
 	<input type="hidden" value="1" name="page"/>
+	<input type="hidden" value="" name="nAll"/>
+	<input type="hidden" value="<?=$_POST[state]?>" name="state"/>
 	<i class="search icon purple"></i>업체 검색 : <?=$fn->add_nbsp(3)?>
 	<select id="cs_seq" name="cs_seq" class="ui search dropdown" onchange="fn_submit(document.form)" style="width: 200px">
 		<option value="unset">선택하세요</option>
@@ -62,8 +109,21 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 				<option value="<?=$cs_list[$i][seq]?>" <?=$selected?>><?=$cs_list[$i][title]?></option>	
 		<? } ?>
 	</select>
-	<!-- 일정검색 -->
 	<?=$fn->add_nbsp(3)?>
+	<i class="user icon purple"></i>담당자 검색 : <?=$fn->add_nbsp(3)?>
+	<select id="user_id" name="user_id" class="ui search dropdown" onchange="fn_submit(document.form)" style="width: 200px">
+		<option value="unset">선택하세요</option>
+		<?
+			$u = $fn->userInfo();
+			$u_max = count($u);
+			for($i = 0; $i < $u_max; $i++) { 
+				$selected = ($_REQUEST[user_id]==$u[$i][user_id]) ? "selected" : "";
+			?>
+				<option value="<?=$u[$i][user_id]?>" <?=$selected?>><?=$u[$i][user_name]?></option>	
+		<? } ?>
+	</select>
+	<?=$fn->add_nbsp(3)?>
+	<!-- 일정검색 -->
 	<i class="calendar alternate outline icon purple"></i>일정 검색 : <?=$fn->add_nbsp(3)?>
 	<div class="ui form"style="float: right">
 	  <div class="fields">
@@ -89,10 +149,18 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  <!-- /일정검색 -->
 	</div>
 	</form>
+	<br/><br/><br/>
+	
 	<? 
 	$where = "";
 	if($_REQUEST[cs_seq]!="" && $_REQUEST[cs_seq]!="unset") {
 		$where .= " and refseq = '$_REQUEST[cs_seq]' ";
+	}
+	if($_REQUEST[user_id]!="" && $_REQUEST[user_id]!="unset") {
+		$where .= " and user_name = '$_REQUEST[user_id]' ";
+	}
+	if($_REQUEST[nAll]!="") {
+		$where .= " and state = '$_REQUEST[nAll]' ";
 	}
 	$que = "select * from issue_list where 1=1 and (regdate between '$sdate' and '$edate') $where order by regdate desc ";
 	$pagenator = new Paginator($que);
@@ -100,6 +168,17 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  if($results->data) {
 	  	$max = count($results->data);
 	  ?>
+	<div class="ui left aligned">
+		<button class="ui button inverted purple checkall">
+		  <i class="check circle icon"></i>
+		  전체선택
+		</button>
+		<input type="checkbox" id="checkall" style="display:none;"/>
+		<button class="ui button inverted red" onclick="delete_issue()">
+		  <i class="check trash alternate icon"></i>
+		  선택삭제
+		</button>
+	</div>
 	<table class="ui definition table fixed center aligned small">
 	 <thead>
 		  <tr style="background-color:#a333c8;" >
@@ -117,6 +196,8 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  <tbody>
 	  <? for($i = 0; $i < $max; $i++) {
 	  	$issue = $results->data[$i];
+	  	$name = $fn->userInfo($issue[user_name]);
+	  	$name = $name[0][user_name];
 	  ?>
 	  <tr class="tr_hover">
 	  	<td>
@@ -130,20 +211,24 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	<td><?=$issue[memo]?></td>
 	  	<td><?=$issue[regdate]?></td>
 	  	<td>
-	  		<?=$dDay = ($issue[state]=="N") ? $issue[end_date]." ".dDay($issue[end_date])."" : "";?>
+	  		<?=$dDay = ($issue[state]=="N") ? $issue[end_date]." ".dDay($issue[end_date])."" : $issue[end_date];?>
 	  	</td>
-	  	<td><?=$issue[user_name]?></td>
+	  	<td><?=$name?></td>
 	  	<td>
+	  		<? 
+	  			$finish = ($issue[state] == "N") ? "inverted" : "positive"; 
+	  			$incomplete = ($issue[state] == "N") ? "negative" : "inverted"; 
+	  		?>
 	  		<div class="ui tiny buttons"><!--  -->
-			  <button class="ui inverted green button">완료</button>
-			  <button class="ui inverted red  button">미완료</button>
+			  <button class="ui <?=$finish?> green button" onclick="stateModify('<?=$issue[state]?>','Y','<?=$issue[seq]?>')">완료</button>
+			  <button class="ui <?=$incomplete?> red  button" onclick="stateModify('<?=$issue[state]?>','N','<?=$issue[seq]?>')">미완료</button>
 			</div>
 	  	</td>
 	  	<td>
 		  	<div class="ui tiny buttons">
 			  <button class="ui inverted blue button" onclick="editOrRemove('<?=$issue[seq]?>','modify')">수정</button>
 			  <div class="or"></div>
-			  <button class="ui inverted red button" onclick="editOrRemove('<?=$issue[seq]?>','delete','<?=$issue[cs_name]?>')">삭제</button>
+			  <button class="ui inverted red button" onclick="editOrRemove('<?=$issue[seq]?>','delete','<?=$issue[memo]?>')">삭제</button>
 			</div>
 	  	</td>
 	  </tr>
@@ -203,7 +288,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
         			$max = count($user_list);
         			for ($user = 0; $user < $max; $user++) {
         		?>
-        		<option value="<?=$user_list[$user][user_name]?>"><?=$user_list[$user][user_name]?></option>
+        		<option value="<?=$user_list[$user][user_id]?>"><?=$user_list[$user][user_name]?></option>
         		<? } ?>
         	</select>
         </div>
@@ -248,6 +333,103 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
     </div>
 </div>
 <!-- clone -->	
+<!--  이슈 수정 팝업 -->
+<div id="issue_modify"class="ui basic modal">
+  <div class="content">
+  	<div id="issue_info">
+	<div class="login header">
+		<div style="text-align:right !important"><i class="user icon"></i>업 무 정 보 <span class="popup_title">수 정</span></div>
+	</div>
+	<br/><br/>
+	<form class="ui fluid form" name="issue_modify">
+  <div class="field">
+  
+  <div class="inline field">
+    <div class="ui ribbon  purple basic label">
+      업체명
+    </div>
+    <select name="cs_name" class="fluid" id="csCnt0" onchange="popupSelect(this.id,this.value)">
+		<option value="unset">선택하세요</option>
+	<?	for($i = 0; $i < $cs_list_cnt; $i++) {	
+			$cs = $cs_list[$i];
+		?>
+		<option value="<?=$cs[title]?>"><?=$cs[title]?></option>	
+	<? } ?>
+	</select>
+  </div>
+  
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      요청자
+    </div>
+   <input type="text" name="cs_person" value="">
+  </div>
+  
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      업무내용
+    </div>
+   <input type="text" name="memo" value="">
+  </div>
+  
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      등록일
+    </div>
+    <div class="ui calendar date">
+	    <div class="ui input left icon">
+	      <i class="calendar alternate outline icon purple"></i>
+	      <input type="text" value="" name="regdate"/>
+	    </div>
+	  </div>
+  </div>
+  
+   <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      마감예정일
+    </div>
+    <div class="ui calendar date">
+	    <div class="ui input left icon">
+	      <i class="calendar alternate outline icon purple"></i>
+	      <input type="text" value="" name="end_date"/>
+	    </div>
+	  </div>
+  </div>
+ 
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      담당자
+    </div>
+    <select name="user_name" style="width:50%">
+        <option value="unset">선택하세요</option>
+        	<?
+        		for ($user = 0; $user < $max; $user++) {
+        	?>
+        	<option value="<?=$user_list[$user][user_id]?>"><?=$user_list[$user][user_name]?></option>
+        	<? } ?>
+   </select>
+  </div>
+ 
+</div>
+  <input type="hidden" name="seq" value=""/>
+</form>
+  <!-- /  -->
+</div>
+  </div>
+  <div class="actions">
+    <div class="ui red basic cancel inverted button">
+      <i class="remove icon"></i>
+      취 소
+    </div>
+    <div class="ui green ok inverted button">
+      <i class="checkmark icon"></i>
+     <span class="popup_title">수 정</span>
+    </div>
+  </div>
+</div>
+
+<div id="issueSnackbar"></div>
+
 </body>
 <script>
 $(document).ready(function(){
@@ -281,6 +463,16 @@ $(document).on("click",".removeRow",function(e){
 $(document).ready(function(){
 
 	$("#cs_seq").dropdown({
+		forceSelection: false
+		,message : {
+			noResults     : "검색 결과 없음"
+		}
+		,selectOnKeydown : false
+		,fullTextSearch: true
+		,match : "text"
+	});
+	
+	$("#user_id").dropdown({
 		forceSelection: false
 		,message : {
 			noResults     : "검색 결과 없음"
@@ -406,6 +598,89 @@ function saveIssue(){
 		ajax(obj, "issue_add_ok.php",issueCallback);
 	}
 }
+function stateModify(before,after,seq) {
+	if(before == after) {
+		return;
+	} else {
+		var param = {};
+		param["param"] = {"state" : after, "seq" : seq};
+		param["table"] = "issue_list";
+		param["id"] = ["seq"];
+		ajax(param,"/common/simple_update.php",function(result){
+			if(after == "Y") {
+				text = "완료처리 되었습니다.";
+				color = "#21ba45";
+			} else {
+				text = "미완료처리 되었습니다.";
+				color = "#db2828";
+			}
+			snackbar("issueSnackbar",color,text);
+			setTimeout(function(){
+				location.reload();
+			},500);
+		})
+	}
+}
+
+function editOrRemove(seq,mode,memo) {
+	if(mode =="modify") { // 업체수정
+		$('#issue_modify').modal({
+			onShow : function() {
+				var param = {};
+				param["table"] = "issue_list";
+				param["where"] = " and seq = " + seq;
+				ajax(param
+					,"/common/simple_select.php"
+					,function(result){
+						var data = result[0];
+						
+						var form = $("form[name='issue_modify']");
+						
+						for(var key in data) { // input & select name값 맞추면 자동 추가
+							var ele = "input";
+							var target = form.find($(ele+"[name='"+key+"']")).length;
+							if(target > 0) {
+								form.find($(ele+"[name='"+key+"']")).val(data[key]);
+							} else {
+								ele = "select";
+								form.find($(ele+"[name='"+key+"']")).val(data[key]);
+							}
+						}
+						calendar(form.find(".date"));
+					});
+			}
+			,onDeny : popupDeny
+			,onApprove : function(e) {
+					var cs_name = $("form[name='issue_modify']").find("select[name='cs_name']");
+					if(cs_name.val() == "unset"){
+						alert("업체명을 선택해주세요");
+						cs_name.focus();
+						return false;
+					}else {
+						var param = {};
+						var data = {};
+						param["param"] = jsonBot("issue_modify");
+						param["table"] = "issue_list";
+						param["id"] = ["seq"];
+						ajax(param
+							, "/common/simple_update.php"
+							,function(result){ 
+							snackbar("issueSnackbar","#54c8ff",result);
+						});
+					}
+				}
+			, onHide : popupHide
+			})
+			.modal('show');
+	} else if(mode =="delete"){ 
+		if(confirm("삭제한 업무는 복구할 수 없습니다.\n업무(업무내용: "+memo+")를 삭제하시겠습니까?")==true) {
+			fn_delete("issue_list","seq",seq);
+		} else {
+			return;
+		}	
+	} 
+}
+
 function fn_submit(frm) {
 	frm.submit();
 }
