@@ -184,13 +184,13 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
   <div class="field">
   <div class="inline field">
     <div class="ui ribbon  purple basic label">
-      회사명
+      업체명
     </div>
     <input type="text" name="cs_name" value="" onfocus="this.setSelectionRange(this.value.length, this.value.length)" size="40">
   </div>
   <div class="inline field">
     <div class="ui ribbon purple basic label">
-      회사코드
+      업체코드
     </div>
    <input type="text" name="cs_code" value="">
   </div>

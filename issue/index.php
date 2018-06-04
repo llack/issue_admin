@@ -401,7 +401,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
     <div class="ui ribbon purple basic label">
       업무내용
     </div>
-   <input type="text" name="memo" value="">
+   <input type="text" name="memo" value="" style="width:60%">
   </div>
   
   <div class="inline field">
@@ -697,23 +697,16 @@ function editOrRemove(seq,mode,memo) {
 			}
 			,onDeny : popupDeny
 			,onApprove : function(e) {
-					var cs_name = $("form[name='issue_modify']").find("select[name='cs_name']");
-					if(cs_name.val() == "unset"){
-						alert("업체명을 선택해주세요");
-						cs_name.focus();
-						return false;
-					}else {
-						var param = {};
-						var data = {};
-						param["param"] = jsonBot("issue_modify",["cs_name"]);
-						param["table"] = "issue_list";
-						param["id"] = ["seq"];
-						ajax(param
-							, "/common/simple_update.php"
-							,function(result){ 
-							snackbar("issueSnackbar","#54c8ff",result);
-						});
-					}
+					var param = {};
+					var data = {};
+					param["param"] = jsonBot("issue_modify",["cs_name"]);
+					param["table"] = "issue_list";
+					param["id"] = ["seq"];
+					ajax(param
+						, "/common/simple_update.php"
+						,function(result){ 
+						snackbar("issueSnackbar","#54c8ff",result);
+					});
 				}
 			, onHide : popupHide
 			})
