@@ -4,6 +4,11 @@ session_start();
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 $sdate = ($_REQUEST[sdate]!="") ? $_REQUEST[sdate] : date("Y-m-01");
 $edate = ($_REQUEST[edate]!="") ? $_REQUEST[edate] : date("Y-m-t",strtotime($sdate));
+$_POST[state] = ($_POST[state]!="")? $fn->param_to_array2($_POST[state]) : $fn->param_to_array2("전체_blue");
+
+if($_REQUEST[nAll] != "") {
+	$_POST[state] = $fn->param_to_array2("미완료_red");
+}
 $link = $fn->auto_link("cs_seq","sdate","edate");
 ?>
 <style>
@@ -94,7 +99,37 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	<form name="form" method="POST" style="margin:0px;float:left;">
 	<input type="hidden" value="1" name="page"/>
 	<input type="hidden" value="" name="nAll"/>
-	<input type="hidden" value="<?=$_POST[state]?>" name="state"/>
+	<!-- 필터 검색 -->
+	<div id="state_search" class="ui floating labeled icon dropdown button basic" onchange="fn_submit(document.form)">
+	  <input type="hidden" name="state" value="<?=$_POST[state][0]."_".$_POST[state][1]?>">
+	  <i class="filter purple icon"></i>
+	  
+	  <span class="text"> 
+	  <div class="ui <?=$_POST[state][1]?> empty circular label"></div><?=$_POST[state][0]?>
+	  </span>
+	  
+	  <div class="menu">
+	    <div class="header">
+	      <i class="tags icon"></i>
+	      Filter by tag
+	    </div>
+	    <div class="divider"></div>
+	    <div class="item" data-value="전체_blue">
+	      <div class="ui blue empty circular label"></div>
+		전체
+	    </div>
+	    <div class="item" data-value="완료_green">
+	      <div class="ui green empty circular label"></div>
+		완료
+	    </div>
+	    <div class="item" data-value="미완료_red">
+	      <div class="ui red empty circular label"></div>
+		미완료
+	    </div>
+	  </div>
+	</div>
+	<?=$fn->add_nbsp(3)?>
+	<!-- /필터검색 -->
 	<i class="search icon purple"></i>업체 검색 : <?=$fn->add_nbsp(3)?>
 	<select id="cs_seq" name="cs_seq" class="ui search dropdown" onchange="fn_submit(document.form)" style="width: 200px">
 		<option value="unset">선택하세요</option>
@@ -149,7 +184,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  <!-- /일정검색 -->
 	</div>
 	</form>
-	<br/><br/><br/>
+	<br/><br/><br/><br/>
 	
 	<? 
 	$where = "";
@@ -159,10 +194,14 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	if($_REQUEST[user_id]!="" && $_REQUEST[user_id]!="unset") {
 		$where .= " and user_name = '$_REQUEST[user_id]' ";
 	}
-	if($_REQUEST[nAll]!="") {
-		$where .= " and state = '$_REQUEST[nAll]' ";
+	
+	if($_POST[state][0] == "완료") {
+		$where .= " and state = 'Y' ";
+	} else if($_POST[state][0] == "미완료" || $_REQUEST[nAll]!=""){
+		$where .= " and state = 'N' ";
 	}
-	$que = "select * from issue_list where 1=1 and (regdate between '$sdate' and '$edate') $where order by regdate desc ";
+	
+	$que = "select * from issue_list where 1=1 and (regdate between '$sdate' and '$edate') $where order by state,regdate desc ";
 	$pagenator = new Paginator($que);
 	  $results = $pagenator->getData($page,$limit);
 	  if($results->data) {
@@ -184,7 +223,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 		  <tr style="background-color:#a333c8;" >
 		    <th width="70px"><i class="large briefcase icon" style="color:white!important"></i></th>
 			<th width="70px">No.</th>
-			<th>업체명/요청자</th>
+			<th>업체명 / 요청자</th>
 		    <th>업무내용</th>
 		    <th>등록일</th>
 		    <th>마감예정일</th>
@@ -207,7 +246,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			</div>
 	  	</td>
 	  	<td><a class="ui grey circular label"><?=($i+1)?></a></td>
-	  	<td><?=$issue[cs_name]?> / <?=$issue[cs_person]?></td>
+	  	<td><?=$issue[cs_name]?><?=unSetView($issue[cs_person])?></td>
 	  	<td><?=$issue[memo]?></td>
 	  	<td><?=$issue[regdate]?></td>
 	  	<td>
@@ -344,25 +383,18 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	<form class="ui fluid form" name="issue_modify">
   <div class="field">
   
-  <div class="inline field">
+  <div class="inline field error">
     <div class="ui ribbon  purple basic label">
       업체명
     </div>
-    <select name="cs_name" class="fluid" id="csCnt0" onchange="popupSelect(this.id,this.value)">
-		<option value="unset">선택하세요</option>
-	<?	for($i = 0; $i < $cs_list_cnt; $i++) {	
-			$cs = $cs_list[$i];
-		?>
-		<option value="<?=$cs[title]?>"><?=$cs[title]?></option>	
-	<? } ?>
-	</select>
+    <input type="text" name="cs_name"readonly>
   </div>
   
   <div class="inline field">
     <div class="ui ribbon purple basic label">
       요청자
     </div>
-   <input type="text" name="cs_person" value="">
+    <select name="cs_person"></select>
   </div>
   
   <div class="inline field">
@@ -433,7 +465,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 </body>
 <script>
 $(document).ready(function(){
-
+	$("#state_search").dropdown();
 });
 $(document).on("click","#addRow,.addrow",function(e){
 	e.preventDefault();
@@ -583,7 +615,6 @@ function saveIssue(){
 
 		$("#" + id +" input").each(function(){
 			var name = $(this).attr("name");
-			var value = $(this).val();
 			save[name] = $(this).val();
 		});
 		if(out== true) {	
@@ -598,6 +629,7 @@ function saveIssue(){
 		ajax(obj, "issue_add_ok.php",issueCallback);
 	}
 }
+
 function stateModify(before,after,seq) {
 	if(before == after) {
 		return;
@@ -647,6 +679,20 @@ function editOrRemove(seq,mode,memo) {
 							}
 						}
 						calendar(form.find(".date"));
+						/* 요청자 셋팅 */
+						var param = {};
+						param["table"] = "employee_list";
+						param["where"] = " and refseq = '" + data.refseq + "' order by name";
+						ajax(param,"/common/simple_select.php",function(val){ 
+							var option = "<option value='unset'>선택하세요</option>";
+							 max = val.length;
+							 for (var i = 0; i < max; i++) {
+								 var selected = (val[i].name == data.cs_person) ? "selected" : "";
+								 option += "<option value='"+val[i].name+"' "+selected+">"+val[i].name+"</option>";
+							}
+							 form.find($("select[name='cs_person']").html(option)); 
+						});
+						/* == 요청자 셋팅 == */
 					});
 			}
 			,onDeny : popupDeny
@@ -659,7 +705,7 @@ function editOrRemove(seq,mode,memo) {
 					}else {
 						var param = {};
 						var data = {};
-						param["param"] = jsonBot("issue_modify");
+						param["param"] = jsonBot("issue_modify",["cs_name"]);
 						param["table"] = "issue_list";
 						param["id"] = ["seq"];
 						ajax(param
@@ -686,7 +732,17 @@ function fn_submit(frm) {
 }
 
 function delete_issue() {
-	alert(1);
+	var c = $("#chk:checked");
+	if(c.length==0) {
+		alert("삭제 대상이 없습니다.");
+		return;
+	}
+	var param = {};
+	if(confirm("삭제한 업무는 복구할 수 없습니다.\n총 "+c.length+"건 삭제하시겠습니까?")==true) {
+		fn_delete("issue_list","seq");
+	} else {
+		return;
+	}
 }
 /* CALLBACK*/ 
  function makeSelect(id,result) {
@@ -725,5 +781,11 @@ function dDay($date) {
 		return "<font color='red'>오늘 마감</font>";
 	}
 }
-
+function unSetView($val) {
+	if($val == "unset") {
+		return "";
+	} else {
+		return " / ".$val;
+	}
+}
 ?>
