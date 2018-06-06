@@ -2,8 +2,6 @@
 $row_info = $fn->userInfo($_SESSION["USER_ID"]);
 $row_info = $row_info[0];
 
-
-
 $myWork = $fn->myWork($_SESSION["USER_ID"]);
 ?>
 
