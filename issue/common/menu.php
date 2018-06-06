@@ -3,7 +3,9 @@ $row_info = $fn->userInfo($_SESSION["USER_ID"]);
 $row_info = $row_info[0];
 
 function myWork($user_name) {
-	$que = " select * from issue_list where user_name = '$user_name' and state = 'N' ";
+	global $sdate;
+	global $edate;
+	$que = " select * from issue_list where user_name = '$user_name' and state = 'N' and (regdate between '$sdate' and '$edate') ";
 	$res = mysql_query($que) or die(mysql_error());
 	$cnt = mysql_num_rows($res);
 	return $cnt;
@@ -90,7 +92,7 @@ function myWork($user_name) {
       <h4 class="ui header">업무</h4>
       <div class="ui link list">
         <a class="item" href="/index.php">업무현황</a>
-        <a class="item">메뉴2</a>
+        <a class="item" href="/issue/issue_stats.php">업무차트</a>
         <a class="item">메뉴3</a>
       </div>
     </div>
