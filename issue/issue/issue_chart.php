@@ -85,11 +85,14 @@ $month_sum = array_sum($donut->month) ? array_sum($donut->month) : 1;
 				<th colspan="4">업체별 업무통계</th>
 			</tr>
 			<tr class="center aligned">
-				<th colspan="2"><?=$year?>년 업무통계</th>
-				<th colspan="2"><?=$month?>월 업무통계</th>
+				<th colspan="2"><?=$year?>년 업무통계<?=$fn->add_nbsp(3)?>
+				<i class="purple sort amount down icon"></i></th>
+				
+				<th colspan="2"><?=$month?>월 업무통계<?=$fn->add_nbsp(3)?>
+				<i class="purple sort amount down icon"></i></th>
 			</tr>
 		</thead>
-		<tr class="center aligned">
+		<tr class="left aligned">
 		<!-- 연도별 -->
 			<td>
 				<div id="yearDonut" style="height:100%"></div>
@@ -99,9 +102,8 @@ $month_sum = array_sum($donut->month) ? array_sum($donut->month) : 1;
 			for($yy = 0; $yy < $year_max; $yy++) {
 				$yKey = $year_key[$yy];
 				$yearWork = $donut->year[$yKey];
-				?>
-			<?=$yKey. " : " . $yearWork?>건 (<?=number_format(($yearWork / $year_sum) * 100,1)?>%)<br/><br/>
-			<? } ?>
+				echo workView($yKey,$yearWork,$year_sum);
+			} ?>
 			<td>
 		<!-- 월별 -->
 				<div id="monthDonut" style="height:100%"></div>
@@ -111,9 +113,8 @@ $month_sum = array_sum($donut->month) ? array_sum($donut->month) : 1;
 			for($mm = 0; $mm < $month_max; $mm++) {
 				$mKey = $month_key[$mm];
 				$monthWork = $donut->month[$mKey];
-			?>
-			<?=$mKey. " : " . $monthWork?>건 (<?=number_format(($monthWork/ $month_sum) * 100,1)?>%)<br/><br/>
-			<? } ?>
+				echo workView($mKey,$monthWork,$month_sum);
+			} ?>
 			</td>
 		</tr>
 		
@@ -214,5 +215,16 @@ function workChart($year,$month) {
 	$return->year = $list;
 	$return->month = $list2;
 	return $return;
+}
+
+function workView($cs_name,$work,$sum) {
+	$html = "<div class='ui right pointing purple basic label'>";
+	$html .= $cs_name;
+	$html .= "</div>";
+	$html .= "<a class='ui grey circular label'>";
+	$html .= $work;
+	$html .= "</a> 건 (";
+	$html .= number_format(($work/ $sum) * 100,1)."%)<br/><br/>";
+	return $html;
 }
 ?>
