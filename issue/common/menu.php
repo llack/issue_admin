@@ -3,13 +3,23 @@ $row_info = $fn->userInfo($_SESSION["USER_ID"]);
 $row_info = $row_info[0];
 
 function myWork($user_name) {
-	global $sdate;
-	global $edate;
-	$que = " select * from issue_list where user_name = '$user_name' and state = 'N' and (regdate between '$sdate' and '$edate') ";
+	$que = " select * from issue_list where user_name = '$user_name' and state = 'N' ";
 	$res = mysql_query($que) or die(mysql_error());
 	$cnt = mysql_num_rows($res);
-	return $cnt;
+	
+	$s = mysql_query($que." order by regdate LIMIT 1") or die(mysql_error());
+	$sdate = mysql_fetch_array($s);
+	
+	$e = mysql_query($que." order by regdate desc LIMIT 1") or die(mysql_error());
+	$edate = mysql_fetch_array($e);
+	
+	$obj = new stdClass();
+	$obj->cnt = $cnt;
+	$obj->url = "nAll=N&user_id=".$_SESSION["USER_ID"]."&sdate=".$sdate[regdate]."&edate=".$edate[regdate];
+	return $obj;
 }
+
+$myWork = myWork($_SESSION["USER_ID"]);
 ?>
 
 <style>
@@ -126,7 +136,7 @@ function myWork($user_name) {
 		</div>
 		E-mail : <input type="text" value="<?=$row_info[user_email]?>" style="border:none;height:30px" id="user_email" readonly/>
 		<br/><br/>
-		<a href="/index.php?nAll=N&user_id=<?=$_SESSION["USER_ID"]?>">미완료 업무 : <?=myWork($_SESSION["USER_ID"])?>건</a>
+		<a href="/index.php?<?=$myWork->url?>">미완료 업무 : <?=$myWork->cnt?>건</a>
 		<button class="negative ui small button right floated" onclick="logout()"><i class="share square outline icon"></i>로그아웃</button>
 		<button class="purple ui small button right floated" onclick="modify_userInfo()"><i class="user icon"></i>정보수정</button>
     </div> <!-- /내정보 -->
