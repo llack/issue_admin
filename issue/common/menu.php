@@ -2,24 +2,9 @@
 $row_info = $fn->userInfo($_SESSION["USER_ID"]);
 $row_info = $row_info[0];
 
-function myWork($user_name) {
-	$que = " select * from issue_list where user_name = '$user_name' and state = 'N' ";
-	$res = mysql_query($que) or die(mysql_error());
-	$cnt = mysql_num_rows($res);
-	
-	$s = mysql_query($que." order by regdate LIMIT 1") or die(mysql_error());
-	$sdate = mysql_fetch_array($s);
-	
-	$e = mysql_query($que." order by regdate desc LIMIT 1") or die(mysql_error());
-	$edate = mysql_fetch_array($e);
-	
-	$obj = new stdClass();
-	$obj->cnt = $cnt;
-	$obj->url = "nAll=N&user_id=".$_SESSION["USER_ID"]."&sdate=".$sdate[regdate]."&edate=".$edate[regdate];
-	return $obj;
-}
 
-$myWork = myWork($_SESSION["USER_ID"]);
+
+$myWork = $fn->myWork($_SESSION["USER_ID"]);
 ?>
 
 <style>

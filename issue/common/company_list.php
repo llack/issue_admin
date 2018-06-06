@@ -7,7 +7,7 @@
 		  <div class="visible content">
 		    <i class="home icon"></i>
 		  </div>
-		</div>업체별 미완료 현황</h4>
+		</div><?=$fn->add_nbsp(2)?>업체별 미완료 현황</h4>
 	</div>
 	<!-- /사이드바 헤더 -->
 	
@@ -35,16 +35,17 @@
 	  	$cs_list = $fn->cs_list();
 	  	$cnt = count($cs_list);
 	  	for($i = 0; $i < $cnt; $i++ ) { 
-	  		$issue = count_issue($cs_list[$i][seq]);
+	  		$issue = $fn->myWork($cs_list[$i][seq],"refseq");
 	  	?>
-	  	<a class="item purple" href="<?=$cs_list[$i][url]?>"><?=$cs_list[$i][title]?>
-	  	<? if(0 < $issue) { 
-	  		$importance = ($issue >= 3) ? "red" : "green";
+	  	<a class="item purple" href="/index.php?<?=$issue->url?>"><?=$cs_list[$i][title]?>
+	  	<? if(0 < $issue->cnt) { 
+	  		$importance = ($issue->cnt>= 3) ? "red" : "green";
 	  		?>
-	    <div class="ui label <?=$importance?> basic left pointing"><?=$issue?></div>
+	    <div class="ui label <?=$importance?> basic left pointing"><?=$issue->cnt?></div>
 	  	</a>
-	  	<? } ?>
-	  	<? }  ?>
+	  	<? }
+	  	
+	  	}  ?>
   </div>
   <!-- / 사이드바 업체리스트  -->
 </div>

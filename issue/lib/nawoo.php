@@ -63,6 +63,28 @@ class Json_select {
 		}
 		return $str;
 	}
+	
+	function myWork($value,$search="user_name") {
+		$que = " select * from issue_list where {$search} = '$value' and state = 'N' ";
+		$res = mysql_query($que) or die(mysql_error());
+		$cnt = mysql_num_rows($res);
+		
+		$s = mysql_query($que." order by regdate LIMIT 1") or die(mysql_error());
+		$sdate = mysql_fetch_array($s);
+		
+		$e = mysql_query($que." order by regdate desc LIMIT 1") or die(mysql_error());
+		$edate = mysql_fetch_array($e);
+		
+		$obj = new stdClass();
+		$obj->cnt = $cnt;
+		if($search=="user_name") {
+			$obj->url = "nAll=N&user_id=".$value."&sdate=".$sdate[regdate]."&edate=".$edate[regdate];
+		} else {
+			$obj->url = "nAll=N&cs_seq=".$value."&sdate=".$sdate[regdate]."&edate=".$edate[regdate];
+		}
+		return $obj;
+	}
+	
 }
 class Simple_query {
 	function simple_delete($table, $id,$del_data) {
