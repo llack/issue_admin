@@ -92,7 +92,7 @@ function myWork($user_name) {
       <h4 class="ui header">업무</h4>
       <div class="ui link list">
         <a class="item" href="/index.php">업무현황</a>
-        <a class="item" href="/issue/issue_stats.php">업무차트</a>
+        <a class="item" href="/issue/issue_chart.php">업무차트</a>
         <a class="item">메뉴3</a>
       </div>
     </div>
