@@ -78,7 +78,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	</div>
 	<h2 class="ui header" style="margin-top: 0px">
 	
-	<i class="circular purple tags icon "></i>
+	<i class="circular purple briefcase icon "></i>
 	<div class="content">업무현황<?$fn->add_nbsp(2)?>
 		<button class="ui basic blue button" id="addRow">
 		  <i class="icon plus square"></i>
