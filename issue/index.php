@@ -694,7 +694,7 @@ function editOrRemove(seq,mode,memo) {
 									 option += "<option value='"+val[i].name+"' "+selected+">"+val[i].name+"</option>";
 								}
 							 } else {
-								 option = "<option value=''>사원등록수 : 0</option>";
+								 option = "<option value='unset'>사원등록수 : 0</option>";
 								 select.closest("div").addClass("error");
 							}
 							 select.html(option);
@@ -757,7 +757,7 @@ function delete_issue() {
 		 csPerson.html(option);
 		 csPerson.closest(".selectDiv").removeClass("error");
 	 } else {
-		 csPerson.html("<option value=''>사원등록 수 : 0</option>");
+		 csPerson.html("<option value='unset'>사원등록 수 : 0</option>");
 		 csPerson.closest(".selectDiv").addClass("error");
 	}
 }
