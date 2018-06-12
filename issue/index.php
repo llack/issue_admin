@@ -705,7 +705,6 @@ function editOrRemove(seq,mode,memo) {
 			,onDeny : popupDeny
 			,onApprove : function(e) {
 					var param = {};
-					var data = {};
 					param["param"] = jsonBot("issue_modify",["cs_name"]);
 					param["table"] = "issue_list";
 					param["id"] = ["seq"];
