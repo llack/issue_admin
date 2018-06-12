@@ -683,14 +683,21 @@ function editOrRemove(seq,mode,memo) {
 						var param = {};
 						param["table"] = "employee_list";
 						param["where"] = " and refseq = '" + data.refseq + "' order by name";
-						ajax(param,"/common/simple_select.php",function(val){ 
-							var option = "<option value='unset'>선택하세요</option>";
+						ajax(param,"/common/simple_select.php",function(val){
+							 var option = "";
+							 var select = form.find($("select[name='cs_person']"));
+							 if(val) {
 							 max = val.length;
-							 for (var i = 0; i < max; i++) {
-								 var selected = (val[i].name == data.cs_person) ? "selected" : "";
-								 option += "<option value='"+val[i].name+"' "+selected+">"+val[i].name+"</option>";
+								option = "<option value='unset'>선택하세요</option>";
+								 for (var i = 0; i < max; i++) {
+									 var selected = (val[i].name == data.cs_person) ? "selected" : "";
+									 option += "<option value='"+val[i].name+"' "+selected+">"+val[i].name+"</option>";
+								}
+							 } else {
+								 option = "<option value=''>사원등록수 : 0</option>";
+								 select.closest("div").addClass("error");
 							}
-							 form.find($("select[name='cs_person']").html(option)); 
+							 select.html(option);
 						});
 						/* == 요청자 셋팅 == */
 					});
@@ -775,7 +782,7 @@ function dDay($date) {
 	}
 }
 function unSetView($val) {
-	if($val == "unset") {
+	if($val == "unset"||$val == "") {
 		return "";
 	} else {
 		return " / ".$val;
