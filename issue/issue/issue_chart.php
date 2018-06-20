@@ -147,7 +147,8 @@ function drawChart() {
 
 	var options = {
 	  title: '<?=$year?>년 업체별 업무',
-	  pieHole: 0.4
+	  pieHole: 0.4,
+	  is3D : true
 	};
 
 	var chart = new google.visualization.PieChart(document.getElementById('yearDonut'));
@@ -171,7 +172,8 @@ function drawChart2() {
 
 	var options = {
 	  title: '<?=$month?>월 업체별 업무(<?=$year?>년)',
-	  pieHole: 0.4
+	  pieHole: 0.4,
+	  is3D : true
 	};
 
 	var chart = new google.visualization.PieChart(document.getElementById('monthDonut'));
