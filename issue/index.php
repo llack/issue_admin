@@ -64,6 +64,9 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
     from {top: 0; opacity: 0;} 
     to {top: 30px; opacity: 1;}
 }
+.comment {
+	display : none;
+}
 </style>
 <body>
 <div class="ui container side">
@@ -238,7 +241,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	$name = $fn->userInfo($issue[user_name]);
 	  	$name = $name[0][user_name];
 	  ?>
-	  <tr class="tr_hover">
+	  <tr class="tr_hover" ondblClick="comment('<?=$issue[seq]?>',this)">
 	  	<td>
 	  		<div class="ui toggle checkbox">
 			  <input type="checkbox" id="chk" value="<?=$issue[seq]?>">
@@ -269,6 +272,16 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			  <div class="or"></div>
 			  <button class="ui inverted red button" onclick="editOrRemove('<?=$issue[seq]?>','delete','<?=$issue[memo]?>')">삭제</button>
 			</div>
+	  	</td>
+	  </tr>
+	  <tr class="comment">
+	  	<td align="center">RE : </td>
+	  	<td align="left" colspan="8">
+	  		<textarea style="width: 100%;padding:3px;resize:none" rows="3" id="bigo<?=$issue[seq]?>"><?=$issue[bigo]?></textarea><br/><br/>
+	  		<div class="ui tiny buttons">
+	  			<button class="ui green button" onclick="comment_add('<?=$issue[seq]?>')">저장</button>
+	  			<button class="ui red button" onclick="comment('<?=$issue[seq]?>',this,'selfClose')">닫기</button>
+	  		</div>
 	  	</td>
 	  </tr>
 	  <? } ?>
@@ -493,32 +506,12 @@ $(document).on("click",".removeRow",function(e){
 	}
 });
 $(document).ready(function(){
-
-	$("#cs_seq").dropdown({
-		forceSelection: false
-		,message : {
-			noResults     : "검색 결과 없음"
-		}
-		,selectOnKeydown : false
-		,fullTextSearch: true
-		,match : "text"
-	});
-	
-	$("#user_id").dropdown({
-		forceSelection: false
-		,message : {
-			noResults     : "검색 결과 없음"
-		}
-		,selectOnKeydown : false
-		,fullTextSearch: true
-		,match : "text"
-	});
-
+	dropDown("#cs_seq");
+	dropDown("#user_id");
 	hoverMaster("tr_hover","positive");
 })
 
 function addRow(addOne) {
-
 	var num = 0;
 	$("div[id*='cloneContent']:visible").each(function(i){
 		num++;
@@ -743,6 +736,28 @@ function delete_issue() {
 		return;
 	}
 }
+
+/*comment 관련 method*/
+function comment(seq,tr,loca) {
+	if(loca) {
+		$(tr).closest("tr").toggleClass("comment");
+		return;
+	}
+	$(tr).next().toggleClass("comment");
+}
+function comment_add(seq) {
+	var bigo = $("#bigo"+seq).val();
+	var param = {};
+	param["param"] = {"bigo" : bigo, "seq" : seq};
+	param["table"] = "issue_list";
+	param["id"] = ["seq"];
+	ajax(param,"/common/simple_update.php",
+		function(result){ 
+			alert(result); 
+			//location.reload();
+	});
+}
+/*==comment==*/
 /* CALLBACK*/ 
  function makeSelect(id,result) {
 	 var id = id.substr(5); 

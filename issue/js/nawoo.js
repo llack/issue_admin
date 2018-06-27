@@ -194,6 +194,17 @@ function trim_chk(value,name,msg) {
 		return true;
 	}
 }
+function dropDown(ele) {
+	$(ele).dropdown({
+		forceSelection: false
+		,message : {
+			noResults     : "검색 결과 없음"
+		}
+		,selectOnKeydown : false
+		,fullTextSearch: true
+		,match : "text"
+	});
+}
 
 $(function(){
 	
