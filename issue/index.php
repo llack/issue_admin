@@ -68,7 +68,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	display : none;
 }
 .font_red {
-	color : #FA5858;
+	background-color : #FBEFEF;
 }
 </style>
 <body>
@@ -249,9 +249,16 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	$end_date = strtotime(date($issue[end_date]));
 	  	$dday = intval(($today - $end_date) / 86400);
 	  	
-	  	$dDay = ($issue[state]=="N") ? $issue[end_date]." ".dDay($dday)."" : $issue[end_date]; // D-day HTML
-	  	$font = ($dday > 0 && $issue[state]=="N") ? "font_red" : ""; // D-day font color red
-	  	
+	  	$dDay = $issue[end_date];
+	  	$circle = "green";
+	  	$font = "";
+	  	if($issue[state]=="N") {
+	  		$dDay = $issue[end_date]." ".dDay($dday)."";
+	  		$circle = "red";
+	  		if($dday > 0) {
+	  			$font = "font_red"; // D-day font color red
+	  		}
+	  	}// D-day HTML
 	  ?>
 	  <tr class="tr_hover <?=$font?>" ondblClick="comment('<?=$issue[seq]?>',this)">
 	  	<td>
@@ -260,7 +267,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			  <label></label>
 			</div>
 	  	</td>
-	  	<td><a class="ui grey circular label"><?=($i+1)?></a></td>
+	  	<td><a class="ui <?=$circle?> circular label"><?=($i+1)?></a></td>
 	  	<td><?=$issue[cs_name]?><?=unSetView($issue[cs_person])?></td>
 	  	<td><?=$issue[memo]?></td>
 	  	<td><?=$issue[regdate]?></td>
