@@ -67,6 +67,9 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 .comment {
 	display : none;
 }
+.font_red {
+	color : #FA5858;
+}
 </style>
 <body>
 <div class="ui container side">
@@ -240,8 +243,17 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	$issue = $results->data[$i];
 	  	$name = $fn->userInfo($issue[user_name]);
 	  	$name = $name[0][user_name];
+	  	
+	  	/*D-day 구하기 */
+	  	$today = strtotime(date("Y-m-d"));
+	  	$end_date = strtotime(date($issue[end_date]));
+	  	$dday = intval(($today - $end_date) / 86400);
+	  	
+	  	$dDay = ($issue[state]=="N") ? $issue[end_date]." ".dDay($dday)."" : $issue[end_date]; // D-day HTML
+	  	$font = ($dday > 0 && $issue[state]=="N") ? "font_red" : ""; // D-day font color red
+	  	
 	  ?>
-	  <tr class="tr_hover" ondblClick="comment('<?=$issue[seq]?>',this)">
+	  <tr class="tr_hover <?=$font?>" ondblClick="comment('<?=$issue[seq]?>',this)">
 	  	<td>
 	  		<div class="ui toggle checkbox">
 			  <input type="checkbox" id="chk" value="<?=$issue[seq]?>">
@@ -253,7 +265,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	<td><?=$issue[memo]?></td>
 	  	<td><?=$issue[regdate]?></td>
 	  	<td>
-	  		<?=$dDay = ($issue[state]=="N") ? $issue[end_date]." ".dDay($issue[end_date])."" : $issue[end_date];?>
+	  		<?=$dDay?>
 	  	</td>
 	  	<td><?=$name?></td>
 	  	<td>
@@ -279,8 +291,8 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	<td align="left" colspan="8">
 	  		<textarea style="width: 100%;padding:3px;resize:none" rows="3" id="bigo<?=$issue[seq]?>"><?=$issue[bigo]?></textarea><br/><br/>
 	  		<div class="ui tiny buttons">
-	  			<button class="ui green button" onclick="comment_add('<?=$issue[seq]?>')">저장</button>
-	  			<button class="ui red button" onclick="comment('<?=$issue[seq]?>',this,'selfClose')">닫기</button>
+	  			<button class="ui inverted purple button" onclick="comment_add('<?=$issue[seq]?>')">저장</button>
+	  			<button class="ui inverted red button" onclick="comment('<?=$issue[seq]?>',this,'selfClose')">닫기</button>
 	  		</div>
 	  	</td>
 	  </tr>
@@ -783,10 +795,7 @@ function issueCallback(result) {
 </script>
 </html>
 <?
-function dDay($date) {
-	$today = strtotime(date("Y-m-d"));
-	$end_date = strtotime(date($date));
-	$dday = intval(($today - $end_date) / 86400);
+function dDay($dday) {
 	if($dday >0) {
 		return "<font color='red'><strong>(D+" .$dday . ")</strong></font>";
 	} else if($dday < 0) {
