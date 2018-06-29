@@ -234,7 +234,8 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 		    <th>등록일</th>
 		    <th>마감예정일</th>
 		    <th>담당자</th>
-		    <th>상태</th>
+		    <th>완료일</th>
+		    <th>상태변경</th>
 		    <th><i class="large edit icon"></i>or <i class="large ban icon"></i></th>
 		  </tr>
 	  </thead>
@@ -269,16 +270,21 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	</td>
 	  	<td><a class="ui <?=$circle?> circular label"><?=($i+1)?></a></td>
 	  	<td><?=$issue[cs_name]?><?=unSetView($issue[cs_person])?></td>
-	  	<td><?=$issue[memo]?></td>
+	  	<td style="text-align:left"><?=$issue[memo]?></td>
 	  	<td><?=$issue[regdate]?></td>
 	  	<td>
 	  		<?=$dDay?>
 	  	</td>
 	  	<td><?=$name?></td>
+	  	<td><?=$fin_date = ($issue[finish_date] != "0000-00-00") ? $issue[finish_date] : "";?></td>
 	  	<td>
-	  		<? 
-	  			$finish = ($issue[state] == "N") ? "inverted" : "positive"; 
-	  			$incomplete = ($issue[state] == "N") ? "negative" : "inverted"; 
+	  		<?
+		  		$finish = "positive";
+		  		$incomplete = "inverted";
+		  		if($issue[state] == "N") {
+		  			$finish = "inverted";
+		  			$incomplete = "negative";
+		  		} 
 	  		?>
 	  		<div class="ui tiny buttons"><!--  -->
 			  <button class="ui <?=$finish?> green button" onclick="stateModify('<?=$issue[state]?>','Y','<?=$issue[seq]?>')">완료</button>
@@ -649,6 +655,7 @@ function stateModify(before,after,seq) {
 		var param = {};
 		var text = "",color = "";
 		param["param"] = {"state" : after, "seq" : seq};
+		param["param"].finish_date = (after == "Y") ? "<?=date('Y-m-d')?>" : "0000-00-00"; //실제 완료일 
 		param["table"] = "issue_list";
 		param["id"] = ["seq"];
 		ajax(param,"/common/simple_update.php",function(result){
