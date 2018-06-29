@@ -366,13 +366,6 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
       </div>
       
       <div class="field">
-        <label>업무내용</label><br/>
-        <div class="ui fluid">
-		  <input type="text" name="memo" class="fluid">
-		</div>
-      </div>
-      
-      <div class="field">
       	<label>등록일</label><br/>
       	<div class="ui fluid">
 	      	<div class="ui calendar date">
@@ -396,12 +389,20 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 		  </div>
       </div>
       
-      <div class="field">
+    </div>
+    <br/>
+    <div class="two fields inline" style="border-bottom: 2px dotted #dc73ff">
+    <div class="field center aligned">
+        <label>업무내용 ▼</label><br/>
+        <div class="ui">
+		  <input type="text" name="memo" class="fluid">
+		</div>
+	</div>
+	<div class="ui fluid">
         <label><?$fn->add_nbsp(1)?></label><br/>
       <button class="ui inverted red button removeRow">삭제</button>
       </div>
-      
-    </div>
+     </div>
 </div>
 <!-- clone -->	
 <!--  이슈 수정 팝업 -->
@@ -497,60 +498,57 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 </body>
 <script>
 $(document).ready(function(){
-	$("#state_search").dropdown();
+	$("#state_search").dropdown(); //필터검색
+	dropDown("#cs_seq,#user_id"); //select 검색
+	hoverMaster("tr_hover","positive");
 });
+
 $(document).on("click","#addRow,.addrow",function(e){
 	e.preventDefault();
 	addRow();
-
 });
+
 $(document).on("click",".removeRow",function(e){
 	e.preventDefault();
 	var sort = "div[id*='cloneContent']:visible";
-	$(this).closest(sort).remove();
+	$(this).closest(sort).remove(); // this는 버튼
+	
+	if($(sort).length==0) {
+		$(".clone").css("display","none");
+		return;
+	}
 	$(sort).each(function(i){
 		num = i+1;
 		$(this).prop("id","cloneContent"+num);
 		$(this).attr("data-idx",num);
-		$(this).find("input[id*=regdate]").prop("id","regdate"+num);
-		$(this).find("input[id*=cs_name]").prop("id","cs_name"+num);
-		$(this).find("input[id*=end_date]").prop("id","end_date"+num);
-		$(this).find("span[id*=cloneCnt]").prop("id","cloneCnt"+num);
-		$(this).find("select[id*=csCnt]").prop("id","csCnt"+num);
-		$(this).find("select[id*=csPerson]").prop("id","csPerson"+num);
+		sortElements($(this),num,"regdate","cs_name","end_date","cloneCnt","csCnt","csPerson");
 		$("#cloneCnt" + num).text(num);
 	});
-	if($(sort).length==0) {
-		$(".clone").css("display","none");
-	}
 });
-$(document).ready(function(){
-	dropDown("#cs_seq");
-	dropDown("#user_id");
-	hoverMaster("tr_hover","positive");
-})
+function sortElements() {
+	var max = arguments.length;
+	var ele = arguments[0];
+	var num = arguments[1];
 
+	for(var i = 2; i < max; i++) {
+		ele.find("[id*="+arguments[i]+"]").prop("id",arguments[i]+""+num);
+	}
+}
 function addRow(addOne) {
-	var num = 0;
-	$("div[id*='cloneContent']:visible").each(function(i){
-		num++;
-	});
-	
+	var num = $("div[id*='cloneContent']:visible").length;
 	if(addOne) {
 		makeDiv(num);
 	} else {
-		var popup = prompt("추가할 업무수를 입력하세요\n* 숫자만 입력할 수 있습니다.","1");
-		if(popup != null && popup.trim()!=0 && isNaN(popup)===false) {
+		var popup = prompt("추가할 업무수를 입력하세요\n* 10이하 숫자만 입력할 수 있습니다.","1");
+		if(popup != null && popup.trim()!=0 && isNaN(popup)===false && popup.trim() <= 10) {
 			for(var i = num; i < num+(popup*1); i++) {
 				makeDiv(i);
 			}
-			
 			$(".clone").css("display","");
-			
 		} else if(popup ==null) {
 			return;
 		} else {
-			alert("잘못된 값입니다. 다시 입력해주세요!");
+			alert("잘못된 값 또는 입력제한을 초과하였습니다. 다시 입력해주세요!");
 			$(this).blur();
 		}
 	}
@@ -579,7 +577,7 @@ function makeDiv(num) {
 	} else {
 		cl.appendTo("#cloneTarget"); //처음
 	}
-	calendar(cl.find(".date"));
+	calendar(cl.find(".date")); //달력 
 	$("#" + cnt).text((num+1));
 	$("#" + next + "").css("display","");
 }
@@ -667,52 +665,14 @@ function stateModify(before,after,seq) {
 }
 
 function editOrRemove(seq,mode,memo) {
-	if(mode =="modify") { // 업체수정
+	if(mode =="modify") { // 업무정보수정
+		
 		$('#issue_modify').modal({
 			onShow : function() {
 				var param = {};
 				param["table"] = "issue_list";
 				param["where"] = " and seq = " + seq;
-				ajax(param
-					,"/common/simple_select.php"
-					,function(result){
-						var data = result[0];
-						
-						var form = $("form[name='issue_modify']");
-						
-						for(var key in data) { // input & select name값 맞추면 자동 추가
-							var ele = "input";
-							var target = form.find($(ele+"[name='"+key+"']")).length;
-							if(target > 0) {
-								form.find($(ele+"[name='"+key+"']")).val(data[key]);
-							} else {
-								ele = "select";
-								form.find($(ele+"[name='"+key+"']")).val(data[key]);
-							}
-						}
-						calendar(form.find(".date"));
-						/* 요청자 셋팅 */
-						var param = {};
-						param["table"] = "employee_list";
-						param["where"] = " and refseq = '" + data.refseq + "' order by name";
-						ajax(param,"/common/simple_select.php",function(val){
-							 var option = "";
-							 var select = form.find($("select[name='cs_person']"));
-							 if(val) {
-							 max = val.length;
-								option = "<option value='unset'>선택하세요</option>";
-								 for (var i = 0; i < max; i++) {
-									 var selected = (val[i].name == data.cs_person) ? "selected" : "";
-									 option += "<option value='"+val[i].name+"' "+selected+">"+val[i].name+"</option>";
-								}
-							 } else {
-								 option = "<option value='unset'>사원등록수 : 0</option>";
-								 select.closest("div").addClass("error");
-							}
-							 select.html(option);
-						});
-						/* == 요청자 셋팅 == */
-					});
+				ajax(param,"/common/simple_select.php",modifyIssue);
 			}
 			,onDeny : popupDeny
 			,onApprove : function(e) {
@@ -727,8 +687,8 @@ function editOrRemove(seq,mode,memo) {
 					});
 				}
 			, onHide : popupHide
-			})
-			.modal('show');
+			}).modal('show');
+		
 	} else if(mode =="delete"){ 
 		if(confirm("삭제한 업무는 복구할 수 없습니다.\n업무(업무내용: "+memo+")를 삭제하시겠습니까?")==true) {
 			fn_delete("issue_list","seq",seq);
@@ -778,7 +738,45 @@ function comment_add(seq) {
 }
 /*==comment==*/
 /* CALLBACK*/ 
- function makeSelect(id,result) {
+function modifyIssue(result){
+	var data = result[0];
+	
+	var form = $("form[name='issue_modify']");
+	
+	for(var key in data) { // input & select name값 맞추면 자동 추가
+		var ele = "input";
+		var target = form.find($(ele+"[name='"+key+"']")).length;
+		if(target > 0) {
+			form.find($(ele+"[name='"+key+"']")).val(data[key]);
+		} else {
+			ele = "select";
+			form.find($(ele+"[name='"+key+"']")).val(data[key]);
+		}
+	}
+	calendar(form.find(".date"));
+	/* 요청자 셋팅 */
+	var param = {};
+	param["table"] = "employee_list";
+	param["where"] = " and refseq = '" + data.refseq + "' order by name";
+	ajax(param,"/common/simple_select.php",function(val){
+		 var option = "";
+		 var select = form.find($("select[name='cs_person']"));
+		 if(val) {
+		 max = val.length;
+			option = "<option value='unset'>선택하세요</option>";
+			 for (var i = 0; i < max; i++) {
+				 var selected = (val[i].name == data.cs_person) ? "selected" : "";
+				 option += "<option value='"+val[i].name+"' "+selected+">"+val[i].name+"</option>";
+			}
+		 } else {
+			 option = "<option value='unset'>사원등록수 : 0</option>";
+			 select.closest("div").addClass("error");
+		}
+		 select.html(option);
+	});
+	/* == 요청자 셋팅 == */
+}
+function makeSelect(id,result) {
 	 var id = id.substr(5); 
 	 var csPerson = $("#csPerson" + id +"");
 	 if(result) {
