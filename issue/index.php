@@ -231,10 +231,9 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			<th width="70px">No.</th>
 			<th>업체명 / 요청자</th>
 		    <th>업무내용</th>
-		    <th>등록일</th>
-		    <th>마감예정일</th>
+		    <th>등록일 - 마감일</th>
 		    <th>담당자</th>
-		    <th>완료일</th>
+		    <th width="100px">완료일</th>
 		    <th>상태변경</th>
 		    <th><i class="large edit icon"></i>or <i class="large ban icon"></i></th>
 		  </tr>
@@ -253,8 +252,9 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	$dDay = $issue[end_date];
 	  	$circle = "green";
 	  	$font = "";
+	  	$dDayView = "";
 	  	if($issue[state]=="N") {
-	  		$dDay = $issue[end_date]." ".dDay($dday)."";
+	  		$dDayView = dDay($dday);
 	  		$circle = "red";
 	  		if($dday > 0) {
 	  			$font = "font_red"; // D-day font color red
@@ -271,10 +271,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	<td><a class="ui <?=$circle?> circular label"><?=($i+1)?></a></td>
 	  	<td><?=$issue[cs_name]?><?=unSetView($issue[cs_person])?></td>
 	  	<td style="text-align:left"><?=$issue[memo]?></td>
-	  	<td><?=$issue[regdate]?></td>
-	  	<td>
-	  		<?=$dDay?>
-	  	</td>
+	  	<td><?=$dDayView?><br/><?=$issue[regdate]?> ~ <?=$dDay?></td>
 	  	<td><?=$name?></td>
 	  	<td><?=$fin_date = ($issue[finish_date] != "0000-00-00") ? $issue[finish_date] : "";?></td>
 	  	<td>
