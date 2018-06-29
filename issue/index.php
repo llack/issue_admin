@@ -677,17 +677,7 @@ function editOrRemove(seq,mode,memo) {
 				ajax(param,"/common/simple_select.php",selectIssue);
 			}
 			,onDeny : popupDeny
-			,onApprove : function(e) {
-					var param = {};
-					param["param"] = jsonBot("issue_modify",["cs_name"]);
-					param["table"] = "issue_list";
-					param["id"] = ["seq"];
-					ajax(param
-						, "/common/simple_update.php"
-						,function(result){ 
-						snackbar("issueSnackbar","#54c8ff",result);
-					});
-				}
+			,onApprove : modifyIssue // 수정
 			, onHide : popupHide
 			}).modal('show');
 		
@@ -702,6 +692,18 @@ function editOrRemove(seq,mode,memo) {
 
 function fn_submit(frm) {
 	frm.submit();
+}
+
+function modifyIssue() {
+	var param = {};
+	param["param"] = jsonBot("issue_modify",["cs_name"]);
+	param["table"] = "issue_list";
+	param["id"] = ["seq"];
+	ajax(param
+		, "/common/simple_update.php"
+		,function(result){ 
+		snackbar("issueSnackbar","#54c8ff",result);
+	});
 }
 
 function delete_issue() {
