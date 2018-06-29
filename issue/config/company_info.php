@@ -260,7 +260,6 @@ function editOrRemove(seq,mode,cs_name) {
 					,"/common/simple_select.php"
 					,function(result){
 						var data = result[0];
-						var max = Object.keys(result[0]).length;
 						for(var key in data) {
 							$("input[name='"+key+"']").val(data[key]);
 						}

@@ -15,11 +15,11 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 #issue_info {
 	position: absolute;
 	 width: 480px;
-	 height: 480px;
+	 height: 600px;
 	 left: 50%;
 	 top: 50%;
 	 margin-left: -250px;
-	 margin-top: -250px;
+	 margin-top: -300px;
 	 border: solid #a333c8 2px;
 	 border-radius: 25px;
 	 padding : 1rem;
@@ -296,7 +296,9 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  <tr class="comment">
 	  	<td align="center">RE : </td>
 	  	<td align="left" colspan="8">
+	  		<div class="ui form">
 	  		<textarea style="width: 100%;padding:3px;resize:none" rows="3" id="bigo<?=$issue[seq]?>"><?=$issue[bigo]?></textarea><br/><br/>
+	  		</div>
 	  		<div class="ui tiny buttons">
 	  			<button class="ui inverted purple button" onclick="comment_add('<?=$issue[seq]?>')">저장</button>
 	  			<button class="ui inverted red button" onclick="comment('<?=$issue[seq]?>',this,'selfClose')">닫기</button>
@@ -434,7 +436,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
     <div class="ui ribbon purple basic label">
       업무내용
     </div>
-   <input type="text" name="memo" value="" style="width:60%">
+   <textarea name="memo" rows="3" style="resize:none"></textarea>
   </div>
   
   <div class="inline field">
@@ -612,20 +614,16 @@ function saveIssue(){
 	$("div[id*='cloneContent']:visible").each(function(i,e){
 		var save = {};
 		var id = $(this).attr("id");
-		$("#" + id +" select").each(function(){
-			var name = $(this).attr("name");
-			var value = $(this).val();
-			if(name=="refseq" && value == "unset") {
-				alert("업체 선택은 필수항목 입니다.");
-				$(this).focus();
-				out = false;
-			}
-			save[name] = $(this).val();
-		});
 
-		$("#" + id +" input").each(function(){
-			var name = $(this).attr("name");
-			save[name] = $(this).val();
+		$("#" + id).find("input,select,textarea").each(function(i,e){
+				var name = $(this).attr("name");
+				var value = $(this).val();
+				if(name=="refseq" && value == "unset") {
+					alert("업체 선택은 필수항목 입니다.");
+					$(this).focus();
+					out = false;
+				}
+				save[name] = $(this).val();
 		});
 		if(out== true) {	
 			param[i] = save;
@@ -636,7 +634,11 @@ function saveIssue(){
 	if(out == true) { 
 		var obj = {};
 		obj["issue"] = param;
-		ajax(obj, "issue_add_ok.php",issueCallback);
+		ajax(obj, "issue_add_ok.php"
+			,function (result) {
+			alert(result);
+			location.reload();
+		});
 	}
 }
 
@@ -672,7 +674,7 @@ function editOrRemove(seq,mode,memo) {
 				var param = {};
 				param["table"] = "issue_list";
 				param["where"] = " and seq = " + seq;
-				ajax(param,"/common/simple_select.php",modifyIssue);
+				ajax(param,"/common/simple_select.php",selectIssue);
 			}
 			,onDeny : popupDeny
 			,onApprove : function(e) {
@@ -733,25 +735,17 @@ function comment_add(seq) {
 	ajax(param,"/common/simple_update.php",
 		function(result){ 
 			alert(result); 
-			//location.reload();
 	});
 }
 /*==comment==*/
 /* CALLBACK*/ 
-function modifyIssue(result){
+function selectIssue(result){
 	var data = result[0];
 	
 	var form = $("form[name='issue_modify']");
 	
-	for(var key in data) { // input & select name값 맞추면 자동 추가
-		var ele = "input";
-		var target = form.find($(ele+"[name='"+key+"']")).length;
-		if(target > 0) {
-			form.find($(ele+"[name='"+key+"']")).val(data[key]);
-		} else {
-			ele = "select";
-			form.find($(ele+"[name='"+key+"']")).val(data[key]);
-		}
+	for(var key in data) {
+		$("[name='"+key+"']").val(data[key]);
 	}
 	calendar(form.find(".date"));
 	/* 요청자 셋팅 */
@@ -791,10 +785,6 @@ function makeSelect(id,result) {
 		 csPerson.html("<option value='unset'>사원등록 수 : 0</option>");
 		 csPerson.closest(".selectDiv").addClass("error");
 	}
-}
-function issueCallback(result) {
-	alert(result);
-	location.reload();
 }
 /* == CALLBACK ==*/
 </script>

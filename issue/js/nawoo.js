@@ -73,16 +73,9 @@ function jsonBot(name,deleteEle) {
 	if(!deleteEle) {
 		deleteEle = [];
 	}
-	$("form[name='"+name+"'] input").each(function(i,e){
-		var name = $(e).attr("name");
-		if (name) {
-			if(deleteEle.indexOf(name) === -1) {
-				param[name] = $(e).val();
-			}
-		}
-	});
+	var f = $("form[name='"+name+"']");
 	
-	$("form[name='"+name+"'] select").each(function(i,e){
+	f.find("input,select,textarea").each(function(i,e){
 		var name = $(e).attr("name");
 		if (name) {
 			if(deleteEle.indexOf(name) === -1) {
