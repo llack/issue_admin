@@ -647,6 +647,7 @@ function stateModify(before,after,seq) {
 		return;
 	} else {
 		var param = {};
+		var text = "",color = "";
 		param["param"] = {"state" : after, "seq" : seq};
 		param["table"] = "issue_list";
 		param["id"] = ["seq"];
@@ -659,9 +660,7 @@ function stateModify(before,after,seq) {
 				color = "#db2828";
 			}
 			snackbar("issueSnackbar",color,text);
-			setTimeout(function(){
-				location.reload();
-			},500);
+			popupHide();
 		})
 	}
 }

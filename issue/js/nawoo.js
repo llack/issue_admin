@@ -1,5 +1,4 @@
 function ajax(params, url, callback, data, method){
-	//var params = JSON.stringify(pParams);
 	$.ajax({
 		type : method ? method:"POST"
 	,   url      : url
@@ -7,7 +6,7 @@ function ajax(params, url, callback, data, method){
 	,   data     : params
 	,   success : callback
 	,   error : function(xhr, status, e) {
-			console.log("에러 : "+e);
+			alert("ERROR : "+e);
 	},
 	complete  : function() {
 	}
