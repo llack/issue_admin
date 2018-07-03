@@ -1,0 +1,45 @@
+@CHARSET "UTF-8";
+thead {
+	text-align:center;
+	border-top: 1px solid rgba(34,36,38,.1);
+}
+th.fc-sat {
+	color : white !important;
+	background-color : blue !important;
+}
+th.fc-sun {
+	color : white !important;
+	background-color : red !important;
+}
+td.fc-sat {
+	background-color : #EFF5FB;
+	color : blue;
+}
+td.fc-sun {
+	background-color : #FBEFEF;
+	color : red;
+}
+.fc-highlight {
+    background: #dc73ff;
+}
+td:not(.fc-other-month) > span.fc-day-number {
+	font-weight : bold !important;
+}
+.fc-day-number {
+	float : left !important;
+}
+.fc-day-top {
+	padding:0px !important;
+}
+div#calendar {
+	width:70%;
+}
+td.fc-widget-content {
+	padding : 0px !important;
+}
+.fc-head-container.fc-widget-header {
+	padding : 0px !important;
+}
+.fc-event-container {
+	padding : 0px !important;
+}

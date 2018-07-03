@@ -25,17 +25,12 @@ $fn = new Json_select();
 <link rel="stylesheet" href="/css/semantic.min.css">
 <link rel="stylesheet" href="/css/datatables.min.css">
 <link rel="stylesheet" href="/css/calendar.min.css">
-<link rel="stylesheet" href="/css/fullcalendar.min.css">
-<link rel="stylesheet" href="/css/fullcalendar.print.min.css">
 <script src="/js/jquery-3.2.1.js"></script>
 <script src="/js/nawoo.js"></script> 
 <script src="/js/semantic.min.js"></script>
 <script src="/js/calendar.min.js"></script>
 <script src="/js/datatables.min.js"></script>
 <script src="/js/docs.js"></script>
-<script src="/js/moment.min.js"></script>
-<script src="/js/fullcalendar.min.js"></script>
-<script src="/js/locale-all.js"></script>
 <title><?=TITLE?></title>
 </head>
 <style>

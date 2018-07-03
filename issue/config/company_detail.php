@@ -209,7 +209,7 @@ $link = $fn->auto_link("seq");
         <input type="text" name="name">
       </div>
       <div class="field">
-        <label>직책(array)</label><br/>
+        <label>직책</label><br/>
         <input type="text" name="level">
       </div>
       <div class="field">

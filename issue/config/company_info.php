@@ -200,7 +200,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
   <!-- /  -->
 </div>
   </div>
-  <div class="actions">
+  <div class="actions" style="width:935px">
     <div class="ui red basic cancel inverted button">
       <i class="remove icon"></i>
       취 소

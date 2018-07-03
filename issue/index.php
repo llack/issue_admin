@@ -70,6 +70,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 .font_red {
 	background-color : #FBEFEF;
 }
+
 </style>
 <body>
 <div class="ui container side">
@@ -136,7 +137,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	</div>
 	<?=$fn->add_nbsp(3)?>
 	<!-- /필터검색 -->
-	<i class="search icon purple"></i>업체 검색 : <?=$fn->add_nbsp(3)?>
+	<i class="search icon purple"></i>업체 : <?=$fn->add_nbsp(3)?>
 	<select id="cs_seq" name="cs_seq" class="ui search dropdown" onchange="fn_submit(document.form)" style="width: 200px">
 		<option value="unset">선택하세요</option>
 		<?
@@ -151,7 +152,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 		<? } ?>
 	</select>
 	<?=$fn->add_nbsp(3)?>
-	<i class="user icon purple"></i>담당자 검색 : <?=$fn->add_nbsp(3)?>
+	<i class="user icon purple"></i>담당자 : <?=$fn->add_nbsp(3)?>
 	<select id="user_id" name="user_id" class="ui search dropdown" onchange="fn_submit(document.form)" style="width: 200px">
 		<option value="unset">선택하세요</option>
 		<?
@@ -165,7 +166,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	</select>
 	<?=$fn->add_nbsp(3)?>
 	<!-- 일정검색 -->
-	<i class="calendar alternate outline icon purple"></i>일정 검색 : <?=$fn->add_nbsp(3)?>
+	<i class="calendar alternate outline icon purple"></i>일정 : <?=$fn->add_nbsp(3)?>
 	<div class="ui form"style="float: right">
 	  <div class="fields">
 	    <div class="field">
@@ -248,18 +249,26 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	$today = strtotime(date("Y-m-d"));
 	  	$end_date = strtotime(date($issue[end_date]));
 	  	$dday = intval(($today - $end_date) / 86400);
+	  	/*D-day 구하기*/
 	  	
-	  	$dDay = $issue[end_date];
 	  	$circle = "green";
 	  	$font = "";
-	  	$dDayView = "";
+	  	$dDayView = $issue[regdate]." ~ ". $issue[end_date];
+	  	
+	  	$finish = "positive"; // 완료일떄 완료버튼
+	  	$incomplete = "inverted"; //완료일때 미완료버튼
+	  	
 	  	if($issue[state]=="N") {
-	  		$dDayView = dDay($dday);
+	  		$dDayResult = dDay($dday);
 	  		$circle = "red";
-	  		if($dday > 0) {
-	  			$font = "font_red"; // D-day font color red
+	  		$finish = "inverted"; // 미완료일떄 완료버튼
+	  		$incomplete = "negative"; // 마완료일떄 미완료버튼
+	  		if($dday > 0) { // 미완료 중 날짜 지난업무 
+	  			$font = "font_red"; // D-day font color red = > background로
 	  		}
-	  	}// D-day HTML
+	  		$dDayView = $dDayResult . "<br/>" . $issue[regdate]." ~ ". $issue[end_date];
+	  	}
+	  	
 	  ?>
 	  <tr class="tr_hover <?=$font?>" ondblClick="comment('<?=$issue[seq]?>',this)">
 	  	<td>
@@ -271,19 +280,11 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	<td><a class="ui <?=$circle?> circular label"><?=($i+1)?></a></td>
 	  	<td><?=$issue[cs_name]?><?=unSetView($issue[cs_person])?></td>
 	  	<td style="text-align:left"><?=$issue[memo]?></td>
-	  	<td><?=$dDayView?><br/><?=$issue[regdate]?> ~ <?=$dDay?></td>
+	  	<td><?=$dDayView?></td>
 	  	<td><?=$name?></td>
-	  	<td><?=$fin_date = ($issue[finish_date] != "0000-00-00") ? $issue[finish_date] : "";?></td>
+	  	<td><?=$fn->d($issue[finish_date]);?></td>
 	  	<td>
-	  		<?
-		  		$finish = "positive";
-		  		$incomplete = "inverted";
-		  		if($issue[state] == "N") {
-		  			$finish = "inverted";
-		  			$incomplete = "negative";
-		  		} 
-	  		?>
-	  		<div class="ui tiny buttons"><!--  -->
+	  		<div class="ui tiny buttons">
 			  <button class="ui <?=$finish?> green button" onclick="stateModify('<?=$issue[state]?>','Y','<?=$issue[seq]?>')">완료</button>
 			  <button class="ui <?=$incomplete?> red  button" onclick="stateModify('<?=$issue[state]?>','N','<?=$issue[seq]?>')">미완료</button>
 			</div>
@@ -396,11 +397,11 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
       
     </div>
     <br/>
-    <div class="two fields inline" style="border-bottom: 2px dotted #dc73ff">
+    <div class="two fields inline" >
     <div class="field center aligned">
         <label>업무내용 ▼</label><br/>
         <div class="ui">
-		  <input type="text" name="memo" class="fluid">
+		  <textarea type="text" name="memo" class="fluid" rows="1" style="resize:none"></textarea>
 		</div>
 	</div>
 	<div class="ui fluid">
@@ -408,6 +409,8 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
       <button class="ui inverted red button removeRow">삭제</button>
       </div>
      </div>
+     <div style="border-bottom: 2px dotted #dc73ff"></div>
+     <br/>
 </div>
 <!-- clone -->	
 <!--  이슈 수정 팝업 -->
@@ -421,6 +424,13 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	<form class="ui fluid form" name="issue_modify">
   <div class="field">
   
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      업무내용
+    </div>
+   <textarea id="issueText" name="memo" rows="3" style="resize:none"></textarea>
+  </div>
+
   <div class="inline field error">
     <div class="ui ribbon  purple basic label">
       업체명
@@ -433,13 +443,6 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
       요청자
     </div>
     <select name="cs_person"></select>
-  </div>
-  
-  <div class="inline field">
-    <div class="ui ribbon purple basic label">
-      업무내용
-    </div>
-   <textarea name="memo" rows="3" style="resize:none"></textarea>
   </div>
   
   <div class="inline field">
@@ -486,7 +489,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
   <!-- /  -->
 </div>
   </div>
-  <div class="actions">
+  <div class="actions" style="width:935px">
     <div class="ui red basic cancel inverted button">
       <i class="remove icon"></i>
       취 소
@@ -566,6 +569,7 @@ function makeDiv(num) {
 	cl.prop("id", next ).attr("data-idx",(num+1)); //id,index값 +1 바꾸고
 	cl.find("#cloneCnt" + num + "").prop("id",cnt);// 로우 넘버
 	cl.find("input").val("");
+	cl.find("textarea").val("");
 	cl.find("input[id*='cs_name']").prop("id","cs_name" + (num+1));
 	/* select Box */
 	cl.find("#csCnt" + num + "").prop("id","csCnt"+(num+1));
@@ -671,7 +675,6 @@ function stateModify(before,after,seq) {
 
 function editOrRemove(seq,mode,memo) {
 	if(mode =="modify") { // 업무정보수정
-		
 		$('#issue_modify').modal({
 			onShow : function() {
 				var param = {};

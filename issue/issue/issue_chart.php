@@ -75,46 +75,29 @@ $month_sum = array_sum($donut->month) ? array_sum($donut->month) : 1;
 	</form>
 	<table class="ui celled table" style="height:78%">
 		<colgroup>
-			<col width="30%">
-			<col width="20%">
-			<col width="30%">
-			<col width="20%">
+			<col width="50%">
+			<col width="50%">
 		</colgroup>
 		<thead>
 			<tr class="center aligned">
 				<th colspan="4">업체별 업무통계</th>
 			</tr>
 			<tr class="center aligned">
-				<th colspan="2"><?=$year?>년 업무통계<?=$fn->add_nbsp(3)?>
+				<th><?=$year?>년 업무통계<?=$fn->add_nbsp(3)?>
 				<i class="purple sort amount down icon"></i></th>
 				
-				<th colspan="2"><?=$month?>월 업무통계<?=$fn->add_nbsp(3)?>
+				<th><?=$month?>월 업무통계<?=$fn->add_nbsp(3)?>
 				<i class="purple sort amount down icon"></i></th>
 			</tr>
 		</thead>
-		<tr class="left aligned">
+		<tr class="center aligned">
 		<!-- 연도별 -->
 			<td>
 				<div id="yearDonut" style="height:100%"></div>
 			</td>
-			<td>
-			<? 
-			for($yy = 0; $yy < $year_max; $yy++) {
-				$yKey = $year_key[$yy];
-				$yearWork = $donut->year[$yKey];
-				echo workView($yKey,$yearWork,$year_sum);
-			} ?>
-			<td>
 		<!-- 월별 -->
+			<td>	
 				<div id="monthDonut" style="height:100%"></div>
-			</td>
-			<td>
-			<? 
-			for($mm = 0; $mm < $month_max; $mm++) {
-				$mKey = $month_key[$mm];
-				$monthWork = $donut->month[$mKey];
-				echo workView($mKey,$monthWork,$month_sum);
-			} ?>
 			</td>
 		</tr>
 		
@@ -150,7 +133,7 @@ function drawChart() {
 	  pieHole: 0.4,
 	  is3D : true
 	};
-
+	legendValue('yearDonut',data);
 	var chart = new google.visualization.PieChart(document.getElementById('yearDonut'));
 	chart.draw(data, options);
 }
@@ -175,9 +158,22 @@ function drawChart2() {
 	  pieHole: 0.4,
 	  is3D : true
 	};
-
+	
+	legendValue('monthDonut',data);
 	var chart = new google.visualization.PieChart(document.getElementById('monthDonut'));
 	chart.draw(data, options);
+}
+
+function legendValue(id,data) {
+	google.charts.setOnLoadCallback(function() {
+		var chartContainer = $("#" + id).find("svg");
+		var labelSelector = '> g:eq(1) > g';
+		$(labelSelector,chartContainer).each(function(i,e){
+			var newText = $(this).find("text:last");
+			var value = Number(data.getValue(i, 1)).toLocaleString('en').split(".")[0];
+			newText.text(newText.text() + " ("+value+")");
+		});
+	});
 }
 </script>
 <? 

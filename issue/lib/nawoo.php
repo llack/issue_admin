@@ -84,7 +84,9 @@ class Json_select {
 		}
 		return $obj;
 	}
-	
+	function d($date) {
+		return str_replace("0000-00-00","",$date);
+	}
 }
 class Simple_query {
 	function simple_delete($table, $id,$del_data) {

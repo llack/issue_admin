@@ -8,7 +8,7 @@ $myWork = $fn->myWork($_SESSION["USER_ID"]);
 <style>
 #login_form2 {
 	position: absolute;
-	 width: 400px;
+	 width: 470px;
 	 height: 480px;
 	 left: 50%;
 	 top: 50%;
@@ -86,7 +86,7 @@ $myWork = $fn->myWork($_SESSION["USER_ID"]);
       <div class="ui link list">
         <a class="item" href="/index.php">업무현황</a>
         <a class="item" href="/issue/issue_chart.php">업무차트</a>
-        <a class="item">메뉴3</a>
+        <a class="item" href="/common/spider_calendar.php">일정관리</a>
       </div>
     </div>
     <div class="column" align="center">
@@ -185,7 +185,7 @@ $myWork = $fn->myWork($_SESSION["USER_ID"]);
   <!-- /  -->
 </div>
   </div>
-  <div class="actions">
+  <div class="actions" style="width:935px">
     <div class="ui red basic cancel inverted button">
       <i class="remove icon"></i>
       취소
