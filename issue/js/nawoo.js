@@ -56,7 +56,20 @@ function calendar(ele) {
 	    	  
 		});
 }
-
+// colorpicker
+function colorPicker(button,inputId,color) {
+	var hueb = new Huebee( button, {
+		  notation: 'hex',
+		  saturations: 2,
+		  setText : false
+		});
+	if(color) {
+		hueb.setColor(color);
+	}
+	hueb.on( 'change', function( color, hue, sat, lum ) {
+		$("#"+inputId).val(color);
+	});
+}
 function setJson() {
 	var frm = arguments[0];
 	var param = {};

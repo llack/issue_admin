@@ -1,66 +1,44 @@
 <!DOCTYPE html>
+<?
+function myfunction(&$value,$key) {
+	if($key == "end_date" ) { 
+		echo date("Y-m-d",strtotime($value) + 86400 );
+	}
+}
+$a=array("end_date"=>"2018-05-14","b"=>"green","c"=>"blue");
+array_walk($a,"myfunction");
+print_r($a);
+
+?>
 <html>
     <head>
     <meta charset="UTF-8">
     <script src="/js/jquery-3.2.1.js"></script>
-        <title>테스트 페이지</title>
+    <link rel="stylesheet" href="https://unpkg.com/huebee@1/dist/huebee.min.css">
+    <script src="https://unpkg.com/huebee@1/dist/huebee.pkgd.min.js"></script>
+       <title>테스트 페이지</title>
     </head>
-<style>
-#cs_modify {
-    visibility: hidden;
-    min-width: 250px;
-    margin-left: -125px;
-    background-color: #333;
-    color: #fff;
-    text-align: center;
-    border-radius: 2px;
-    padding: 16px;
-    position: fixed;
-    z-index: 1;
-    left: 50%;
-    top: 30px;
-    font-size: 17px;
-}
-#cs_modify.show {
-    visibility: visible;
-    -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-    animation: fadein 0.5s, fadeout 0.5s 2.5s;
-}
-
-@-webkit-keyframes fadein {
-    from {top: 0; opacity: 0;} 
-    to {top: 30px; opacity: 1;}
-}
-
-@keyframes fadein {
-    from {top: 0; opacity: 0;} 
-    to {top: 30px; opacity: 1;}
-}
-
-@-webkit-keyframes fadeout {
-    from {top: 0; opacity: 0;} 
-    to {top: 30px; opacity: 1;}
-}
-
-@keyframes fadeout {
-    from {top: 0; opacity: 0;} 
-    to {top: 30px; opacity: 1;}
-}
-</style>
     <body>
-    <div id="cs_modify"></div>
-    <button onclick="test()">버튼이다.</button>
-     </body>
-     <script>
-     function test() {
-		snackbar("cs_modify","#54c8ff","테스트");
-     }
-     function snackbar(id,color,text) {
-         	var x = $("#" + id + "");
-	    	x.html(text);
-	 		x.css("background-color",color);
-			x.addClass("show");
-    	    setTimeout(function(){ x.removeClass("show"); }, 500);
-    }
-     </script>
+    <button class="color-button1">색상 선택</button>
+    <input id="test1">
+      <button class="color-button2">색상 선택</button>
+      <input id="test2">
+    </body>
+<script>
+$(document).ready(function(){
+	colorPicker(".color-button1","test1");
+	colorPicker(".color-button2","test2");
+});
+function colorPicker(button,inputId) {
+	var hueb = new Huebee( button, {
+		  notation: 'hex',
+		  saturations: 2,
+		  setText : false
+		});
+	hueb.setColor("#FFFFAA");
+	hueb.on( 'change', function( color, hue, sat, lum ) {
+		$("#"+inputId).val(color);
+	});
+}
+</script>
 </html>

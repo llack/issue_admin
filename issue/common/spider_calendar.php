@@ -38,7 +38,7 @@ $(document).ready(function(){
 		//, prevYear : "작년" , nextYear : "내년"
 		views: {
 		    month: {
-		      titleFormat: 'YYYY년 MM월 일정'
+		      titleFormat: 'YYYY년 MM월 업무달력'
 		    }
 		  },
 		 windowResizeDelay : 0,
@@ -61,17 +61,18 @@ function test(str) {
 function setData(start,end,timezone,callback) {
 	ajax({},"/common/loadEvents.php",
 		function(result){
+		console.log(result);
 			if(result) {
 				var events = [];
-				for(var i = 0; i < result.length; i++) {
+				for(var i = 0; len = result.length, i < len ; i++) {
 					var r = result[i];
 					events.push({
 						id : r.seq,
 						title : r.memo,
 						start : r.regdate,
-						end : r.end_date,
+						end : r.customEnd,
 						url : "javascript:test('"+r.seq+"','"+r.memo+"','"+r.cs_name+"')",
-						color : "#d65aff",
+						color : r.color,
 					});
 				}
 				callback(events);
@@ -86,4 +87,9 @@ function selectDate(s,e) {
 	 $("#edate").val(edate);
 }
 </script>
+<? 
+function endOneDay($date) {
+	return $date;
+}
+?>
 </html>

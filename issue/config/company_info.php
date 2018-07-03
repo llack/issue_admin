@@ -57,6 +57,8 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
     to {top: 30px; opacity: 1;}
 }
 </style>
+<link rel="stylesheet" href="/css/huebee.css">
+<script src="/js/huebee.js"></script>
 <body>
 <div class="ui container side">
 <? include $_SERVER["DOCUMENT_ROOT"]."/common/company_list.php"; ?>
@@ -194,6 +196,13 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
     </div>
    <input type="text" name="cs_code" value="">
   </div>
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      업체색상
+    </div>
+   <button type="button" class="colorPicker">색상 선택</button>
+   <input type="hidden" name="color" id="color"/>
+  </div>
   </div>
   <input type="hidden" name="seq" value=""/>
 </form>
@@ -263,6 +272,7 @@ function editOrRemove(seq,mode,cs_name) {
 						for(var key in data) {
 							$("input[name='"+key+"']").val(data[key]);
 						}
+						colorPicker(".colorPicker","color",data.color);
 					});
 			}
 			,onDeny : popupDeny

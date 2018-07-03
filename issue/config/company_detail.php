@@ -83,7 +83,7 @@ $link = $fn->auto_link("seq");
 		<input type="hidden" name="seq" value="<?=$_REQUEST[seq]?>"/>
 		<div class="ui inverted segment">
 		  <div class="ui inverted form">
-		    <div class="two fields">
+		    <div class="three fields">
 		      <div class="field">
 		        <label>업체명</label>
 		        <input type="text" name="cs_name" value="<?=$row[cs_name]?>">
@@ -92,19 +92,9 @@ $link = $fn->auto_link("seq");
 		        <label>업체코드</label>
 		        <input type="text" name="cs_code" value="<?=$row[cs_code]?>">
 		      </div>
-		    </div>
-		    <div class="three fields">
-		      <div class="field">
-		        <label>정보1</label>
-		        <input type="text">
-		      </div>
-		      <div class="field">
-		        <label>정보2</label>
-		        <input type="text">
-		      </div>
-		      <div class="field">
-		        <label>정보3</label>
-		        <input type="text">
+		       <div class="field">
+		        <label>업체색상</label>
+		        <input type="text" style="background-color:<?=$row[color]?>" readonly>
 		      </div>
 		    </div>
 		  </div>
