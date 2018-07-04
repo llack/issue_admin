@@ -233,7 +233,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			<th>업체명 / 요청자</th>
 		    <th>업무내용</th>
 		    <th>등록일 - 마감일</th>
-		    <th>담당자</th>
+		    <th>업무라인</th>
 		    <th width="100px">완료일</th>
 		    <th>상태변경</th>
 		    <th><i class="large edit icon"></i>or <i class="large ban icon"></i></th>
@@ -242,8 +242,9 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  <tbody>
 	  <? for($i = 0; $i < $max; $i++) {
 	  	$issue = $results->data[$i];
-	  	$name = $fn->userInfo($issue[user_name]);
-	  	$name = $name[0][user_name];
+	  	
+	  	$name = ($issue[user_name] !="") ? $fn->getName($issue[user_name]) : "";
+	  	$order = ($issue[order_name] !="") ? $fn->getName($issue[order_name]). " > " : "";
 	  	
 	  	/*D-day 구하기 */
 	  	$today = strtotime(date("Y-m-d"));
@@ -281,7 +282,9 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	<td><?=$issue[cs_name]?><?=unSetView($issue[cs_person])?></td>
 	  	<td style="text-align:left"><?=$issue[memo]?></td>
 	  	<td><?=$dDayView?></td>
-	  	<td><?=$name?></td>
+	  	<td>
+	  		<?=$order.$name?>
+	  	</td>
 	  	<td><?=$fn->d($issue[finish_date]);?></td>
 	  	<td>
 	  		<div class="ui tiny buttons">
@@ -325,182 +328,9 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	<?=$pagenator->createLinks($link);?>
 	<!-- 페이징 -->
 	</div>
-<!--  -->
-<!-- clone -->
-<div class="ui form" id="cloneContent0" data-idx="0" style="display:none">
-	<input type="hidden" name="cs_name" id="cs_name0" value=""/>
-	<div class="seven fields inline">
-      <a class="ui grey circular label"><span id="cloneCnt0"></span></a><?$fn->add_nbsp(5)?>
-      
-      <div class="field">
-        <label>업체</label><br/>
-         <div class="ui fluid">
-			<select name="refseq" class="fluid" id="csCnt0" onchange="loadEmployee(this.id,this.value)">
-				<option value="unset">선택하세요</option>
-			<?	for($i = 0; $i < $cs_list_cnt; $i++) {	
-					$cs = $cs_list[$i];
-				?>
-				<option value="<?=$cs[seq]?>"><?=$cs[title]?></option>	
-			<? } ?>
-			</select>
-		</div>
-      </div>
-      
-      <div class="field selectDiv error">
-        <label>요청자</label><br/>
-        <div class="ui fluid">
-        	<select name="cs_person" class="fluid" id="csPerson0">
-        		<option value="unset">업체 미선택</option>
-        	</select>
-        </div>
-      </div>
-      
-      <div class="field">
-        <label>업무담당자</label><br/>
-        <div class="ui fluid">
-        	<select name="user_name" class="fluid">
-        		<option value="unset">선택하세요</option>
-        		<?
-        			$user_list = $fn->allowUser();
-        			$max = count($user_list);
-        			for ($user = 0; $user < $max; $user++) {
-        		?>
-        		<option value="<?=$user_list[$user][user_id]?>"><?=$user_list[$user][user_name]?></option>
-        		<? } ?>
-        	</select>
-        </div>
-      </div>
-      
-      <div class="field">
-      	<label>등록일</label><br/>
-      	<div class="ui fluid">
-	      	<div class="ui calendar date">
-			    <div class="ui input left icon">
-			      <i class="calendar alternate outline icon purple"></i>
-			      <input type="text" value="<?=date("Y-m-d")?>" name="regdate" id="regdate0" style="width:100%">
-			    </div>
-			  </div>
-		  </div>
-      </div>
-      
-      <div class="field">
-      	<label>마감예정일</label><br/>
-      	<div class="ui fluid">
-	      	<div class="ui calendar date">
-			    <div class="ui input left icon">
-			      <i class="calendar alternate outline icon purple"></i>
-			      <input type="text" value="" name="end_date" id="end_date0" style="width:100%">
-			    </div>
-			  </div>
-		  </div>
-      </div>
-      
-    </div>
-    <br/>
-    <div class="two fields inline" >
-    <div class="field center aligned">
-        <label>업무내용 ▼</label><br/>
-        <div class="ui">
-		  <textarea type="text" name="memo" class="fluid" rows="1" style="resize:none"></textarea>
-		</div>
-	</div>
-	<div class="ui fluid">
-        <label><?$fn->add_nbsp(1)?></label><br/>
-      <button class="ui inverted red button removeRow">삭제</button>
-      </div>
-     </div>
-     <div style="border-bottom: 2px dotted #dc73ff"></div>
-     <br/>
-</div>
-<!-- clone -->	
-<!--  이슈 수정 팝업 -->
-<div id="issue_modify"class="ui basic modal">
-  <div class="content">
-  	<div id="issue_info">
-	<div class="login header">
-		<div style="text-align:right !important"><i class="user icon"></i>업 무 정 보 <span class="popup_title">수 정</span></div>
-	</div>
-	<br/><br/>
-	<form class="ui fluid form" name="issue_modify">
-  <div class="field">
-  
-  <div class="inline field">
-    <div class="ui ribbon purple basic label">
-      업무내용
-    </div>
-   <textarea id="issueText" name="memo" rows="3" style="resize:none"></textarea>
-  </div>
-
-  <div class="inline field error">
-    <div class="ui ribbon  purple basic label">
-      업체명
-    </div>
-    <input type="text" name="cs_name"readonly>
-  </div>
-  
-  <div class="inline field">
-    <div class="ui ribbon purple basic label">
-      요청자
-    </div>
-    <select name="cs_person"></select>
-  </div>
-  
-  <div class="inline field">
-    <div class="ui ribbon purple basic label">
-      등록일
-    </div>
-    <div class="ui calendar date">
-	    <div class="ui input left icon">
-	      <i class="calendar alternate outline icon purple"></i>
-	      <input type="text" value="" name="regdate"/>
-	    </div>
-	  </div>
-  </div>
-  
-   <div class="inline field">
-    <div class="ui ribbon purple basic label">
-      마감예정일
-    </div>
-    <div class="ui calendar date">
-	    <div class="ui input left icon">
-	      <i class="calendar alternate outline icon purple"></i>
-	      <input type="text" value="" name="end_date"/>
-	    </div>
-	  </div>
-  </div>
- 
-  <div class="inline field">
-    <div class="ui ribbon purple basic label">
-      담당자
-    </div>
-    <select name="user_name" style="width:50%">
-        <option value="unset">선택하세요</option>
-        	<?
-        		for ($user = 0; $user < $max; $user++) {
-        	?>
-        	<option value="<?=$user_list[$user][user_id]?>"><?=$user_list[$user][user_name]?></option>
-        	<? } ?>
-   </select>
-  </div>
- 
-</div>
-  <input type="hidden" name="seq" value=""/>
-</form>
-  <!-- /  -->
-</div>
-  </div>
-  <div class="actions" style="width:935px">
-    <div class="ui red basic cancel inverted button">
-      <i class="remove icon"></i>
-      취 소
-    </div>
-    <div class="ui green ok inverted button">
-      <i class="checkmark icon"></i>
-     <span class="popup_title">수 정</span>
-    </div>
-  </div>
-</div>
-
+<!-- clone + 팝업 elements -->
+<? include_once '/sub/index_sub.php';?>
+<!-- // -->
 <div id="issueSnackbar"></div>
 
 </body>
@@ -509,6 +339,7 @@ $(document).ready(function(){
 	$("#state_search").dropdown(); //필터검색
 	dropDown("#cs_seq,#user_id"); //select 검색
 	hoverMaster("tr_hover","positive");
+	$(".test").popup();
 });
 
 $(document).on("click","#addRow,.addrow",function(e){
@@ -526,13 +357,28 @@ $(document).on("click",".removeRow",function(e){
 		return;
 	}
 	$(sort).each(function(i){
-		num = i+1;
+		var num = i+1;
 		$(this).prop("id","cloneContent"+num);
 		$(this).attr("data-idx",num);
-		sortElements($(this),num,"regdate","cs_name","end_date","cloneCnt","csCnt","csPerson");
+		sortElements($(this),num,"regdate","cs_name","end_date","cloneCnt","csCnt","csPerson","userName","userView");
 		$("#cloneCnt" + num).text(num);
 	});
 });
+
+function userSelect(id,val) {
+	// id_format userName + (num)
+	var idCut = id.substr(8);
+	if(val != "unset") {
+		var param = {};
+		param["table"] = "member";
+		param["where"] = " and user_id = '"+val+"' ";
+		ajax(param,"/common/simple_select.php",function(result){
+			$("#userView" + idCut).html(result[0].user_name);
+		});
+		return;
+	}
+	$("#userView" + idCut).html("");
+}
 function sortElements() {
 	var max = arguments.length;
 	var ele = arguments[0];
@@ -565,15 +411,12 @@ function makeDiv(num) {
 	var next = "cloneContent"+(num+1);
 	var id = "#cloneContent" + num;
 	var cl = $(id).clone();
-	var cnt = "cloneCnt" + (num+1);
 	cl.prop("id", next ).attr("data-idx",(num+1)); //id,index값 +1 바꾸고
-	cl.find("#cloneCnt" + num + "").prop("id",cnt);// 로우 넘버
-	cl.find("input").val("");
-	cl.find("textarea").val("");
-	cl.find("input[id*='cs_name']").prop("id","cs_name" + (num+1));
-	/* select Box */
-	cl.find("#csCnt" + num + "").prop("id","csCnt"+(num+1));
-	cl.find("#csPerson" + num + "").prop("id","csPerson"+(num+1));
+	cl.find("input:visible,textarea").val("");
+	cl.find("[id*=userView]").html("");
+
+	sortElements(cl,(num+1),"cloneCnt","csCnt","csPerson","userName","userView","cs_name");
+	
 	cl.find(".selectDiv").addClass("error");
 	cl.find("select[id*=csPerson]").html("<option value='unset'>업체 미선택</option>");
 
@@ -587,7 +430,7 @@ function makeDiv(num) {
 		cl.appendTo("#cloneTarget"); //처음
 	}
 	calendar(cl.find(".date")); //달력 
-	$("#" + cnt).text((num+1));
+	$("#cloneCnt" + (num+1)).text((num+1));
 	$("#" + next + "").css("display","");
 }
 function loadEmployee(id,refseq) {

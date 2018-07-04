@@ -64,6 +64,12 @@ class Json_select {
 		return $str;
 	}
 	
+	function getName($id) {
+		$fn = new Json_select();
+		$result = $fn->userInfo($id);
+		return $result[0][user_name];
+	}
+	
 	function myWork($value,$search="user_name") {
 		$que = " select * from issue_list where {$search} = '$value' and state = 'N' ";
 		$res = mysql_query($que) or die(mysql_error());

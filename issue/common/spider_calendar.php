@@ -71,7 +71,7 @@ function setData(start,end,timezone,callback) {
 						title : r.memo,
 						start : r.regdate,
 						end : r.customEnd,
-						url : "javascript:test('"+r.seq+"','"+r.memo+"','"+r.cs_name+"')",
+						url : "javascript:test('"+r.seq+"')",
 						color : r.color,
 					});
 				}
@@ -87,9 +87,4 @@ function selectDate(s,e) {
 	 $("#edate").val(edate);
 }
 </script>
-<? 
-function endOneDay($date) {
-	return $date;
-}
-?>
 </html>

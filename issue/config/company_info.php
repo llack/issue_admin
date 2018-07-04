@@ -305,6 +305,7 @@ function editOrRemove(seq,mode,cs_name) {
 		$('#company_modify').modal({
 			onShow : function() {
 				$(".popup_title").text("등 록");
+				colorPicker(".colorPicker","color");
 			}
 			,onDeny : popupDeny
 			,onApprove : function(e) {
