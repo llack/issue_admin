@@ -79,7 +79,7 @@ function fn_table(ele) {
             "info": "_PAGE_/_PAGES_",
             "infoEmpty": "",
             "infoFiltered": "",
-            "search" : "통합검색",
+            "search" : "결과 내 검색",
             
             "paginate": {
      		 "previous": "<",
