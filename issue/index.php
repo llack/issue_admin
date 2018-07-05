@@ -236,7 +236,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 		    <th>업무라인</th>
 		    <th width="100px">완료일</th>
 		    <th>상태변경</th>
-		    <th><i class="large edit icon"></i>or <i class="large ban icon"></i></th>
+		    <th width="120px"><i class="large edit icon"></i>업무일지</th>
 		  </tr>
 	  </thead>
 	  <tbody>
@@ -280,7 +280,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	</td>
 	  	<td><a class="ui <?=$circle?> circular label"><?=($i+1)?></a></td>
 	  	<td><?=$issue[cs_name]?><?=unSetView($issue[cs_person])?></td>
-	  	<td style="text-align:left"><?=$issue[memo]?></td>
+	  	<td style="text-align:left"><a href="javascript:editIssue('<?=$issue[seq]?>')"><?=$issue[memo]?></a></td>
 	  	<td><?=$dDayView?></td>
 	  	<td>
 	  		<?=$order.$name?>
@@ -294,9 +294,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	</td>
 	  	<td>
 		  	<div class="ui tiny buttons">
-			  <button class="ui inverted blue button" onclick="editOrRemove('<?=$issue[seq]?>','modify')">수정</button>
-			  <div class="or"></div>
-			  <button class="ui inverted red button" onclick="editOrRemove('<?=$issue[seq]?>','delete','<?=$issue[memo]?>')">삭제</button>
+			  <button class="ui inverted blue button" onclick="openWin('<?=$issue[seq]?>')">보기</button>
 			</div>
 	  	</td>
 	  </tr>
@@ -339,7 +337,6 @@ $(document).ready(function(){
 	$("#state_search").dropdown(); //필터검색
 	dropDown("#cs_seq,#user_id"); //select 검색
 	hoverMaster("tr_hover","positive");
-	$(".test").popup();
 });
 
 $(document).on("click","#addRow,.addrow",function(e){
@@ -473,7 +470,7 @@ function saveIssue(){
 					$(this).focus();
 					out = false;
 				}
-				save[name] = $(this).val();
+				save[name] = value;
 		});
 		if(out== true) {	
 			param[i] = save;
@@ -516,27 +513,18 @@ function stateModify(before,after,seq) {
 	}
 }
 
-function editOrRemove(seq,mode,memo) {
-	if(mode =="modify") { // 업무정보수정
-		$('#issue_modify').modal({
-			onShow : function() {
-				var param = {};
-				param["table"] = "issue_list";
-				param["where"] = " and seq = " + seq;
-				ajax(param,"/common/simple_select.php",selectIssue);
-			}
-			,onDeny : popupDeny
-			,onApprove : modifyIssue // 수정
-			, onHide : popupHide
-			}).modal('show');
-		
-	} else if(mode =="delete"){ 
-		if(confirm("삭제한 업무는 복구할 수 없습니다.\n업무(업무내용: "+memo+")를 삭제하시겠습니까?")==true) {
-			fn_delete("issue_list","seq",seq);
-		} else {
-			return;
-		}	
-	} 
+function editIssue(seq,mode) {
+	$('#issue_modify').modal({
+		onShow : function() {
+			var param = {};
+			param["table"] = "issue_list";
+			param["where"] = " and seq = " + seq;
+			ajax(param,"/common/simple_select.php",selectIssue);
+		}
+		,onDeny : popupDeny
+		,onApprove : modifyIssue // 수정
+		, onHide : popupHide
+		}).modal('show');
 }
 
 function fn_submit(frm) {
@@ -563,12 +551,24 @@ function delete_issue() {
 	}
 	var param = {};
 	if(confirm("삭제한 업무는 복구할 수 없습니다.\n총 "+c.length+"건 삭제하시겠습니까?")==true) {
-		fn_delete("issue_list","seq");
+		fn_delete("issue_list","seq",null,true);
+		fn_delete("issue_history","refseq",null,false);
 	} else {
 		return;
 	}
 }
-
+function openWin(seq) {
+	var url = "/sub/issue_history.php?seq="+seq;
+	var width=900;
+    var height=800;
+	var posx = 0
+	var posy = 0
+	posx = (screen.width - width)/2-1;
+	posy = (screen.height - height)/2-1;
+	newwin = window.open(url,"search","width="+width+",height="+height+",toolbar=0,scrollbars=1,resizable=0,status=0");
+	newwin.moveTo(posx,posy);
+	newwin.focus();
+}
 /*comment 관련 method*/
 function comment(seq,tr,loca) {
 	if(loca) {

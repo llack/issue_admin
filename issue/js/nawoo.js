@@ -70,6 +70,28 @@ function colorPicker(button,inputId,color) {
 		$("#"+inputId).val(color);
 	});
 }
+// datatables 
+function fn_table(ele) {
+	$(ele).DataTable({
+        "language": {
+            "lengthMenu": "_MENU_ 개씩 보기",
+            "zeroRecords": "검색결과 없음",
+            "info": "_PAGE_/_PAGES_",
+            "infoEmpty": "",
+            "infoFiltered": "",
+            "search" : "통합검색",
+            
+            "paginate": {
+     		 "previous": "<",
+     		 "next" : ">"
+    		}
+        },
+        drawCallback: function(settings) {
+		    var pagination = $(this).closest('.dataTables_wrapper').find('.dataTables_paginate,.dataTables_info');
+		    pagination.toggle(this.api().page.info().pages > 1);
+		  }
+    });
+}
 function setJson() {
 	var frm = arguments[0];
 	var param = {};
@@ -148,7 +170,7 @@ function enter_afterIndex(name) {
 
 
 /* 간편 삭제 */
-function fn_delete(table,id,chk) {
+function fn_delete(table,id,chk,callback) {
 	var c = $("input[id='chk']:checked");
 	var param = {};
 	if(!chk) {
@@ -162,12 +184,14 @@ function fn_delete(table,id,chk) {
 	} 
 	param["table"] = table;
 	param["id"] = id;
-	ajax(param
-		,	"/common/simple_delete.php"
-		,	function(result){ 
-		alert(result); 
-		location.reload();
-	});
+	if(callback == true) { 
+		ajax(param,"/common/simple_delete.php",function(result){ 
+			alert(result); 
+			location.reload();
+		});
+	} else {
+		ajax(param,"/common/simple_delete.php");
+	}
 }
 
 /* mouse hover 적용  */ 

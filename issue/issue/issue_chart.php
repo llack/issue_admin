@@ -14,7 +14,7 @@ foreach ($donut->month as $key=>$value) {
 	$donut_month[] = "['".$key."',".$value."]";
 }
 
-/* table */
+/* table
 $year_key = array_keys($donut->year);
 $year_max = count($donut->year);
 $year_sum = array_sum($donut->year) ? array_sum($donut->year) : 1;;
@@ -22,7 +22,7 @@ $year_sum = array_sum($donut->year) ? array_sum($donut->year) : 1;;
 $month_key = array_keys($donut->month);
 $month_max = count($donut->month);
 $month_sum = array_sum($donut->month) ? array_sum($donut->month) : 1;
-/* table */
+ table */
 ?>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <body>
@@ -68,7 +68,7 @@ $month_sum = array_sum($donut->month) ? array_sum($donut->month) : 1;
 	
 	<?=$fn->add_nbsp(3)?>
 	
-	<button class="ui button inverted red" onclick="removeSetting(document.form,'<?=date('Y')?>','<?=date('m')?>',event)">
+	<button type="button" class="ui button inverted red" onclick="removeSetting(document.form)">
 		  <i class="check trash alternate icon"></i>
 		  설정 초기화
 	</button>
@@ -108,10 +108,9 @@ $month_sum = array_sum($donut->month) ? array_sum($donut->month) : 1;
 <script>
 $(document).ready(function(){
 });
-function removeSetting(frm,y,m,e) {
-	e.preventDefault();
-	frm.year.value = y;
-	frm.month.value = m;
+function removeSetting(frm) {
+	frm.year.value = "<?=date("Y")?>";
+	frm.month.value = "<?=date("m")?>";
 	frm.submit();
 }
 google.charts.load("current", {packages:["corechart"]});
@@ -164,7 +163,7 @@ function drawChart2() {
 	chart.draw(data, options);
 }
 
-function legendValue(id,data) {
+function legendValue(id,data) { // 범례에 건수 추가
 	google.charts.setOnLoadCallback(function() {
 		var chartContainer = $("#" + id).find("svg");
 		var labelSelector = '> g:eq(1) > g';
@@ -177,7 +176,7 @@ function legendValue(id,data) {
 }
 </script>
 <? 
-function init_year() {
+function init_year() { // 제일 오래된 업무 부터 검색
 	$que = " select left(regdate,4) as year from issue_list order by regdate LIMIT 1";
 	$res = mysql_query($que) or die(mysql_error());
 	$row = mysql_fetch_array($res);
@@ -215,7 +214,7 @@ function workChart($year,$month) {
 	return $return;
 }
 
-function workView($cs_name,$work,$sum) {
+/*function workView($cs_name,$work,$sum) {
 	$html = "<div class='ui right pointing purple basic label'>";
 	$html .= $cs_name;
 	$html .= "</div>";
@@ -224,5 +223,5 @@ function workView($cs_name,$work,$sum) {
 	$html .= "</a> 건 (";
 	$html .= number_format(($work/ $sum) * 100,1)."%)<br/><br/>";
 	return $html;
-}
+}*/
 ?>
