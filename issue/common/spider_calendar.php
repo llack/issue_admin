@@ -47,6 +47,7 @@ $(document).ready(function(){
 		events: setData,
 		editable : true,
 		eventResize: modifyData,
+		eventDrop : dropData,
 		eventLimit : true
 	});
 	
@@ -83,10 +84,20 @@ function setData(start,end,timezone,callback) {
 function modifyData(event, delta, revertFunc) {
 	var end = event.end.subtract(1,'days').format();
     var param = {};
-    param["color"] = event.color;
+    param["color"] = (event.color) ? event.color : "";
     param["title"] = event.title;
     param["regdate"] = event.start.format();
     param["end_date"] = end;
+    param["seq"] = event.id;
+    console.log(param);
+}
+
+function dropData(event, delta, revertFunc) {
+    var param = {};
+    param["color"] = (event.color) ? event.color : "";
+    param["title"] = event.title;
+    param["regdate"] = event.start.format();
+    param["end_date"] = (event.end) ? event.end.subtract(1,'days').format() : event.start.format();
     param["seq"] = event.id;
     console.log(param);
 }
