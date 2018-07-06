@@ -45,6 +45,8 @@ $(document).ready(function(){
 		 selectable: true,
 		 select : selectDate,
 		events: setData,
+		editable : true,
+		eventResize: modifyData,
 		eventLimit : true
 	});
 	
@@ -61,7 +63,6 @@ function test(str) {
 function setData(start,end,timezone,callback) {
 	ajax({},"/common/loadEvents.php",
 		function(result){
-		console.log(result);
 			if(result) {
 				var events = [];
 				for(var i = 0; len = result.length, i < len ; i++) {
@@ -78,6 +79,16 @@ function setData(start,end,timezone,callback) {
 				callback(events);
 			}		
 		});	
+}
+function modifyData(event, delta, revertFunc) {
+	var end = event.end.subtract(1,'days').format();
+    var param = {};
+    param["color"] = event.color;
+    param["title"] = event.title;
+    param["regdate"] = event.start.format();
+    param["end_date"] = end;
+    param["seq"] = event.id;
+    console.log(param);
 }
 function selectDate(s,e) {
 	var sdate = s.format();
