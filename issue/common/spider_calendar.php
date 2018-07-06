@@ -21,7 +21,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 		<a class="ui red tag label">업무관리</a>
 		<a class="ui teal tag label">일정관리</a>
 	</div>
-		<div id="calendar" class="ui container"></div>
+		<div id="calendar" class="ui container" style="padding-top: 5px"></div>
 	</div>
 </div>
 </body>
@@ -29,13 +29,20 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 $(document).ready(function(){
 	
 	$("#calendar").fullCalendar({
+		customButtons: {
+			saveBtn : {
+				text: '저장',
+				click : function() {
+					
+				}
+			}
+		},
 		header: {
-		      left: 'prev,next today',
+		      left: 'saveBtn',
 		      center: 'title',
-		      right: ''
-		    },
+		      right: 'today prev,next'
+		},
 		buttonText : { prev :"저번달", next : "다음달"},
-		//, prevYear : "작년" , nextYear : "내년"
 		views: {
 		    month: {
 		      titleFormat: 'YYYY년 MM월 업무달력'
@@ -52,11 +59,7 @@ $(document).ready(function(){
 	});
 	
 	$('#calendar').fullCalendar('option', 'locale', 'ko');
-	/*(function(){
-		var calendar = $('#calendar').fullCalendar('getCalendar');
-		calendar.on('dayClick', function(date, jsEvent, view) {
-		});
-	})();*/
+	
 });
 function test(str) {
 	alert(str);
