@@ -38,8 +38,8 @@ min-width : unset !important;
 }
 </style>
 <body>
-<h3 class="ui block header">업무기록(임시)</h3>
-<table id="datatables" class="cell-border display">
+<h3 class="ui block header">업무기록</h3>
+<table id="datatables">
 	<thead>
 		<th>No</th>
 		<th>수정내용</th>
@@ -67,7 +67,6 @@ min-width : unset !important;
 <script>
 $(document).ready(function(){
 	fn_table("#datatables");
-    $("[name='datatables_length']").dropdown(); //select Box
 });
 </script>
 </html>

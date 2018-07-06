@@ -72,6 +72,7 @@ function colorPicker(button,inputId,color) {
 }
 // datatables 
 function fn_table(ele) {
+	$(ele).addClass("row-border cell-border order-column hover");
 	$(ele).DataTable({
         "language": {
             "lengthMenu": "_MENU_ 개씩 보기",
@@ -87,7 +88,9 @@ function fn_table(ele) {
     		}
         },
         drawCallback: function(settings) {
-		    var pagination = $(this).closest('.dataTables_wrapper').find('.dataTables_paginate,.dataTables_info');
+        	var top = $(this).closest('.dataTables_wrapper');
+        	var pagination = top.find('.dataTables_paginate,.dataTables_info');
+        	top.find("[name='datatables_length']").dropdown();
 		    pagination.toggle(this.api().page.info().pages > 1);
 		  }
     });
