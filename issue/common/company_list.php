@@ -19,13 +19,6 @@
 	<!-- 검색창 -->
    <br/>
    <div class="item" >
-  <div id="com_search" class="item ui search">
-    <div class="ui icon input">
-    	<input class="prompt search_area" type="text" placeholder="업체 업무상세 바로가기">
-    	<i class="search icon"></i>
-    </div>
-    <div class="results"></div>
-  </div>
   </div>
   <!-- /검색창 -->
   
@@ -42,32 +35,15 @@
 	  		$importance = ($issue->cnt>= 3) ? "red" : "green";
 	  		?>
 	    <div class="ui label <?=$importance?> basic left pointing"><?=$issue->cnt?></div>
+	  	<? } ?>
 	  	</a>
-	  	<? }
-	  	
-	  	}  ?>
+	  	<? } ?>
   </div>
   <!-- / 사이드바 업체리스트  -->
 </div>
 <script>
 $(document).ready(function(){
-	$(".search_area").on("keyup",function(){
-		if($(this).val()!="") {
-			$("#com_search").addClass("loading");
-		}	
-	});
 	
-	$("#com_search").search({
-		source : <?=json_encode($cs_list)?>
-		,error : {
-			noResults   : "<font color='red'>검색결과 없음<font>",
-			}
-		,searchDelay : 300
-		,onResultsClose : function() {
-			$("#com_search").removeClass("loading");;
-		}
-		,selectFirstResult : true
-	});
 });
 
 </script>

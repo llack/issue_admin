@@ -6,7 +6,7 @@ function ajax(params, url, callback, data, method){
 	,   data     : params
 	,   success : callback
 	,   error : function(xhr, status, e) {
-			alert("ERROR : "+e);
+			console.log("ERROR : "+e);
 	},
 	complete  : function() {
 	}
@@ -75,8 +75,8 @@ function fn_table(ele) {
 	$(ele).addClass("row-border cell-border order-column hover");
 	$(ele).DataTable({
         "language": {
-            "lengthMenu": "_MENU_ 개씩 보기",
-            "zeroRecords": "검색결과 없음",
+            "lengthMenu": "_MENU_개씩 보기",
+            "zeroRecords": "검색 결과 없음",
             "info": "_PAGE_/_PAGES_",
             "infoEmpty": "",
             "infoFiltered": "",
@@ -87,10 +87,20 @@ function fn_table(ele) {
      		 "next" : ">"
     		}
         },
+        "columnDefs": [
+        	{
+        	"targets": 'no-sort',
+            "orderable": false,
+            "order" : []
+        	},
+        	{
+        	"targets": 'no-search',
+        	"searchable": false
+        	}
+        ],
         drawCallback: function(settings) {
         	var top = $(this).closest('.dataTables_wrapper');
         	var pagination = top.find('.dataTables_paginate,.dataTables_info');
-        	top.find("[name='datatables_length']").dropdown();
 		    pagination.toggle(this.api().page.info().pages > 1);
 		  }
     });
@@ -173,7 +183,7 @@ function enter_afterIndex(name) {
 
 
 /* 간편 삭제 */
-function fn_delete(table,id,chk,callback) {
+function fn_delete(table,id,chk) {
 	var c = $("input[id='chk']:checked");
 	var param = {};
 	if(!chk) {
@@ -187,16 +197,37 @@ function fn_delete(table,id,chk,callback) {
 	} 
 	param["table"] = table;
 	param["id"] = id;
-	if(callback == true) { 
-		ajax(param,"/common/simple_delete.php",function(result){ 
-			alert(result); 
-			location.reload();
-		});
-	} else {
-		ajax(param,"/common/simple_delete.php");
-	}
+	ajax(param,"/common/simple_delete.php",function(result){ 
+		alert(result); 
+		location.reload();
+	});
 }
-
+function multiDelete(tables) {
+	var c = $("input[id='chk']:checked");
+	var param = {}; 
+	var len = tables.length;
+	var a = []
+	c.each(function(i,e){
+		a.push($(e).val());
+	});
+	
+	for(var i = 0; i < len; i++) {
+		var save = {};
+		var del = tables[i].split("*");  // del[0] = tableName, del[1] = id
+		save["table"] = del[0];
+		save["id"] = del[1];
+		save["chk"] = a;
+		param[i] = save;
+	}
+	
+	var obj = {};
+	obj["param"] = param;
+	ajax(obj,"/common/delete_multiple.php",function(result){
+		alert(result);
+		location.reload();
+	});
+}
+	
 /* mouse hover 적용  */ 
 function hoverMaster(selector, apply) {
 	$("."+selector+"").hover(function() {
@@ -259,4 +290,5 @@ $(function(){
 		}
 		$(this).html(i+str);
 	}); 
+	
 });

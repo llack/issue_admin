@@ -68,9 +68,8 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	display : none;
 }
 .font_red {
-	background-color : #FBEFEF;
+	background-color : #FBEFEF !important;
 }
-
 </style>
 <body>
 <div class="ui container side">
@@ -78,11 +77,6 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 </div>
 <!-- 메인 테이블  -->
 <div class="ui container table purple segment">
-	<div class="right aligned">
-		<a class="ui tag label">menu</a>
-		<a class="ui red tag label">업무관리</a>
-		<a class="ui teal tag label">업무현황</a>
-	</div>
 	<h2 class="ui header" style="margin-top: 0px">
 	
 	<i class="circular purple briefcase icon "></i>
@@ -191,8 +185,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  <!-- /일정검색 -->
 	</div>
 	</form>
-	<br/><br/><br/><br/>
-	
+	<br/><br/><br/>
 	<? 
 	$where = "";
 	if($_REQUEST[cs_seq]!="" && $_REQUEST[cs_seq]!="unset") {
@@ -207,13 +200,11 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	} else if($_POST[state][0] == "미완료" || $_REQUEST[nAll]!=""){
 		$where .= " and state = 'N' ";
 	}
-	
 	$que = "select * from issue_list where 1=1 and (regdate between '$sdate' and '$edate') $where order by state,regdate desc ";
-	$pagenator = new Paginator($que);
-	  $results = $pagenator->getData($page,$limit);
-	  if($results->data) {
-	  	$max = count($results->data);
-	  ?>
+	$res = mysql_query($que) or die(mysql_error());
+	$cnt = mysql_num_rows($res);
+	
+	if($cnt > 0) { ?>
 	<div class="ui left aligned">
 		<button class="ui button inverted purple checkall">
 		  <i class="check circle icon"></i>
@@ -225,93 +216,86 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 		  선택삭제
 		</button>
 	</div>
-	<table class="ui definition table fixed center aligned small">
-	 <thead>
-		  <tr style="background-color:#a333c8;" >
-		    <th width="70px"><i class="large briefcase icon" style="color:white!important"></i></th>
-			<th width="70px">No.</th>
-			<th>업체명 / 요청자</th>
-		    <th>업무내용</th>
-		    <th>등록일 - 마감일</th>
-		    <th>업무라인</th>
-		    <th width="100px">완료일</th>
-		    <th>상태변경</th>
-		    <th width="120px"><i class="large edit icon"></i>업무일지</th>
-		  </tr>
-	  </thead>
-	  <tbody>
-	  <? for($i = 0; $i < $max; $i++) {
-	  	$issue = $results->data[$i];
-	  	
-	  	$name = ($issue[user_name] !="") ? $fn->getName($issue[user_name]) : "";
-	  	$order = ($issue[order_name] !="") ? $fn->getName($issue[order_name]). " > " : "";
-	  	
-	  	/*D-day 구하기 */
-	  	$today = strtotime(date("Y-m-d"));
-	  	$end_date = strtotime(date($issue[end_date]));
-	  	$dday = intval(($today - $end_date) / 86400);
-	  	/*D-day 구하기*/
-	  	
-	  	$circle = "green";
-	  	$font = "";
-	  	$dDayView = $issue[regdate]." ~ ". $issue[end_date];
-	  	
-	  	$finish = "positive"; // 완료일떄 완료버튼
-	  	$incomplete = "inverted"; //완료일때 미완료버튼
-	  	
-	  	if($issue[state]=="N") {
-	  		$dDayResult = dDay($dday);
-	  		$circle = "red";
-	  		$finish = "inverted"; // 미완료일떄 완료버튼
-	  		$incomplete = "negative"; // 마완료일떄 미완료버튼
-	  		if($dday > 0) { // 미완료 중 날짜 지난업무 
-	  			$font = "font_red"; // D-day font color red = > background로
-	  		}
-	  		$dDayView = $dDayResult . "<br/>" . $issue[regdate]." ~ ". $issue[end_date];
-	  	}
+	<br/>
+	<table id="datatables" class="ui definition table center aligned small">
+		<thead>
+			<tr align="center" style="background-color:#a333c8;"> 
+				<th width="70px"><i class="large briefcase icon" style="color:white!important"></i></th>
+				<th width="40px" class="no-search">No.</th>
+				<th width="150px">업체명 / 요청자</th>
+			    <th width="350px" class="no-sort">업무내용</th>
+			    <th width="100px" class="no-search">등록일</th>
+			    <th width="100px" class="no-search">마감예정일</th>
+			    <th width="70px">지시자</th>
+			    <th width="70px">담당자</th>
+			    <th width="100px" class="no-search">완료일</th>
+			    <th width="100px"class="no-sort no-search">상태변경</th>
+			    <th width="100px" class="no-sort no-search"><i class="large edit icon"></i>업무일지</th>
+			</tr>
+		</thead>
+		<tbody>
+			 <?
+			 $i = 1;
+			 while($issue = mysql_fetch_array($res)){
+			  	
+			  	$name = ($issue[user_name] !="") ? $fn->getName($issue[user_name]) : "";
+			  	$order = ($issue[order_name] !="") ? $fn->getName($issue[order_name]) : "";
+			  	
+			  	/*D-day 구하기 */
+			  	$today = strtotime(date("Y-m-d"));
+			  	$end_date = strtotime(date($issue[end_date]));
+			  	$dday = intval(($today - $end_date) / 86400);
+			  	/*D-day 구하기*/
+			  	
+			  	$circle = "green";
+			  	$font = "";
+			  	$dDayView = $issue[end_date];
+			  	
+			  	$finish = "positive"; // 완료일떄 완료버튼
+			  	$incomplete = "inverted"; //완료일때 미완료버튼
+			  	
+			  	if($issue[state]=="N") {
+			  		$dDayResult = dDay($dday);
+			  		$circle = "red";
+			  		$finish = "inverted"; // 미완료일떄 완료버튼
+			  		$incomplete = "negative"; // 마완료일떄 미완료버튼
+			  		if($dday > 0) { // 미완료 중 날짜 지난업무 
+			  			$font = "font_red"; // D-day font color red = > background로
+			  		}
+			  		$dDayView = $issue[end_date]."<br/>".$dDayResult;
+			  	}
 	  	
 	  ?>
-	  <tr class="tr_hover <?=$font?>" ondblClick="comment('<?=$issue[seq]?>',this)">
-	  	<td>
-	  		<div class="ui toggle checkbox">
-			  <input type="checkbox" id="chk" value="<?=$issue[seq]?>">
-			  <label></label>
-			</div>
-	  	</td>
-	  	<td><a class="ui <?=$circle?> circular label"><?=($i+1)?></a></td>
-	  	<td><?=$issue[cs_name]?><?=unSetView($issue[cs_person])?></td>
-	  	<td style="text-align:left"><a href="javascript:editIssue('<?=$issue[seq]?>')"><?=$issue[memo]?></a></td>
-	  	<td><?=$dDayView?></td>
-	  	<td>
-	  		<?=$order.$name?>
-	  	</td>
-	  	<td><?=$fn->d($issue[finish_date]);?></td>
-	  	<td>
-	  		<div class="ui tiny buttons">
-			  <button class="ui <?=$finish?> green button" onclick="stateModify('<?=$issue[state]?>','Y','<?=$issue[seq]?>')">완료</button>
-			  <button class="ui <?=$incomplete?> red  button" onclick="stateModify('<?=$issue[state]?>','N','<?=$issue[seq]?>')">미완료</button>
-			</div>
-	  	</td>
-	  	<td>
-		  	<div class="ui tiny buttons">
-			  <button class="ui inverted blue button" onclick="openWin('<?=$issue[seq]?>')">보기</button>
-			</div>
-	  	</td>
-	  </tr>
-	  <tr class="comment">
-	  	<td align="center">RE : </td>
-	  	<td align="left" colspan="8">
-	  		<div class="ui form">
-	  		<textarea style="width: 100%;padding:3px;resize:none" rows="3" id="bigo<?=$issue[seq]?>"><?=$issue[bigo]?></textarea><br/><br/>
-	  		</div>
-	  		<div class="ui tiny buttons">
-	  			<button class="ui inverted purple button" onclick="comment_add('<?=$issue[seq]?>')">저장</button>
-	  			<button class="ui inverted red button" onclick="comment('<?=$issue[seq]?>',this,'selfClose')">닫기</button>
-	  		</div>
-	  	</td>
-	  </tr>
-	  <? } ?>
-	  </tbody>
+			<tr align="center" class="<?=$font?> tr_hover">
+				<td width="20px">
+				<div class="ui toggle checkbox" style="width:50px">
+			      <input type="checkbox" id="chk" value="<?=$issue[seq]?>"/>
+			      <label></label>
+			    </div>
+				<!-- <input type="checkbox" id="chk" value="<?=$issue[seq]?>"> -->
+				</td>
+				<td><font color="<?=$circle?>"><b><?=$i?></b></font></td>
+				<td><?=$issue[cs_name]?><?=unSetView($issue[cs_person])?></td>
+				<td style="text-align:left"><a href="javascript:editIssue('<?=$issue[seq]?>')"><?=$issue[memo]?></a></td>
+				<td><?=$issue[regdate]?></td>
+				<td><?=$dDayView?></td>
+			  	<td><?=$order?></td>
+			  	<td><?=$name?></td>
+			  	<td><?=$fn->d($issue[finish_date]);?></td>
+			  	<td>
+			  		<div class="ui tiny buttons">
+					  <button class="ui <?=$finish?> green button" onclick="stateModify('<?=$issue[state]?>','Y','<?=$issue[seq]?>')">완료</button>
+					  <button class="ui <?=$incomplete?> red  button" onclick="stateModify('<?=$issue[state]?>','N','<?=$issue[seq]?>')">미완료</button>
+					</div>
+			  	</td>
+			  	<td>
+				  	<div class="ui tiny buttons">
+					  <button class="ui inverted blue button" onclick="openWin('<?=$issue[seq]?>')">보기</button>
+					</div>
+			  	</td>
+			</tr>
+		<? $i++;} ?>
+		</tbody>
 	</table>
 	<? } else {?>
 	<h2 class="ui icon header center aligned">
@@ -320,11 +304,9 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 		    검색결과 없음!
 		    <div class="sub header">검색 조건을 확인 해주세요</div>
 		  </div>
-		</h2>
+		</h2> 
 	<? } ?>
-	<!-- 페이징 -->
-	<?=$pagenator->createLinks($link);?>
-	<!-- 페이징 -->
+	
 	</div>
 <!-- clone + 팝업 elements -->
 <? include_once '/sub/index_sub.php';?>
@@ -337,6 +319,7 @@ $(document).ready(function(){
 	$("#state_search").dropdown(); //필터검색
 	dropDown("#cs_seq,#user_id"); //select 검색
 	hoverMaster("tr_hover","positive");
+	fn_table("#datatables");
 });
 
 $(document).on("click","#addRow,.addrow",function(e){
@@ -551,8 +534,7 @@ function delete_issue() {
 	}
 	var param = {};
 	if(confirm("삭제한 업무는 복구할 수 없습니다.\n총 "+c.length+"건 삭제하시겠습니까?")==true) {
-		fn_delete("issue_list","seq",null,true);
-		fn_delete("issue_history","refseq",null,false);
+		multiDelete(["issue_list*seq","issue_history*refseq"]);
 	} else {
 		return;
 	}
@@ -569,26 +551,7 @@ function openWin(seq) {
 	newwin.moveTo(posx,posy);
 	newwin.focus();
 }
-/*comment 관련 method*/
-function comment(seq,tr,loca) {
-	if(loca) {
-		$(tr).closest("tr").toggleClass("comment");
-		return;
-	}
-	$(tr).next().toggleClass("comment");
-}
-function comment_add(seq) {
-	var bigo = $("#bigo"+seq).val();
-	var param = {};
-	param["param"] = {"bigo" : bigo, "seq" : seq};
-	param["table"] = "issue_list";
-	param["id"] = ["seq"];
-	ajax(param,"/common/simple_update.php",
-		function(result){ 
-			alert(result); 
-	});
-}
-/*==comment==*/
+
 /* CALLBACK*/ 
 function selectIssue(result){
 	var data = result[0];
@@ -657,4 +620,4 @@ function unSetView($val) {
 		return " / ".$val;
 	}
 }
-?>
+?> 

@@ -33,18 +33,17 @@ body {
 #datatables_wrapper {
 	padding-bottom:30px;
 }
-.dropdown {
-min-width : unset !important;
-}
 </style>
 <body>
 <h3 class="ui block header">업무기록</h3>
-<table id="datatables">
+<table id="datatables" data-order="[]">
 	<thead>
-		<th>No</th>
-		<th>수정내용</th>
-		<th>수정자</th>
-		<th>수정시간</th>
+		<tr>
+			<th>No</th>
+			<th>수정내용</th>
+			<th>수정자</th>
+			<th>수정시간</th>
+		</tr>
 	</thead>
 	<tbody>
 	<? if($cnt == 0 ) { ?>
