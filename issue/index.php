@@ -217,10 +217,10 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 		</button>
 	</div>
 	<br/>
-	<table id="datatables" class="ui definition table center aligned small">
+	<table id="datatables" data-order="[]" class="ui definition table center aligned small">
 		<thead>
 			<tr align="center" style="background-color:#a333c8;"> 
-				<th width="70px"><i class="large briefcase icon" style="color:white!important"></i></th>
+				<th width="70px" class="no-search no-sort"><i class="large briefcase icon" style="color:white!important"></i></th>
 				<th width="40px" class="no-search">No.</th>
 				<th width="150px">업체명 / 요청자</th>
 			    <th width="350px" class="no-sort">업무내용</th>
@@ -267,7 +267,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	
 	  ?>
 			<tr align="center" class="<?=$font?> tr_hover">
-				<td width="20px">
+				<td width="20px" style="background:#f9fafb!important">
 				<div class="ui toggle checkbox" style="width:50px">
 			      <input type="checkbox" id="chk" value="<?=$issue[seq]?>"/>
 			      <label></label>
