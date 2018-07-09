@@ -464,6 +464,7 @@ function saveIssue(){
 	if(out == true) { 
 		var obj = {};
 		obj["issue"] = param;
+		obj["mode"] = "insert";
 		ajax(obj, "issue_add_ok.php"
 			,function (result) {
 			alert(result);
@@ -519,9 +520,9 @@ function modifyIssue() {
 	param["param"] = jsonBot("issue_modify",["cs_name"]);
 	param["table"] = "issue_list";
 	param["id"] = ["seq"];
-	ajax(param
-		, "/common/simple_update.php"
-		,function(result){ 
+	param["mode"] = "modify"; 
+	ajax(param, "issue_add_ok.php"
+		,function(result){
 		snackbar("issueSnackbar","#54c8ff",result);
 	});
 }

@@ -5,7 +5,7 @@ header("Content-Type: text/html; charset=UTF-8");
 include_once($_SERVER["DOCUMENT_ROOT"]."/conf/config.db.conn.php");//디비연결
 include $_SERVER["DOCUMENT_ROOT"]."/lib/nawoo.php";
 
-$que = " select * from issue_list";// where refseq ='".$_REQUEST[seq]."' order by regdate desc";// where seq = '".$_REQUEST[seq]."' ";
+$que = " select * from issue_history where refseq ='".$_REQUEST[seq]."' order by regdate desc";
 $res = mysql_query($que) or die(mysql_error());
 $cnt = mysql_num_rows($res);
 ?>
@@ -50,12 +50,13 @@ body {
 		<tr><td colspan="4" align="center">내용이 없습니다.</td></tr>		
 	<? } else {
 	$i = 1; 
-	while($row = mysql_fetch_array($res)) { ?>
+	while($row = mysql_fetch_array($res)) { 
+		$time = explode(" ",$row[regdate]);?>
 		<tr align="center">
 			<td><?=$i?></td>		
-			<td><?=$row[memo]?></td>		
-			<td><?=$row[regdate]?></td>		
-			<td><?=$row[end_date]?></td>		
+			<td align="left"><?=$row[memo]?></td>		
+			<td><?=$row[user_name]?></td>		
+			<td><?=$time[0] ."<br/>" . $time[1];?></td>		
 		</tr>
 	<? $i++;} 
 	}?>
