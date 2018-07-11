@@ -12,7 +12,18 @@ function ajax(params, url, callback, data, method){
 	}
 	});
 }
-
+// chart 범례 
+function legendValue(id,data) { // 범례에 건수 추가
+	google.charts.setOnLoadCallback(function() {
+		var chartContainer = $("#" + id).find("svg");
+		var labelSelector = '> g:eq(1) > g';
+		$(labelSelector,chartContainer).each(function(i,e){
+			var newText = $(this).find("text:last");
+			var value = Number(data.getValue(i, 1)).toLocaleString('en').split(".")[0];
+			newText.text(newText.text() + " ("+value+")");
+		});
+	});
+}
 // datepicker 
 function calendar(ele) {
 	$(ele).calendar({
