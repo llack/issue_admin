@@ -70,13 +70,13 @@ if($_SESSION["USER_NAME"]!="") {
     <div class="ui right pointing purple basic label">
       ID
     </div>
-    <input type="text" name="id" id="id" class="login_info">
+    <input type="text" name="id" id="id" class="login_info" autocomplete="off">
   </div>
   <div class="inline field">
     <div class="ui right pointing purple basic label">
       	PASSWORD
     </div>
-    <input type="password" name="password" id="password" class="login_info">
+    <input type="password" name="password" id="password" class="login_info" autocomplete="off">
   </div>
   </div>
   <!-- /  -->
