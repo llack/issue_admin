@@ -2,23 +2,16 @@
 	<!-- 사이드바 헤더 -->
 	<div class="item">
 		<h4 align="center">
-		<div class="ui vertical mini animated button floated left inverted purple" tabindex="0" onclick="location.href='/index.php' ">
+		<div class="ui vertical fluid animated button floated left inverted purple" tabindex="0" onclick="location.href='/index.php' ">
 		  <div class="hidden content">HOME</div>
 		  <div class="visible content">
 		    <i class="home icon"></i>
 		  </div>
-		</div><?=$fn->add_nbsp(2)?>업체별 미완료 현황</h4>
+		</div></h4>
 	</div>
-	<!-- /사이드바 헤더 -->
-	
-	<!-- 업체추가 
-    <button class="ui button basic purple" style="width:100%" id="company_add_btn">
-    <i class="building outline icon"></i>업체 추가 + </button>
-  /업체추가 -->
-  
 	<!-- 검색창 -->
-   <br/>
    <div class="item" >
+   <h4 align="center"><i class="ui caret down inverted purple icon"></i>업체별 미완료 현황</h4>
   </div>
   <!-- /검색창 -->
   
