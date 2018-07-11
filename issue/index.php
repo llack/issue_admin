@@ -218,19 +218,32 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	</div>
 	<br/>
 	<table id="datatables" data-order="[]" class="ui definition table center aligned small">
+		<colgroup>
+			<col width="5%">
+			<col width="5%">
+			<col width="7%">
+			<col width="26%">
+			<col width="8%">
+			<col width="8%">
+			<col width="6%">
+			<col width="6%">
+			<col width="8%">
+			<col width="13%">
+			<col width="8%">
+		</colgroup>
 		<thead>
 			<tr align="center" style="background-color:#a333c8;"> 
-				<th width="70px" class="no-search no-sort"><i class="large briefcase icon" style="color:white!important"></i></th>
-				<th width="40px" class="no-search">No.</th>
-				<th width="150px">업체명 / 요청자</th>
-			    <th width="350px" class="no-sort">업무내용</th>
-			    <th width="100px" class="no-search">등록일</th>
-			    <th width="100px" class="no-search">마감예정일</th>
-			    <th width="70px">지시자</th>
-			    <th width="70px">담당자</th>
-			    <th width="100px" class="no-search">완료일</th>
-			    <th width="100px"class="no-sort no-search">상태변경</th>
-			    <th width="100px" class="no-sort no-search"><i class="large edit icon"></i>업무일지</th>
+				<th class="no-search no-sort"><i class="large briefcase icon" style="color:white!important"></i></th>
+				<th class="no-search">No.</th>
+				<th>업체명<br/>(요청자)</th>
+			    <th class="no-sort">업무내용</th>
+			    <th class="no-search">등록일</th>
+			    <th class="no-search">마감예정일</th>
+			    <th> 지시자</th>
+			    <th>담당자</th>
+			    <th class="no-search">완료일</th>
+			    <th class="no-sort no-search">상태변경</th>
+			    <th class="no-sort no-search"><i class="large edit icon"></i>업무일지</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -618,7 +631,7 @@ function unSetView($val) {
 	if($val == "unset"||$val == "") {
 		return "";
 	} else {
-		return " / ".$val;
+		return "<br/>(".$val.")";
 	}
 }
 ?> 
