@@ -248,7 +248,7 @@ function delete_company(seq,user_name) {
 	}
 	var param = {};
 	if(confirm("삭제한 업체는 복구할 수 없습니다.\n총 "+c.length+"건 삭제하시겠습니까?")==true) {
-		fn_delete("erp_ocsinfo","seq");
+		multiDelete(["erp_ocsinfo*seq","employee_list*refseq"]);
 	} else {
 		return;
 	}

@@ -160,7 +160,7 @@ $(document).ready(function(){
 	<? if($cnt > 0) { ?>
 		fn_table("#datatables");
 	<? } ?>
-	$("body").keyup(function(e){
+	$("body").keydown(function(e){
 		var key = e.keyCode || e.which;
 		if(key == 27) {
 			$("#closeBtn").click();
