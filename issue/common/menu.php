@@ -86,7 +86,7 @@ $myWork = $fn->myWork($_SESSION["USER_ID"]);
       <div class="ui link list">
         <a class="item" href="/index.php">업무현황</a>
         <a class="item" href="/issue/issue_chart.php">업무차트</a>
-        <a class="item" href="/common/spider_calendar.php">일정관리</a>
+        <a class="item" href="/common/spider_calendar.php">업무달력</a>
       </div>
     </div>
     <div class="column" align="center">
