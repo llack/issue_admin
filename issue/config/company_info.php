@@ -122,8 +122,10 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 	<!-- 업체리스트 --><br/>
 	<table id="datatables" class="ui definition table fixed center aligned small" data-order="[]">
 	  <thead>
-		  <tr style="background-color:#a333c8;" >
-		    <th class="no-search no-sort"width="70px"><i class="large building icon" style="color:white!important"></i></th>
+		  <tr>
+		    <th class="no-search no-sort"width="70px" style="background-color:#a333c8;">
+		    	<i class="large building icon" style="color:white!important"></i>
+		    </th>
 			<th width="70px" clas="no-search">No.</th>
 			<th>업체명</th>
 		    <th>업체코드</th>

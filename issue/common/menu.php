@@ -209,7 +209,7 @@ $(document).ready(function(){
 		position : 'bottom center',
 		lastResort : 'bottom center',
 		delay: {
-		  show: 0,
+		  show: 20,
 		  hide: 50
 		 }
 	});

@@ -232,8 +232,10 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			<col width="8%">
 		</colgroup>
 		<thead>
-			<tr align="center" style="background-color:#a333c8;"> 
-				<th class="no-search no-sort"><i class="large briefcase icon" style="color:white!important"></i></th>
+			<tr align="center" > 
+				<th class="no-search no-sort" style="background-color:#a333c8;">
+					<i class="large briefcase icon" style="color:white!important"></i>
+				</th>
 				<th class="no-search">No.</th>
 				<th>업체명<br/>(요청자)</th>
 			    <th class="no-sort">업무명</th>
@@ -318,7 +320,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 		  </div>
 		</h2> 
 	<? } ?>
-	
+	<br/>
 	</div>
 <!-- clone + 팝업 elements -->
 <? include_once '/sub/index_sub.php';?>
