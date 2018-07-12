@@ -71,7 +71,7 @@ if($_REQUEST[mode] == "insert") {
 }
 
 function parsekey($key) {
-	$result = array("memo"=>"업무내용","regdate"=>"등록일","end_date"=>"마감예정일","user_name"=>"담당자","cs_person"=>"요청자");
+	$result = array("memo"=>"업무내용","regdate"=>"등록일","end_date"=>"마감예정일","user_name"=>"담당자","cs_person"=>"요청자","order_memo"=>"요청사항");
 	return $result[$key];
 }
 function getName($userId) {

@@ -69,12 +69,19 @@
       
     </div>
     <br/>
-    <div class="three fields inline" >
+    <div class="four fields inline" >
     
     <div class="field center aligned">
         <label>업무명 ▼</label><br/>
         <div class="ui">
 		  <textarea type="text" name="memo" class="fluid" rows="1" style="resize:none"></textarea>
+		</div>
+	</div>
+	
+	<div class="field center aligned">
+        <label>요청사항 ▼</label><br/>
+        <div class="ui">
+		  <textarea type="text" name="order_memo" class="fluid" rows="1" style="resize:none"></textarea>
 		</div>
 	</div>
 	
@@ -119,11 +126,16 @@
   
   <div class="inline field">
     <div class="ui ribbon purple basic label">
-      업무내용
+      업무명
     </div>
-   <textarea id="issueText" name="memo" rows="3" style="resize:none"></textarea>
+   <textarea name="memo" rows="2" style="resize:none"></textarea>
   </div>
-
+<div class="inline field">
+    <div class="ui ribbon purple basic label">
+      요청사항
+    </div>
+   <textarea name="order_memo" rows="1" style="resize:none"></textarea>
+  </div>
   <div class="inline field error">
     <div class="ui ribbon  purple basic label">
       업체명
