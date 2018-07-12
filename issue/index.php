@@ -280,12 +280,11 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	  	
 	  ?>
 			<tr align="center" class="<?=$font?> tr_hover">
-				<td width="20px" style="background:#f9fafb!important">
+				<td style="background:#f9fafb!important">
 				<div class="ui toggle checkbox" style="width:50px">
 			      <input type="checkbox" id="chk" value="<?=$issue[seq]?>"/>
 			      <label></label>
 			    </div>
-				<!-- <input type="checkbox" id="chk" value="<?=$issue[seq]?>"> -->
 				</td>
 				<td><font color="<?=$circle?>"><b><?=$i?></b></font></td>
 				<td><?=$issue[cs_name]?><?=unSetView($issue[cs_person])?></td>
@@ -497,13 +496,22 @@ function stateModify(before,after,seq) {
 		param["table"] = "issue_list";
 		param["id"] = ["seq"];
 		ajax(param,"/common/simple_update.php",function(result){
+			var text,color,memo;
 			if(after == "Y") {
 				text = "완료처리 되었습니다.";
 				color = "#21ba45";
+				memo = "완료처리";
 			} else {
 				text = "미완료처리 되었습니다.";
 				color = "#db2828";
+				memo = "미완료처리";
 			}
+			/* history */
+			var history = {};
+			history["param"] = { "memo" : memo, "refseq" : seq, "user_name" : "<?=$_SESSION["USER_NAME"]?>", "regdate" : "<?=date("Y-m-d H:i:s")?>"};
+			history["table"] = "issue_history";
+			ajax(history,"/common/simple_insert.php");
+			
 			snackbar("issueSnackbar",color,text);
 			popupHide();
 		})

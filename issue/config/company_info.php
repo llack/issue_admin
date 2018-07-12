@@ -116,30 +116,26 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 	  		$where .= " and cs_code = '".$_REQUEST[cs_code]."' ";
 	  	}
 	  	$que = " select * from erp_ocsinfo where 1=1 $where order by cs_name ";
-	  	$pagenator = new Paginator($que);
-	  	$results = $pagenator->getData($page,$limit);
-	  	if($results->data) {
-	  	$max = count($results->data);
-	  	
-	  ?>
-	<!-- 업체리스트 -->
-	<table class="ui definition table fixed center aligned small">
+	  	$res = mysql_query($que) or die(mysql_error());
+	  	$max = mysql_num_rows($res);
+	  	if($max > 0) { ?>
+	<!-- 업체리스트 --><br/>
+	<table id="datatables" class="ui definition table fixed center aligned small" data-order="[]">
 	  <thead>
 		  <tr style="background-color:#a333c8;" >
-		    <th width="70px"><i class="large building icon" style="color:white!important"></i></th>
-			<th width="70px">No.</th>
+		    <th class="no-search no-sort"width="70px"><i class="large building icon" style="color:white!important"></i></th>
+			<th width="70px" clas="no-search">No.</th>
 			<th>업체명</th>
 		    <th>업체코드</th>
-		    <th>정보1</th>
+		    <th class="no-search no-sort">업체 색상(달력)</th>
 		    <th>정보2</th>
 		    <th>정보3</th>
-		    <th><i class="large edit icon"></i>or <i class="large ban icon"></i></th>
+		    <th class="no-search no-sort"><i class="large edit icon"></i>or <i class="large ban icon"></i></th>
 		  </tr>
 	  </thead>
 	  <tbody>
-	 <? for($i = 0; $i < $max; $i++) {
-	  		$row = $results->data[$i];
-	  ?>
+	 <? $i = 1;
+	 while($row = mysql_fetch_array($res)) { ?>
 	  <tr class="tr_hover">
 	  	<td>
 	  		<div class="ui toggle checkbox">
@@ -147,10 +143,14 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 			  <label></label>
 			</div>
 	  	</td>
-	  	<td><a class="ui grey circular label"><?=($i+1)?></a></td>
+	  	<td><?=$i?></td>
 	  	<td><a href="javascript:void(0)" onclick="move('company_detail.php?seq=<?=$row[seq]?>')"><?=$row[cs_name]?></a></td>
 	  	<td><a href="javascript:void(0)" onclick="move('company_detail.php?seq=<?=$row[seq]?>')"><?=$row[cs_code]?></a></td>
-	  	<td></td>
+	  	<td>
+	  	<? if($row[color] != "") {?>
+	  		<button class="ui mini button" style="background-color:<?=$row[color]?>"><?=$fn->add_nbsp(15)?></button>
+	  	<? } ?>
+	  	</td>
 	  	<td></td>
 	  	<td></td>
 	  	<td>
@@ -161,7 +161,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 			</div>
 	  	</td>
 	  </tr>
-	  <? } ?>
+	  <? $i++;} ?>
 	 </tbody>
 	</table>
 	<? } else { ?>
@@ -220,10 +220,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
     </div>
   </div>
 </div>
-<!-- 페이징  -->
-<?=$pagenator->createLinks(); ?>
 </div>
-<!-- /페이징 -->
 <div id="cs_modify"></div>
 </body>
 <script>
@@ -239,6 +236,7 @@ $(document).ready(function(){
 
 	hoverMaster("tr_hover","positive");
 	enter_afterIndex("cs_modify");
+	fn_table("#datatables");
 });
 function delete_company(seq,user_name) {
 	var c = $("#chk:checked");

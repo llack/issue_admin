@@ -235,7 +235,7 @@ $link = $fn->auto_link("seq");
   </div>
   <div class="inline field">
     <div class="ui ribbon purple basic label">
-      회사코드
+      직책
     </div>
    <input type="text" name="level" value="">
   </div>
