@@ -259,38 +259,10 @@ function fn_submit(frm) {
 function editOrRemove(seq,mode,cs_name) {
 	if(mode =="modify") { // 업체수정
 		$('#company_modify').modal({
-			onShow : function() {
-				var param = {};
-				param["table"] = "erp_ocsinfo";
-				param["where"] = " and seq = " + seq;
-				ajax(param
-					,"/common/simple_select.php"
-					,function(result){
-						var data = result[0];
-						for(var key in data) {
-							$("input[name='"+key+"']").val(data[key]);
-						}
-						colorPicker(".colorPicker","color",data.color);
-					});
-			}
+			onShow : selectCompany(seq)
 			,onDeny : popupDeny
-			,onApprove : function(e) {
-					if(!trim_chk($("input[name='cs_name']").val(),"cs_name","회사명을 입력해주세요")){
-						return false;
-					}else {
-						var param = {};
-						var data = {};
-						param["param"] = jsonBot("cs_modify");
-						param["table"] = "erp_ocsinfo";
-						param["id"] = ["seq"];
-						ajax(param
-							, "/common/simple_update.php"
-							,function(result){ 
-							snackbar("cs_modify","#54c8ff",result);
-						});
-					}
-				}
-			, onHide : popupHide
+			,onApprove : modifyCompany
+			, onHide : popupDeny
 			})
 			.modal('show');
 	} else if(mode =="delete"){ // 업체삭제
@@ -303,28 +275,64 @@ function editOrRemove(seq,mode,cs_name) {
 		$('#company_modify').modal({
 			onShow : function() {
 				$(".popup_title").text("등 록");
-				colorPicker(".colorPicker","color");
+				$('#company_modify').find("input").val("");
+				colorPicker(".colorPicker","color","#e9e9e9");
 			}
 			,onDeny : popupDeny
-			,onApprove : function(e) {
-				if(!trim_chk($("input[name='cs_name']").val(),"cs_name","회사명을 입력해주세요")){
-					return false;
-				} else {
-					var param = {};
-					param["param"] = jsonBot("cs_modify",["seq"]);
-					param["table"] = "erp_ocsinfo";
-					ajax(param
-						,"/common/simple_insert.php"
-						,function(result){ 
-						snackbar("cs_modify","#21ba45",result);
-					});
-					
-					}
-				}
-			, onHide : popupHide
+			,onApprove : insertCompany
+			, onHide : popupDeny
 			})
 			.modal('show');
 	}
+}
+function selectCompany(seq) {
+	var param = {};
+	param["table"] = "erp_ocsinfo";
+	param["where"] = " and seq = " + seq;
+	ajax(param
+		,"/common/simple_select.php"
+		,function(result){
+			var data = result[0];
+			for(var key in data) {
+				$("input[name='"+key+"']").val(data[key]);
+			}
+			colorPicker(".colorPicker","color",data.color);
+		});
+} 
+
+function modifyCompany(e) {
+	if(!trim_chk($("input[name='cs_name']").val(),"cs_name","회사명을 입력해주세요")){
+		return false;
+	}else {
+		var param = {};
+		var data = {};
+		param["param"] = jsonBot("cs_modify");
+		param["table"] = "erp_ocsinfo";
+		param["id"] = ["seq"];
+		ajax(param
+			, "/common/simple_update.php"
+			,function(result){ 
+			snackbar("cs_modify","#54c8ff",result);
+			popupHide();
+		});
+	}
+}
+
+function insertCompany() {
+	if(!trim_chk($("input[name='cs_name']").val(),"cs_name","회사명을 입력해주세요")){
+		return false;
+	} else {
+		var param = {};
+		param["param"] = jsonBot("cs_modify",["seq"]);
+		param["table"] = "erp_ocsinfo";
+		ajax(param
+			,"/common/simple_insert.php"
+			,function(result){ 
+			snackbar("cs_modify","#21ba45",result);
+			popupHide();
+		});
+		
+		}
 }
 </script>
 </html>

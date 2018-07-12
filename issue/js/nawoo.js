@@ -157,7 +157,6 @@ function fn_copy(id) {
 
 /*팝업 메서드  */
 function popupDeny() { // true가 닫힘
-	location.reload();
 	return true;
 }
 

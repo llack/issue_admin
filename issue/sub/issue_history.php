@@ -38,26 +38,48 @@ body {
 #datatables_wrapper {
 	padding-bottom:30px;
 }
-
+.right {
+	float : right;
+}
 </style>
 <body>
 <h3 class="ui block header">[<?=$row_issue[cs_name]?>]<br/><?=$row_issue[memo]?></h3>
-<table>
+<table style="width:100%">
 <colgroup>
-	<col width="20%">
-	<col width="80%">
+	<col width="15%">
+	<col width="70%">
+	<col width="15%">
 </colgroup>
 <tr>
 	<td><div class="ui right pointing purple basic label">요청 및 지시사항</div></td>
 	<td><?=$row_issue[order_memo]?></td>
+	<td></td>
 </tr>
 <tr>
 	<td><div class="ui right pointing purple basic label">원인분석</div></td>
-	<td></td>
+	<td>
+		<div class="ui form">
+			<textarea rows="2" id="cause_memo" style="resize: none"><?=$row_issue[cause_memo]?></textarea>
+		</div>
+	</td>
+	<td>
+		<div class="ui tiny buttons">
+		  <button class="ui inverted blue button" onclick="memoUpdate('cause_memo')">수정</button>
+		</div>
+	</td>
 </tr>
 <tr>
-	<td><div class="ui right pointing purple basic label">결과</div></td>
-	<td></td>
+	<td><div class="ui right pointing purple basic label">해결방안 및 결과</div></td>
+	<td>
+		<div class="ui form">
+			<textarea rows="2" id="result_memo" style="resize: none"><?=$row_issue[result_memo]?></textarea>
+		</div>
+	</td>
+	<td>
+		<div class="ui tiny buttons">
+		  <button class="ui inverted blue button" onclick="memoUpdate('result_memo')">수정</button>
+		</div>
+	</td>
 </tr>
 </table>
 <br/><br/>
@@ -88,7 +110,7 @@ body {
 	<thead>
 		<tr>
 			<th class="no-search no-sort" style="background-color:#a333c8">
-				<i class="large briefcase icon" style="color:white!important"></i>
+				<i class="large tasks icon" style="color:white!important"></i>
 			</th>
 			<th class="no-search">No</th>
 			<th class="no-sort">수정내용</th>
@@ -100,22 +122,22 @@ body {
 	<? if($cnt == 0 ) { ?>
 		<tr><td colspan="5" align="center">내용이 없습니다.</td></tr>		
 	<? } else {
-	$i = 1; 
-	while($row = mysql_fetch_array($res)) { 
-		$time = explode(" ",$row[regdate]);?>
-		<tr align="center">
-			<td style="background:#f9fafb!important">
-			<div class="ui toggle checkbox" style="width:50px">
-			      <input type="checkbox" id="chk" value="<?=$row[seq]?>"/>
-			      <label></label>
-			    </div>
-			</td>
-			<td><?=$i?></td>		
-			<td style="text-align: left"><?=$row[memo]?></td>		
-			<td><?=$row[user_name]?></td>		
-			<td><?=$time[0] ."<br/>" . $time[1];?></td>		
-		</tr>
-	<? $i++;} 
+		$i = 1; 
+		while($row = mysql_fetch_array($res)) { 
+			$time = explode(" ",$row[regdate]);?>
+			<tr align="center">
+				<td style="background:#f9fafb!important">
+				<div class="ui toggle checkbox" style="width:50px">
+				      <input type="checkbox" id="chk" value="<?=$row[seq]?>"/>
+				      <label></label>
+				    </div>
+				</td>
+				<td><?=$i?></td>		
+				<td style="text-align: left"><?=$row[memo]?></td>		
+				<td><?=$row[user_name]?></td>		
+				<td><?=$time[0] ."<br/>" . $time[1];?></td>		
+			</tr>
+		<? $i++;} 
 	}?>
 	</tbody>
 
@@ -138,6 +160,23 @@ function delete_history() {
 	} else {
 		return;
 	}
+}
+function memoUpdate(id) {
+	var text = $("#"+id).val();
+	var seq = "<?=$_REQUEST[seq]?>";
+	var param = {};
+	param["param"] = {"seq" : seq};
+	if(id == "result_memo") {
+		param["param"].result_memo = text;
+	} else {
+		param["param"].cause_memo = text;
+	}
+	
+	param["table"] = "issue_list";
+	param["id"] = ["seq"];
+	ajax(param,"/common/simple_update.php",function(result) {
+		alert(result);	
+	});
 }
 </script>
 </html>

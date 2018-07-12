@@ -528,7 +528,7 @@ function editIssue(seq,mode) {
 		}
 		,onDeny : popupDeny
 		,onApprove : modifyIssue // 수정
-		, onHide : popupHide
+		, onHide : popupDeny
 		}).modal('show');
 }
 
@@ -545,6 +545,7 @@ function modifyIssue() {
 	ajax(param, "issue_add_ok.php"
 		,function(result){
 		snackbar("issueSnackbar","#54c8ff",result);
+		popupHide();
 	});
 }
 
