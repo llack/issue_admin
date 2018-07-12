@@ -93,17 +93,12 @@ $myWork = $fn->myWork($_SESSION["USER_ID"]);
       <h4 class="ui header">업체</h4>
       <div class="ui link list">
         <a class="item" href="/config/company_info.php">업체관리</a>
-        <a class="item">메뉴1</a>
-        <a class="item">메뉴2</a>
-        <a class="item">메뉴3</a>
       </div>
     </div>
     <div class="column" align="center">
       <h4 class="ui header">사원</h4>
       <div class="ui link list">
         <a class="item" href="/config/employee_auth.php">권한관리 (관리자)</a>
-        <a class="item">메뉴1</a>
-        <a class="item">메뉴2</a>
       </div>
     </div>
     <div class="column"> <!-- 내정보 -->
