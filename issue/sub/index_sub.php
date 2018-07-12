@@ -72,7 +72,7 @@
     <div class="three fields inline" >
     
     <div class="field center aligned">
-        <label>업무내용 ▼</label><br/>
+        <label>업무명 ▼</label><br/>
         <div class="ui">
 		  <textarea type="text" name="memo" class="fluid" rows="1" style="resize:none"></textarea>
 		</div>

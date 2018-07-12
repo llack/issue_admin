@@ -92,11 +92,11 @@ for($c = 0; $c < count($chart->chart); $c++) {
 		<tr class="center aligned">
 		<!-- 연도별 -->
 			<td>
-				<div id="yearDonut" style="height:300px"></div>
+				<div id="yearDonut" style="height:500px"></div>
 			</td>
 		<!-- 월별 -->
 			<td>	
-				<div id="monthDonut" style="height:300px"></div>
+				<div id="monthDonut" style="height:500px"></div>
 			</td>
 		</tr>
 		<thead>

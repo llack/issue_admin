@@ -200,7 +200,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	} else if($_POST[state][0] == "미완료" || $_REQUEST[nAll]!=""){
 		$where .= " and state = 'N' ";
 	}
-	$que = "select * from issue_list where 1=1 and (regdate between '$sdate' and '$edate') $where order by state,regdate desc ";
+	$que = "select * from issue_list where 1=1 and (regdate between '$sdate' and '$edate') $where order by state asc,regdate desc,cs_name asc ";
 	$res = mysql_query($que) or die(mysql_error());
 	$cnt = mysql_num_rows($res);
 	
@@ -221,8 +221,8 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 		<colgroup>
 			<col width="5%">
 			<col width="5%">
-			<col width="7%">
-			<col width="26%">
+			<col width="10%">
+			<col width="23%">
 			<col width="8%">
 			<col width="8%">
 			<col width="6%">
@@ -236,10 +236,10 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 				<th class="no-search no-sort"><i class="large briefcase icon" style="color:white!important"></i></th>
 				<th class="no-search">No.</th>
 				<th>업체명<br/>(요청자)</th>
-			    <th class="no-sort">업무내용</th>
+			    <th class="no-sort">업무명</th>
 			    <th class="no-search">등록일</th>
 			    <th class="no-search">마감예정일</th>
-			    <th> 지시자</th>
+			    <th>지시자</th>
 			    <th>담당자</th>
 			    <th class="no-search">완료일</th>
 			    <th class="no-sort no-search">상태변경</th>
