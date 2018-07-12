@@ -9,7 +9,7 @@ $fn = new Simple_query();
 $echo = $fn->simple_delete($_REQUEST[table],$_REQUEST[id],$_REQUEST[chk]);
 
 if(is_array($_REQUEST[chk])) {
-	echo json_encode("총 " .$echo. "건 삭제 되었습니다.");
+	echo json_encode("삭제되었습니다.");
 	exit;
 } else {
 	echo json_encode($echo);

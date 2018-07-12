@@ -62,7 +62,7 @@ $(document).ready(function(){
 	
 });
 function test(str) {
-	alert(str);
+	//alert(str);
 }
 function setData(start,end,timezone,callback) {
 	ajax({},"/common/loadEvents.php",

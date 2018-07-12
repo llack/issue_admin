@@ -12,5 +12,5 @@ $obj = $_REQUEST[param];
 for($i = 0; $i < $max; $i++) {
 	$fn->simple_delete($obj[$i][table],$obj[$i][id],$obj[$i][chk]);
 }
-echo json_encode("총 ".$max."건 삭제되었습니다." );
+echo json_encode("삭제되었습니다.");
 
