@@ -51,8 +51,20 @@ body {
 	<col width="15%">
 </colgroup>
 <tr>
+	<td><div class="ui right pointing purple basic label">업무상세</div></td>
+	<td>
+		<div class="ui form">
+			<textarea rows="2" style="resize: none"><?=$row_issue[detail_memo]?></textarea>
+		</div>
+	</td>
+	<td></td>
+</tr>
+<tr>
 	<td><div class="ui right pointing purple basic label">요청 및 지시사항</div></td>
-	<td><?=$row_issue[order_memo]?></td>
+	<td>
+		<div class="ui form">
+			<textarea rows="2" style="resize: none"><?=$row_issue[order_memo]?></textarea>
+	</td>
 	<td></td>
 </tr>
 <tr>
@@ -93,7 +105,7 @@ body {
 	  <i class="check trash alternate icon"></i>
 	  선택삭제
 	</button>
-	<button class="ui button inverted red" style="float:right" onclick="self.close();">
+	<button class="ui button inverted red" style="float:right" id="closeBtn" onclick="self.close();">
 	  <i class="times icon"></i>
 	  닫기
 	</button>
@@ -103,9 +115,9 @@ body {
 	<colgroup>
 		<col width="10%">
 		<col width="10%">
-		<col width="40%">
-		<col width="20%">
-		<col width="20%">
+		<col width="50%">
+		<col width="15%">
+		<col width="15%">
 	</colgroup>
 	<thead>
 		<tr>
@@ -145,7 +157,15 @@ body {
 </body>
 <script>
 $(document).ready(function(){
-	fn_table("#datatables");
+	<? if($cnt > 0) { ?>
+		fn_table("#datatables");
+	<? } ?>
+	$("body").keyup(function(e){
+		var key = e.keyCode || e.which;
+		if(key == 27) {
+			$("#closeBtn").click();
+		}
+	});
 });
 
 function delete_history() {

@@ -52,7 +52,7 @@ if($_REQUEST[mode] == "insert") {
 			$save_from = ($from != "unset") ? $from : "미지정";
 			$sava_to = ($to != "unset") ? $to : "미지정";
 			
-			$difList[$k] = "[".parsekey($k)."] ".$save_from." -> ".$sava_to; 			
+			$difList[$k] = "[".parsekey($k)."] ".$save_from." ▶ ".$sava_to; 			
 		}
 	}
 	$param["user_name"] = $userid; // 다시 id로 저장
@@ -71,7 +71,14 @@ if($_REQUEST[mode] == "insert") {
 }
 
 function parsekey($key) {
-	$result = array("memo"=>"업무내용","regdate"=>"등록일","end_date"=>"마감예정일","user_name"=>"담당자","cs_person"=>"요청자","order_memo"=>"요청사항");
+	$result = array("memo"=>"업무내용",
+					"regdate"=>"등록일",
+					"end_date"=>"마감예정일",
+					"user_name"=>"담당자",
+					"cs_person"=>"요청자",
+					"order_memo"=>"요청사항",
+					"detail_memo"=>"업무상세"
+	);
 	return $result[$key];
 }
 function getName($userId) {

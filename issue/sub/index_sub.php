@@ -69,19 +69,26 @@
       
     </div>
     <br/>
-    <div class="four fields inline" >
+    <div class="five fields inline" >
     
     <div class="field center aligned">
         <label>업무명 ▼</label><br/>
         <div class="ui">
-		  <textarea type="text" name="memo" class="fluid" rows="1" style="resize:none"></textarea>
+		  <textarea type="text" name="memo" class="fluid" rows="2" style="resize:none"></textarea>
 		</div>
 	</div>
 	
 	<div class="field center aligned">
-        <label>요청사항 ▼</label><br/>
+        <label>업무상세▼</label><br/>
         <div class="ui">
-		  <textarea type="text" name="order_memo" class="fluid" rows="1" style="resize:none"></textarea>
+		  <textarea type="text" name="detail_memo" class="fluid" rows="2" style="resize:none"></textarea>
+		</div>
+	</div>
+	
+	<div class="field center aligned">
+        <label>요청 및  지시사항 ▼</label><br/>
+        <div class="ui">
+		  <textarea type="text" name="order_memo" class="fluid" rows="2" style="resize:none"></textarea>
 		</div>
 	</div>
 	
@@ -120,7 +127,6 @@
 	<div class="login header">
 		<div style="text-align:right !important"><i class="user icon"></i>업 무 정 보 <span class="popup_title">수 정</span></div>
 	</div>
-	<br/><br/>
 	<form class="ui fluid form" name="issue_modify">
   <div class="field">
   
@@ -130,11 +136,17 @@
     </div>
    <textarea name="memo" rows="2" style="resize:none"></textarea>
   </div>
+  <div class="inline field">
+    <div class="ui ribbon purple basic label">
+      업무상세
+    </div>
+   <textarea name="detail_memo" rows="2" style="resize:none"></textarea>
+  </div>
 <div class="inline field">
     <div class="ui ribbon purple basic label">
-      요청사항
+      요청 및 지시사항
     </div>
-   <textarea name="order_memo" rows="1" style="resize:none"></textarea>
+   <textarea name="order_memo" rows="2" style="resize:none"></textarea>
   </div>
   <div class="inline field error">
     <div class="ui ribbon  purple basic label">

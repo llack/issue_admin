@@ -15,11 +15,11 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 #issue_info {
 	position: absolute;
 	 width: 480px;
-	 height: 600px;
+	 height: 700px;
 	 left: 50%;
 	 top: 50%;
 	 margin-left: -250px;
-	 margin-top: -300px;
+	 margin-top: -350px;
 	 border: solid #a333c8 2px;
 	 border-radius: 25px;
 	 padding : 1rem;
@@ -331,7 +331,9 @@ $(document).ready(function(){
 	$("#state_search").dropdown(); //필터검색
 	dropDown("#cs_seq,#user_id"); //select 검색
 	hoverMaster("tr_hover","positive");
-	fn_table("#datatables");
+	<? if($cnt > 0) { ?>
+		fn_table("#datatables");
+	<? } ?>
 });
 
 $(document).on("click","#addRow,.addrow",function(e){
@@ -565,7 +567,7 @@ function delete_issue() {
 function openWin(seq) {
 	var url = "/sub/issue_history.php?seq="+seq;
 	var width=900;
-    var height=800;
+    var height=900;
 	var posx = 0
 	var posy = 0
 	posx = (screen.width - width)/2-1;
