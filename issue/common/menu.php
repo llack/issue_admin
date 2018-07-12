@@ -209,8 +209,8 @@ $(document).ready(function(){
 		position : 'bottom center',
 		lastResort : 'bottom center',
 		delay: {
-		  show: 50,
-		  hide: 100
+		  show: 0,
+		  hide: 50
 		 }
 	});
 });
