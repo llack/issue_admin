@@ -297,10 +297,29 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			  	<td><?=$name?></td>
 			  	<td><?=$fn->d($issue[finish_date]);?></td>
 			  	<td>
-			  		<div class="ui tiny buttons">
+			  		<div class="ui floating labeled icon dropdown inverted red button" id="state">
+					  <i class="times icon"></i>
+					  <span class="text">Filter</span>
+					  <div class="menu">
+					    <div class="header">
+					      <i class="tags icon"></i>
+					      Filter by tag
+					    </div>
+					    <div class="item">
+					      Important
+					    </div>
+					    <div class="item">
+					      Announcement
+					    </div>
+					    <div class="item">
+					      Discussion
+					    </div>
+					  </div>
+					</div>
+			  		<!-- <div class="ui tiny buttons">
 					  <button class="ui <?=$finish?> green button" onclick="stateModify('<?=$issue[state]?>','Y','<?=$issue[seq]?>')">완료</button>
 					  <button class="ui <?=$incomplete?> red  button" onclick="stateModify('<?=$issue[state]?>','N','<?=$issue[seq]?>')">미완료</button>
-					</div>
+					</div> -->
 			  	</td>
 			  	<td>
 				  	<div class="ui tiny buttons">
@@ -326,11 +345,10 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 <? include_once '/sub/index_sub.php';?>
 <!-- // -->
 <div id="issueSnackbar"></div>
-
 </body>
 <script>
 $(document).ready(function(){
-	$("#state_search").dropdown(); //필터검색
+	$("#state_search,#state").dropdown(); //필터검색
 	dropDown("#cs_seq,#user_id"); //select 검색
 	hoverMaster("tr_hover","positive");
 	<? if($cnt > 0) { ?>
