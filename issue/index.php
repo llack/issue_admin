@@ -127,6 +127,10 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	      <div class="ui red empty circular label"></div>
 		미완료
 	    </div>
+	    <div class="item" data-value="보류_violet">
+	      <div class="ui violet empty circular label"></div>
+		보류
+	    </div>
 	  </div>
 	</div>
 	<?=$fn->add_nbsp(3)?>
@@ -197,9 +201,12 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	
 	if($_POST[state][0] == "완료") {
 		$where .= " and state = 'Y' ";
+	} else if($_POST[state][0] == "보류") {
+		$where .= " and state = 'Z' ";
 	} else if($_POST[state][0] == "미완료" || $_REQUEST[nAll]!=""){
 		$where .= " and state = 'N' ";
 	}
+	
 	$que = "select * from issue_list where 1=1 and (regdate between '$sdate' and '$edate') $where order by state asc,regdate desc,cs_name asc ";
 	$res = mysql_query($que) or die(mysql_error());
 	$cnt = mysql_num_rows($res);
@@ -222,13 +229,13 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			<col width="5%">
 			<col width="5%">
 			<col width="10%">
-			<col width="23%">
+			<col width="25%">
 			<col width="8%">
 			<col width="8%">
 			<col width="6%">
 			<col width="6%">
 			<col width="8%">
-			<col width="13%">
+			<col width="12%">
 			<col width="8%">
 		</colgroup>
 		<thead>
@@ -261,25 +268,26 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			  	$end_date = strtotime(date($issue[end_date]));
 			  	$dday = intval(($today - $end_date) / 86400);
 			  	/*D-day 구하기*/
-			  	
-			  	$circle = "green";
+			  	$setColor = "green";
+			  	$setText = "완료";
 			  	$font = "";
 			  	$dDayView = $issue[end_date];
-			  	
-			  	$finish = "positive"; // 완료일떄 완료버튼
-			  	$incomplete = "inverted"; //완료일때 미완료버튼
-			  	
+			  	$setIcon = "flag";
 			  	if($issue[state]=="N") {
 			  		$dDayResult = dDay($dday);
-			  		$circle = "red";
-			  		$finish = "inverted"; // 미완료일떄 완료버튼
-			  		$incomplete = "negative"; // 마완료일떄 미완료버튼
+			  		$setColor = "red";
+			  		$setText = "미완료";
+			  		$setIcon = "times";
 			  		if($dday > 0) { // 미완료 중 날짜 지난업무 
 			  			$font = "font_red"; // D-day font color red = > background로
 			  		}
 			  		$dDayView = $issue[end_date]."<br/>".$dDayResult;
+			  	} else if($issue[state] == "Z") {
+			  		$setColor = "violet";
+			  		$setText = "보류";
+			  		$setIcon = "stop";
 			  	}
-	  	
+			  	$stateList = stateView($setText);
 	  ?>
 			<tr align="center" class="<?=$font?> tr_hover">
 				<td style="background:#f9fafb!important">
@@ -288,7 +296,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			      <label></label>
 			    </div>
 				</td>
-				<td><font color="<?=$circle?>"><b><?=$i?></b></font></td>
+				<td><font color="<?=$setColor?>"><b><?=$i?></b></font></td>
 				<td><?=$issue[cs_name]?><?=unSetView($issue[cs_person])?></td>
 				<td style="text-align:left"><a href="javascript:editIssue('<?=$issue[seq]?>')"><?=$issue[memo]?></a></td>
 				<td><?=$issue[regdate]?></td>
@@ -297,29 +305,25 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			  	<td><?=$name?></td>
 			  	<td><?=$fn->d($issue[finish_date]);?></td>
 			  	<td>
-			  		<div class="ui floating labeled icon dropdown inverted red button" id="state">
-					  <i class="times icon"></i>
-					  <span class="text">Filter</span>
+			  		<div class="ui floating labeled icon dropdown inverted <?=$setColor?> button stateDiv">
+					  <i class="<?=$setIcon?> icon"></i>
+					  <span class="text"><?=$setText?></span>
 					  <div class="menu">
 					    <div class="header">
-					      <i class="tags icon"></i>
-					      Filter by tag
+					      <i class="sync icon"></i>
+					      상태변경
 					    </div>
-					    <div class="item">
-					      Important
+					    <? foreach ($stateList as $key=>$value) {
+					    	$val = explode("|",$value);
+					    	$parseVal = $issue[state]."_".$val[1]."_".$issue[seq]; 
+					    ?>
+					    <div class="item" data-value='<?=$parseVal?>'>
+					    <div class="ui <?=$val[0]?> empty circular label"></div>
+					      <?=$key?>
 					    </div>
-					    <div class="item">
-					      Announcement
+					    <? unset($valueArr);} ?>
 					    </div>
-					    <div class="item">
-					      Discussion
-					    </div>
-					  </div>
 					</div>
-			  		<!-- <div class="ui tiny buttons">
-					  <button class="ui <?=$finish?> green button" onclick="stateModify('<?=$issue[state]?>','Y','<?=$issue[seq]?>')">완료</button>
-					  <button class="ui <?=$incomplete?> red  button" onclick="stateModify('<?=$issue[state]?>','N','<?=$issue[seq]?>')">미완료</button>
-					</div> -->
 			  	</td>
 			  	<td>
 				  	<div class="ui tiny buttons">
@@ -339,7 +343,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 		  </div>
 		</h2> 
 	<? } ?>
-	<br/>
+	<br/><br/><br/>
 	</div>
 <!-- clone + 팝업 elements -->
 <? include_once '/sub/index_sub.php';?>
@@ -348,7 +352,12 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 </body>
 <script>
 $(document).ready(function(){
-	$("#state_search,#state").dropdown(); //필터검색
+	$("#state_search").dropdown(); //필터검색
+	$(".stateDiv").dropdown({
+		action : 'hide',
+		onChange : stateModify
+	});
+	
 	dropDown("#cs_seq,#user_id"); //select 검색
 	hoverMaster("tr_hover","positive");
 	<? if($cnt > 0) { ?>
@@ -378,6 +387,42 @@ $(document).on("click",".removeRow",function(e){
 		$("#cloneCnt" + num).text(num);
 	});
 });
+
+function stateModify(value) {
+	var arr = value.split("_");
+	var before = arr[0];
+	var after = arr[1];
+	var seq = arr[2];
+	
+	if(before == after) {
+		return;
+	} else {
+		var param = {};
+		var text = "",color = "";
+		param["param"] = {"state" : after, "seq" : seq};
+		param["param"].finish_date = (after == "Y") ? "<?=date('Y-m-d')?>" : "0000-00-00"; //실제 완료일 
+		param["table"] = "issue_list";
+		param["id"] = ["seq"];
+		ajax(param,"/common/simple_update.php",function(result){
+			var text,color,memo;
+			if(after == "Y") {
+				text = "완료처리 되었습니다.";	color = "#21ba45"; memo = "완료처리";
+			} else if(after =="Z"){
+				text = "보류처리 되었습니다."; color = "#6435c9"; memo = "보류처리";
+			} else {
+				text = "미완료처리 되었습니다."; color = "#db2828"; memo = "미완료처리";
+			}
+			/* history */
+			var history = {};
+			history["param"] = { "memo" : memo, "refseq" : seq, "user_name" : "<?=$_SESSION["USER_NAME"]?>", "regdate" : "<?=date("Y-m-d H:i:s")?>"};
+			history["table"] = "issue_history";
+			ajax(history,"/common/simple_insert.php");
+			
+			snackbar("issueSnackbar",color,text);
+			popupHide();
+		})
+	}
+}
 
 function userSelect(id,val) {
 	// id_format userName + (num)
@@ -507,39 +552,6 @@ function saveIssue(){
 	}
 }
 
-function stateModify(before,after,seq) {
-	if(before == after) {
-		return;
-	} else {
-		var param = {};
-		var text = "",color = "";
-		param["param"] = {"state" : after, "seq" : seq};
-		param["param"].finish_date = (after == "Y") ? "<?=date('Y-m-d')?>" : "0000-00-00"; //실제 완료일 
-		param["table"] = "issue_list";
-		param["id"] = ["seq"];
-		ajax(param,"/common/simple_update.php",function(result){
-			var text,color,memo;
-			if(after == "Y") {
-				text = "완료처리 되었습니다.";
-				color = "#21ba45";
-				memo = "완료처리";
-			} else {
-				text = "미완료처리 되었습니다.";
-				color = "#db2828";
-				memo = "미완료처리";
-			}
-			/* history */
-			var history = {};
-			history["param"] = { "memo" : memo, "refseq" : seq, "user_name" : "<?=$_SESSION["USER_NAME"]?>", "regdate" : "<?=date("Y-m-d H:i:s")?>"};
-			history["table"] = "issue_history";
-			ajax(history,"/common/simple_insert.php");
-			
-			snackbar("issueSnackbar",color,text);
-			popupHide();
-		})
-	}
-}
-
 function editIssue(seq,mode) {
 	$('#issue_modify').modal({
 		onShow : function() {
@@ -664,5 +676,10 @@ function unSetView($val) {
 	} else {
 		return "<br/>(".$val.")";
 	}
+}
+function stateView($text) {
+	$stateList = array("완료"=>"green|Y","미완료"=>"red|N","보류"=>"violet|Z");
+  	unset($stateList[$text]);
+  	return $stateList;
 }
 ?> 
