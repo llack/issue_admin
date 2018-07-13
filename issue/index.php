@@ -115,22 +115,11 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	      Filter by tag
 	    </div>
 	    <div class="divider"></div>
-	    <div class="item" data-value="전체_blue">
-	      <div class="ui blue empty circular label"></div>
-		전체
-	    </div>
-	    <div class="item" data-value="완료_green">
-	      <div class="ui green empty circular label"></div>
-		완료
-	    </div>
-	    <div class="item" data-value="미완료_red">
-	      <div class="ui red empty circular label"></div>
-		미완료
-	    </div>
-	    <div class="item" data-value="보류_violet">
-	      <div class="ui violet empty circular label"></div>
-		보류
-	    </div>
+	    <? $filter = array("전체"=>"blue","완료"=>"green","미완료"=>"red","보류"=>"violet");
+		    foreach ($filter as $key=>$value){?>
+			    <div class="item" data-value="<?=$key?>_<?=$value?>">
+			    <div class="ui <?=$value?> empty circular label"></div><?=$key?></div>
+		    <? } ?>
 	  </div>
 	</div>
 	<?=$fn->add_nbsp(3)?>
