@@ -2,10 +2,10 @@
 	<!-- 사이드바 헤더 -->
 	<div class="item">
 		<h4 align="center">
-		<div class="ui vertical fluid animated button floated left inverted purple" tabindex="0" onclick="location.href='/index.php' ">
-		  <div class="hidden content">HOME</div>
+		<div class="ui vertical fluid animated button floated left inverted purple" tabindex="0" onclick="location.href='/' ">
+		  <div class="hidden content"><i class="home icon"></i></div>
 		  <div class="visible content">
-		    <i class="home icon"></i>
+		    <img src="/img/profile.png" width="100%"></img>
 		  </div>
 		</div></h4>
 	</div>
@@ -16,7 +16,7 @@
   <!-- /검색창 -->
   
   <!-- 사이드바 업체리스트  -->
-  <div style="overflow-y:auto;height:78%;">
+  <div style="overflow-y:auto;height:75%;">
 	  	<? 
 	  	$cs_list = $fn->cs_list();
 	  	$cnt = count($cs_list);
