@@ -26,7 +26,7 @@ $(document).ready(function(){
 	$("#calendar").fullCalendar({
 		customButtons: {
 			saveBtn : {
-				text: '뭐가있어야..',
+				text: '일단만듬',
 				click : function() {
 					
 				}
