@@ -81,15 +81,10 @@ $link = $fn->auto_link("auth","user");
 <i class="user icon purple"></i>사원검색 : <?=$fn->add_nbsp(3)?>
 <select id="user_name" name="user" class="ui search dropdown" onchange="fn_submit(document.form)" style="width: 200px">
 	<option value="unset">선택하세요</option>
-	<?
-		for($i = 0; $i < $user_list_cnt; $i++) { 
-			if($_REQUEST[user]==$user_list[$i][no]) {
-				$selected = "selected";
-			} else {
-				$selected = "";
-			}
-		?>
-			<option value="<?=$user_list[$i][no]?>" <?=$selected?>><?=$user_list[$i][user_name]?></option>	
+	<? for($i = 0; $i < $user_list_cnt; $i++) { 
+		$selected = ($_REQUEST[user]==$user_list[$i][no]) ? "selected" : ""; ?>
+		
+		<option value="<?=$user_list[$i][no]?>" <?=$selected?>><?=$user_list[$i][user_name]?></option>	
 	<? } ?>
 </select>
 <!-- /유저 이름 검색  -->
@@ -120,15 +115,11 @@ $link = $fn->auto_link("auth","user");
   	
   	for($loop = 0; $loop < $max_result; $loop++) {
   		$row_user = $results->data[$loop];
-  		if($row_user[user_level]=="A") {
-  			$level_color = "purple";
-  		} else {
-  			$level_color = "";
-  		}
+  		$level_color = ($row_user[user_level]=="A") ? "purple" : "";
   ?>
   <div class="card card_content">
     <div class="content">
-      <div id="delete_user" onclick="delete_user('<?=$row_user[no]?>','<?=$row_user[user_name]?>')" data-tooltip="X" data-position="right center" data-inverted="">
+      <div id="delete_user" onclick="delete_user('<?=$row_user[no]?>','<?=$row_user[user_name]?>','<?=$row_user[user_level]?>')" data-tooltip="X" data-position="right center" data-inverted="">
 	      <div class="right floated" >
 	      	<i class="close red icon" style="cursor:pointer"></i>
 	      </div>
@@ -276,7 +267,11 @@ function fn_auth_change(mAuth, cAuth, no) {
 		ajax(param, "employee_auth_ok.php",auth_result);
 	}
 }
-function delete_user(no,user_name) {
+function delete_user(no,user_name,level) {
+	if(level == "A") {
+		alert("삭제할 수 없는 사용자입니다.\n권한 수정 후 삭제해주세요.");
+		return;
+	}
 	var param = {};
 	if(confirm("삭제한 사원은 복구할 수 없습니다.\n사원(사원명 : "+user_name+")을 삭제하시겠습니까?")==true) {
 		fn_delete("member","no",no);
@@ -300,9 +295,7 @@ function auth_result(result) {
 		color = "#grey";
 	}
 	snackbar("snackbar",color,str);
-	setTimeout(function(){
-		location.reload();
-	},500);
+	popupHide();
 }
 
 /* == CALLBACK METHOD  == */

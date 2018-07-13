@@ -16,11 +16,6 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 </div>
 <!-- 메인 테이블  -->
 <div class="ui container table purple segment">
-	<div class="right aligned">
-		<a class="ui tag label">menu</a>
-		<a class="ui red tag label">업무관리</a>
-		<a class="ui teal tag label">일정관리</a>
-	</div>
 		<div id="calendar" class="ui container" style="padding-top: 5px"></div>
 	</div>
 </div>
@@ -31,7 +26,7 @@ $(document).ready(function(){
 	$("#calendar").fullCalendar({
 		customButtons: {
 			saveBtn : {
-				text: '저장',
+				text: '뭐가있어야..',
 				click : function() {
 					
 				}
@@ -55,6 +50,7 @@ $(document).ready(function(){
 		editable : true,
 		eventResize: modifyData,
 		eventDrop : dropData,
+		eventClick : clickData,
 		eventLimit : true
 	});
 	
@@ -76,14 +72,29 @@ function setData(start,end,timezone,callback) {
 						title : r.memo,
 						start : r.regdate,
 						end : r.customEnd,
-						url : "javascript:test('"+r.seq+"')",
 						color : r.color,
+						textColor : r.fontColor,
+						borderColor : r.borderColor
 					});
 				}
 				callback(events);
 			}		
 		});	
 }
+function clickData(event) {
+	var seq = event.id;
+	var url = "/sub/issue_history.php?seq="+seq;
+	var width=900;
+    var height=900;
+	var posx = 0
+	var posy = 0
+	posx = (screen.width - width)/2-1;
+	posy = (screen.height - height)/2-1;
+	newwin = window.open(url,"search","width="+width+",height="+height+",toolbar=0,scrollbars=1,resizable=0,status=0");
+	newwin.moveTo(posx,posy);
+	newwin.focus();
+}
+
 function modifyData(event, delta, revertFunc) {
 	var end = event.end.subtract(1,'days').format();
     var param = {};

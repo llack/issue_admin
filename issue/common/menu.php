@@ -1,7 +1,6 @@
 <? 
-$row_info = $fn->userInfo($_SESSION["USER_ID"]);
-$row_info = $row_info[0];
-
+$user = $fn->userInfo($_SESSION["USER_ID"]);
+$row_info = $user[0];
 $myWork = $fn->myWork($_SESSION["USER_ID"]);
 ?>
 
@@ -130,13 +129,13 @@ $myWork = $fn->myWork($_SESSION["USER_ID"]);
 	</div>
 	<br/><br/>
 	<form class="ui fluid form" name="user_info">
-	<input type="hidden" name="user_id" value="<?=$_SESSION["USER_ID"]?>"/>
+	<input type="hidden" name="user_id" value="<?=$row_info[user_id]?>"/>
   <div class="field">
   <div class="inline field">
     <div class="ui ribbon  purple basic label">
       이름
     </div>
-    <input type="text" name="user_name" value="<?=$row_info[user_name]?>" onfocus="this.setSelectionRange(this.value.length, this.value.length)">
+    <input type="text" name="user_name"onfocus="this.setSelectionRange(this.value.length, this.value.length)">
   </div>
   <div class="inline field">
     <div class="ui ribbon purple basic label">
@@ -148,34 +147,34 @@ $myWork = $fn->myWork($_SESSION["USER_ID"]);
     <div class="ui ribbon purple basic label">
       	비밀번호
     </div>
-    <input type="password" name="user_pw" value="<?=$row_info[user_pw]?>">
+    <input type="password" name="user_pw">
   </div>
   <div class="inline field">
     <div class="ui ribbon purple basic label">
       	비밀번호확인
     </div>
-    <input type="password" name="user_pwd2" value="">
+    <input type="password" name="user_pwd2">
   </div>
   <div class="inline field">
     <div class="ui ribbon purple basic label">
       	직책
     </div>
-    <input type="text" name="position" value="<?=$row_info[position]?>">
+    <input type="text" name="position">
   </div>
   <div class="inline field">
     <div class="ui ribbon purple basic label">
       	이메일
     </div>
-    <input type="text" name="user_email" size="30" value="<?=$row_info[user_email]?>">
+    <input type="text" name="user_email" size="30">
   </div>
   <div class="inline field">
     <div class="ui ribbon purple basic label">
       	전화번호
     </div>
-    <input type="text" name="hp" value="<?=$row_info[hp]?>">
+    <input type="text" name="hp">
   </div>
   </div>
-  <input type="hidden" name="no" value="<?=$row_info[no]?>"/>
+  <input type="hidden" name="no"/>
 </form>
   <!-- /  -->
 </div>
@@ -208,42 +207,45 @@ $(document).ready(function(){
 		  hide: 50
 		 }
 	});
+	$("[name='user_pwd2']").keyup(function(e){ 
+		$(this).closest("div").removeClass("error"); 
+	});
 });
 
 function modify_userInfo() {
 	$('#topmenu').popup('hide');
 	$('#modify_userInfo').modal({
 		//closable : false,
+		onShow : myInfo("<?=$_SESSION["USER_ID"]?>"),
 		onDeny : popupDeny
 		,onApprove : function(e) {
 				if(e.hasClass('ok')) {
 					return sign_submit(document.user_info);
 				}
 			}
-		, onHide : popupHide
+		, onHide : popupDeny
 		})
 		.modal('show');
 }
-
-function trim_chk(value,name,msg) {
-	if(value.trim()=="") {
-		$("input[name='"+name+"']").closest("div").addClass("error");
-		$("input[name='"+name+"']").val("");
-		$("input[name='"+name+"']").focus();
-		if(msg){
-			alert(msg);
+function myInfo(id) {
+	var param = {};
+	param["table"] = "member";
+	param["where"] = " and user_id = '" + id + "'";
+	ajax(param,"/common/simple_select.php",function(result){
+		var data = result[0];
+		var form = $("form[name='user_info']");
+		for(var key in data) {
+			form.find("[name='"+key+"']").val(data[key]);
 		}
-		return false;
-	} else {
-		return true;
-	}
+	});
+	$("[name='user_pwd2']").val("").closest("div").removeClass("error");
 }
+
 function sign_submit(frm) {
 	
 	if(!trim_chk(frm.user_name.value,"user_name","이름을 입력해주세요")){
 		return false;
 	}
-	
 	
 	if(!trim_chk(frm.user_pw.value,"user_pw","비밀번호를 입력해주세요")){
 		return false;
@@ -255,9 +257,9 @@ function sign_submit(frm) {
 	
 	if(frm.user_pw.value.trim() != frm.user_pwd2.value.trim()){
 		alert("비밀번호가 일치하지 않습니다");
-		frm.user_pwd2.value="";
-		$("input[name='user_pwd2']").closest("div").addClass("error");
-		frm.user_pwd2.focus();
+		var pwd2 = $("input[name='user_pwd2']");
+		pwd2.val("").closest("div").addClass("error");
+		pwd2.focus();
 		return false;
 	}
 	var param = {};
@@ -269,6 +271,7 @@ function sign_submit(frm) {
 
 function modify_callback(result) {
 	snackbar("modify_result","#54c8ff",result);
+	popupHide();
 }
 
 function logout() {

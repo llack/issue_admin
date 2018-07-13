@@ -28,7 +28,7 @@ $row_issue = mysql_fetch_array($res_issue);
 <script src="/js/calendar.min.js"></script>
 <script src="/js/datatables.min.js"></script>
 <script src="/js/docs.js"></script>
-<title>업무일지</title>
+<title>업무기록</title>
 </head>
 <style>
 body {

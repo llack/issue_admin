@@ -117,10 +117,10 @@ $link = $fn->auto_link("seq");
 		<!-- 사원입력창 -->
 		<? 
 		$que_emp = "select * from employee_list where refseq = '$_REQUEST[seq]' order by name" ;
-		$pagenator = new Paginator($que_emp);
-		$results = $pagenator->getData($page,$limit);
-		if($results->data) {
-		$max = count($results->data);
+		$res_emp = mysql_query($que_emp) or die(mysql_error());
+		$cnt_emp = mysql_num_rows($res_emp);
+		
+		if($cnt_emp > 0) {
 		?>
 		<div class="ui left aligned">
 		<button class="ui button inverted purple checkall">
@@ -132,22 +132,32 @@ $link = $fn->auto_link("seq");
 		  <i class="check trash alternate icon"></i>
 		  선택삭제
 		</button>
-		</div>
-		<table id="test" class="ui definition table fixed center aligned small">
+		</div><br/>
+		<table id="datatables" class="ui definition table fixed center aligned small">
+			<colgroup>
+				<col width="5%">
+				<col width="5%">
+				<col width="15%">
+				<col width="15%">
+				<col width="20%">
+				<col width="20%">
+				<col width="20%">
+			</colgroup>
 			 <thead>
 				  <tr style="background-color:#a333c8;" >
-				    <th width="70px"><i class="large user icon" style="color:white!important"></i></th>
-					<th width="70px">No.</th>
+				    <th width="70px" class="no-search no-sort"><i class="large user icon" style="color:white!important"></i></th>
+					<th width="70px" class="no-search">No.</th>
 					<th>성명</th>
 				    <th>직책</th>
-				    <th>연락처</th>
-				    <th>이메일</th>
-				    <th><i class="large edit icon"></i>or <i class="large ban icon"></i></th>
+				    <th class="no-sort">연락처</th>
+				    <th class="no-sort">이메일</th>
+				    <th class="no-sort no-search"><i class="large edit icon"></i>or <i class="large ban icon"></i></th>
 				  </tr>
 			  </thead>
 			  <tbody>
-			  <? for($i = 0; $i < $max; $i++) {
-			  	$employee = $results->data[$i];
+			  <?
+			  $i = 1;
+			  while($employee = mysql_fetch_array($res_emp)) {
 			  ?>
 			  <tr class="tr_hover">
 			  	<td>
@@ -156,7 +166,7 @@ $link = $fn->auto_link("seq");
 					  <label></label>
 					</div>
 			  	</td>
-			  	<td><a class="ui grey circular label"><?=($i+1)?></a></td>
+			  	<td><?=$i?></td>
 			  	<td><?=$employee[name]?></td>
 			  	<td><?=$employee[level]?></td>
 			  	<td><?=$employee[phone]?></td>
@@ -169,7 +179,7 @@ $link = $fn->auto_link("seq");
 					</div>
 			  	</td>
 			  </tr>
-			  <? } ?>
+			  <?$i++; } ?>
 			  </tbody>
 			</table>
 		<? }else {?>
@@ -182,9 +192,6 @@ $link = $fn->auto_link("seq");
 			</h2>
 		<? } ?>
 		
-		<!-- 페이징 -->
-		<?=$pagenator->createLinks($link); ?><br/><br/>
-		<!-- /페이징 -->
 		<h2 class="ui icon header right aligned">
 			<button class="ui inverted purple button" onclick="location.href='company_info.php'">목록</button>
 		</h2>
@@ -273,6 +280,9 @@ $link = $fn->auto_link("seq");
 <script>
 $(document).ready(function(){
 	hoverMaster("tr_hover","positive");
+	<? if($cnt_emp > 0) { ?>
+	fn_table("#datatables");
+	<? } ?>
 });
 $(document).on("click","#addRow,.addrow",function(e){
 	e.preventDefault();
@@ -411,10 +421,11 @@ function editOrRemove(seq,mode,name) {
 							, "/common/simple_update.php"
 							,function(result){ 
 							snackbar("employee","#54c8ff",result);
+							popupHide();
 						});
 					}
 				}
-			, onHide : popupHide
+			, onHide : popupDeny
 			})
 			.modal('show');
 	} else if(mode =="delete"){

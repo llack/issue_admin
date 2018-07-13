@@ -241,7 +241,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			    <th>담당자</th>
 			    <th class="no-search">완료일</th>
 			    <th class="no-sort no-search">상태변경</th>
-			    <th class="no-sort no-search"><i class="large edit icon"></i>업무상세</th>
+			    <th class="no-sort no-search"><i class="large edit icon"></i>업무기록</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -333,7 +333,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	<br/><br/><br/>
 	</div>
 <!-- clone + 팝업 elements -->
-<? include_once '/sub/index_sub.php';?>
+<? include_once $_SERVER["DOCUMENT_ROOT"].'/sub/index_sub.php';?>
 <!-- // -->
 <div id="issueSnackbar"></div>
 </body>
