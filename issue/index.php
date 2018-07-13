@@ -306,11 +306,9 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 					    	$val = explode("|",$value);
 					    	$parseVal = $issue[state]."_".$val[1]."_".$issue[seq]; 
 					    ?>
-					    <div class="item" data-value='<?=$parseVal?>'>
-					    <div class="ui <?=$val[0]?> empty circular label"></div>
-					      <?=$key?>
-					    </div>
-					    <? unset($valueArr);} ?>
+						    <div class="item" data-value='<?=$parseVal?>'>
+						    <div class="ui <?=$val[0]?> empty circular label"></div><?=$key?></div>
+					    <? } ?>
 					    </div>
 					</div>
 			  	</td>
@@ -533,11 +531,7 @@ function saveIssue(){
 		var obj = {};
 		obj["issue"] = param;
 		obj["mode"] = "insert";
-		ajax(obj, "issue_add_ok.php"
-			,function (result) {
-			alert(result);
-			location.reload();
-		});
+		ajax(obj, "issue_add_ok.php",function (result) { alert(result);	location.reload();	});
 	}
 }
 
@@ -565,11 +559,7 @@ function modifyIssue() {
 	param["table"] = "issue_list";
 	param["id"] = ["seq"];
 	param["mode"] = "modify"; 
-	ajax(param, "issue_add_ok.php"
-		,function(result){
-		snackbar("issueSnackbar","#54c8ff",result);
-		popupHide();
-	});
+	ajax(param, "issue_add_ok.php",function(result){ snackbar("issueSnackbar","#54c8ff",result); popupHide(); });
 }
 
 function delete_issue() {
