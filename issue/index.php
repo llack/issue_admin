@@ -406,7 +406,7 @@ function stateModify(value) {
 			/* history */
 			var history = {};
 			history["table"] = "issue_history";
-			history["param"] = { "memo" : memo + " : " + userName, 
+			history["param"] = { "memo" : memo, 
 								"refseq" : seq, 
 								"user_name" : userName, 
 								"regdate" : regdate,
