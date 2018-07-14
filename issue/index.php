@@ -391,18 +391,26 @@ function stateModify(value) {
 		param["table"] = "issue_list";
 		param["id"] = ["seq"];
 		ajax(param,"/common/simple_update.php",function(result){
-			var text,color,memo;
+			var text,color,memo,userName,regdate,gubunColor;
+
+			userName = "<?=$_SESSION["USER_NAME"]?>";
+			regdate = "<?=date("Y-m-d H:i:s")?>";
 			if(after == "Y") {
-				text = "완료처리 되었습니다.";	color = "#21ba45"; memo = "완료처리";
+				text = "완료처리 되었습니다.";	color = "#21ba45"; memo = "완료처리", gubunColor = "green";
 			} else if(after =="Z"){
-				text = "보류처리 되었습니다."; color = "#6435c9"; memo = "보류처리";
+				text = "보류처리 되었습니다."; color = "#6435c9"; memo = "보류처리", gubunColor = "violet";
 			} else {
-				text = "미완료처리 되었습니다."; color = "#db2828"; memo = "미완료처리";
+				text = "미완료처리 되었습니다."; color = "#db2828"; memo = "미완료처리", gubunColor = "red";
 			}
+			
 			/* history */
 			var history = {};
-			history["param"] = { "memo" : memo, "refseq" : seq, "user_name" : "<?=$_SESSION["USER_NAME"]?>", "regdate" : "<?=date("Y-m-d H:i:s")?>"};
 			history["table"] = "issue_history";
+			history["param"] = { "memo" : memo + " : " + userName, 
+								"refseq" : seq, 
+								"user_name" : userName, 
+								"regdate" : regdate,
+								"gubunColor" : gubunColor};
 			ajax(history,"/common/simple_insert.php");
 			
 			snackbar("issueSnackbar",color,text);

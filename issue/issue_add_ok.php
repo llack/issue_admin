@@ -63,6 +63,7 @@ if($_REQUEST[mode] == "insert") {
 						, user_name = '".$_SESSION["USER_NAME"]."'
 						, memo = '".implode("<br/>",$difList)."'
 						, regdate = '".date("Y-m-d H:i:s")."'
+						, gubunColor = 'blue'
 						";
 		mysql_query($que_his) or die(mysql_error());
 		$fn->simple_update($_REQUEST[param],$_REQUEST[table],$_REQUEST[id]);
@@ -76,7 +77,7 @@ function parsekey($key) {
 					"end_date"=>"마감예정일",
 					"user_name"=>"담당자",
 					"cs_person"=>"요청자",
-					"order_memo"=>"요청사항",
+					"order_memo"=>"요청 및 지시사항",
 					"detail_memo"=>"업무상세"
 	);
 	return $result[$key];

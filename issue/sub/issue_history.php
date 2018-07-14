@@ -109,13 +109,18 @@ body {
 	  <i class="times icon"></i>
 	  닫기
 	</button>
+	<div class='ui blue empty circular label'></div>수정&nbsp;&nbsp;
+	<div class='ui green empty circular label'></div>완료&nbsp;&nbsp;
+	<div class='ui red empty circular label'></div>미완료&nbsp;&nbsp;
+	<div class='ui violet empty circular label'></div>보류&nbsp;&nbsp;
 </div>
 <br/>
 <table id="datatables" data-order="[]" class="ui table center aligned small">
 	<colgroup>
 		<col width="10%">
 		<col width="10%">
-		<col width="50%">
+		<col width="7%">
+		<col width="43%">
 		<col width="15%">
 		<col width="15%">
 	</colgroup>
@@ -125,6 +130,7 @@ body {
 				<i class="large tasks icon" style="color:white!important"></i>
 			</th>
 			<th class="no-search">No</th>
+			<th class="no-search">구분</th>
 			<th class="no-sort">수정내용</th>
 			<th>수정자</th>
 			<th class="no-search">수정시간</th>
@@ -145,6 +151,10 @@ body {
 				    </div>
 				</td>
 				<td><?=$i?></td>		
+				<td>
+					<span style="display:none"><?=$row[gubunColor]?></span>
+					<div class="ui <?=$row[gubunColor]?> empty circular label"></div>
+				</td>		
 				<td style="text-align: left"><?=$row[memo]?></td>		
 				<td><?=$row[user_name]?></td>		
 				<td><?=$time[0] ."<br/>" . $time[1];?></td>		
