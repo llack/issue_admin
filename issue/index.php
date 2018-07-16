@@ -274,7 +274,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			  	} else if($issue[state] == "Z") {
 			  		$setColor = "violet";
 			  		$setText = "보류";
-			  		$setIcon = "stop";
+			  		$setIcon = "pause";
 			  	}
 			  	$stateList = stateView($setText);
 	  ?>
