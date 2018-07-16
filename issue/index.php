@@ -539,7 +539,7 @@ function saveIssue(){
 		var obj = {};
 		obj["issue"] = param;
 		obj["mode"] = "insert";
-		ajax(obj, "issue_add_ok.php",function (result) { alert(result);	location.reload();	});
+		ajax(obj, "issue_add_ok.php",function (result) { alert(result);	move("/index.php?cs_seq=<?=$_REQUEST[cs_seq]?>"); });
 	}
 }
 
