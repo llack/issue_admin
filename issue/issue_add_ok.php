@@ -61,7 +61,7 @@ if($_REQUEST[mode] == "insert") {
 		$que_his = " insert into issue_history set 
 						refseq =".$param[seq]."
 						, user_name = '".$_SESSION["USER_NAME"]."'
-						, memo = '".implode("<br/>",$difList)."'
+						, memo = '".addslashes(implode("<br/>",$difList))."'
 						, regdate = '".date("Y-m-d H:i:s")."'
 						, gubunColor = 'blue'
 						";
