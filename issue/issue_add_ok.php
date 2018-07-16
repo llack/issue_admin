@@ -14,7 +14,7 @@ if($_REQUEST[mode] == "insert") {
 			$que = "insert into issue_list set ";
 			$que_mid = "";
 			foreach ($issue[$i] as $key=>$value) {
-				$que_mid .= ", $key = '$value' ";
+				$que_mid .= ", $key = '".addslashes($value)."' ";
 			}
 			
 			$que_mid = substr($que_mid,1);

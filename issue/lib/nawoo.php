@@ -124,7 +124,7 @@ class Simple_query {
 		$que_end = "";
 		foreach($param as $key => $value) {
 			if(!in_array($key,$id)) { 
-				$que_mid .= ", $key = '$value' ";
+				$que_mid .= ", $key = '".addslashes($value)."' ";
 				
 			} else if(in_array($key,$id)) {
 				$que_end .= " and {$key} = '$value' ";
@@ -138,7 +138,7 @@ class Simple_query {
 	function simple_insert($param,$table) {
 		$que = "insert into {$table} set ";
 		foreach ($param as $key=>$value) {
-			$que_mid .= ", $key = '$value' ";
+			$que_mid .= ", $key = '".addslashes($value)."' ";
 		}
 		$que_mid = substr($que_mid,1);
 		mysql_query($que.$que_mid) or die(mysql_error());
