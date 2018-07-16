@@ -203,7 +203,7 @@ $(document).ready(function(){
 		position : 'bottom center',
 		lastResort : 'bottom center',
 		delay: {
-		  show: 20,
+		  show: 50,
 		  hide: 50
 		 }
 	});
