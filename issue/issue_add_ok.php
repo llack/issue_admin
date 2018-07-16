@@ -24,7 +24,7 @@ if($_REQUEST[mode] == "insert") {
 			$que_his = " insert into issue_history set 
 						refseq =".$seq."
 						, user_name = '".$_SESSION["USER_NAME"]."'
-						, memo = '최초등록자 : ".$_SESSION["USER_NAME"]."'
+						, memo = '최초등록'
 						, regdate = '".date("Y-m-d H:i:s")."'
 						";
 			mysql_query($que_his) or die(mysql_error());
