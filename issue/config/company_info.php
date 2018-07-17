@@ -149,8 +149,12 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 	  	<td><a href="javascript:move('company_detail.php?seq=<?=$row[seq]?>')"><?=$row[cs_name]?></a></td>
 	  	<td><a href="javascript:move('company_detail.php?seq=<?=$row[seq]?>')"><?=$row[cs_code]?></a></td>
 	  	<td>
-	  	<? if($row[color] != "") {?>
-	  		<button class="ui mini button" style="background-color:<?=$row[color]?>"><?=$fn->add_nbsp(15)?></button>
+	  	<? if($row[color] != "") {
+	  		if($row[color] == "#FFFFFF") {
+	  			$border = "border:1px solid purple";
+	  		}
+	  		?>
+	  		<button class="ui mini button" style="background-color:<?=$row[color]?>;<?=$border?>"><?=$fn->add_nbsp(15)?></button>
 	  	<? } ?>
 	  	</td>
 	  	<td></td>

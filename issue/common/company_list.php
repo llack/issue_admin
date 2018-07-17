@@ -9,11 +9,24 @@
 		  </div>
 		</div></h4>
 	</div>
-	<!-- 검색창 -->
    <div class="item" >
-   <h4 align="center"><i class="ui caret down inverted purple icon"></i>업체별 미완료 현황</h4>
+   <h4 align="center">
+   <? $que_count = " select count(*) as total, sum(state= 'Y') as yes, sum(state = 'N') as no, sum(state = 'Z') as pause from issue_list where regdate
+					like '".date("Y")."-".date("m")."%' ";
+	$res_count = mysql_query($que_count) or die(mysql_error());
+	$row_count = mysql_fetch_array($res_count);
+	$c = $row_count;
+	$avg_issue = ( (int)$c[yes] / (int)$c[total] ) * 100;
+	$avg_issue = number_format($avg_issue,1);
+	?> 
+   <?=date("Y")?>년 <?=date("m")?>월 완료율 (총 : <?=number_format($c[total])?>건)
+   <div class="ui indicating progress" data-percent="<?=$avg_issue?>" date-value="<?=$avg_issue?>"id="progress">
+	  <div class="bar"><div class="progress {{progValue}}"></div></div>
+	  <div class="label"> 완료 : <?=number_format($c[yes])?>, 미완료 : <?=number_format($c[no])?>, 보류: <?=number_format($c[pause])?></div>
+	</div>
+   <i class="ui caret down inverted purple icon"></i>업체별 미완료 현황</h4>
   </div>
-  <!-- /검색창 -->
+  <div class="item" ></div>
   
   <!-- 사이드바 업체리스트  -->
   <div style="overflow-y:auto;height:75%;">
@@ -36,7 +49,11 @@
 </div>
 <script>
 $(document).ready(function(){
-	
+	$("#progress").progress({
+		text : {
+			percent : '{percent}%'
+		}
+	});
 });
 
 </script>
