@@ -286,7 +286,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			    </div>
 				</td>
 				<td><font color="<?=$setColor?>"><b><?=$i?></b></font></td>
-				<td><?=$issue[cs_name]?><?=unSetView($issue[cs_person])?></td>
+				<td><a href="javascript:editIssue('<?=$issue[seq]?>')"><?=$issue[cs_name]?><?=unSetView($issue[cs_person])?></a></td>
 				<td style="text-align:left"><a href="javascript:editIssue('<?=$issue[seq]?>')"><?=$issue[memo]?></a></td>
 				<td><?=$issue[regdate]?></td>
 				<td><?=$dDayView?></td>
@@ -468,11 +468,11 @@ function makeDiv(num) {
 	cl.prop("id", next ).attr("data-idx",(num+1)); //id,index값 +1 바꾸고
 	cl.find("input:visible,textarea").val("");
 	cl.find("[id*=userView]").html("");
-
+	cl.find("[id*=csPerson]").val("");
 	sortElements(cl,(num+1),"cloneCnt","csCnt","csPerson","userName","userView","cs_name");
 	
-	cl.find(".selectDiv").addClass("error");
-	cl.find("select[id*=csPerson]").html("<option value='unset'>업체 미선택</option>");
+	//cl.find(".selectDiv").addClass("error");
+	//cl.find("select[id*=csPerson]").html("<option value='unset'>업체 미선택</option>");
 
 	/*datepicker*/
 	cl.find("input[id*='regdate']").prop("id","regdate"+(num+1)).val("<?=date("Y-m-d")?>");
@@ -490,11 +490,11 @@ function makeDiv(num) {
 function loadEmployee(id,refseq) {
 	var i = id.substr(5);
 	if(refseq != "unset") {
-		/* 사원 불러오기 */
+		/* 사원 불러오기
 		var param = {};
 		param["table"] = "employee_list";
 		param["where"] = " and refseq = '" + refseq + "' order by name";
-		ajax(param,"/common/simple_select.php",function(result){ makeSelect(id,result) });
+		ajax(param,"/common/simple_select.php",function(result){ makeSelect(id,result) }); */
 
 		/* 업체명 리스트에서 사용하려고 .. */
 		var csName = {};
@@ -507,9 +507,9 @@ function loadEmployee(id,refseq) {
 		});
 		
 	} else {
-		$("#csPerson" + i +"").html("<option value=''>업체미선택</option>");
+		/*$("#csPerson" + i +"").html("<option value=''>업체미선택</option>");
 		$("#csPerson" + i +"").closest(".selectDiv").addClass("error");
-		$("#cs_name" + i +"").val("");
+		$("#cs_name" + i +"").val("");*/
 	}
 }
 function saveIssue(){
@@ -606,7 +606,8 @@ function selectIssue(result){
 		$("[name='"+key+"']").val(data[key]);
 	}
 	calendar(form.find(".date"));
-	/* 요청자 셋팅 */
+	
+	/* 요청자 셋팅
 	var param = {};
 	param["table"] = "employee_list";
 	param["where"] = " and refseq = '" + data.refseq + "' order by name";
@@ -626,7 +627,7 @@ function selectIssue(result){
 		}
 		 select.html(option);
 	});
-	/* == 요청자 셋팅 == */
+	== 요청자 셋팅 == */
 }
 function makeSelect(id,result) {
 	 var id = id.substr(5); 

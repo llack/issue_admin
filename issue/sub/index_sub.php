@@ -18,12 +18,13 @@
 		</div>
       </div>
       
-      <div class="field selectDiv error">
+      <div class="field selectDiv">
         <label>요청자</label><br/>
         <div class="ui fluid">
-        	<select name="cs_person" class="fluid" id="csPerson0">
+        	<input type="text" name="cs_person" class="fluid" id="csPerson0"/>
+        	<!-- <select name="cs_person" class="fluid" id="csPerson0">
         		<option value="unset">업체 미선택</option>
-        	</select>
+        	</select> -->
         </div>
       </div>
       
@@ -152,14 +153,15 @@
     <div class="ui ribbon  purple basic label">
       업체명
     </div>
-    <input type="text" name="cs_name"readonly>
+   <input type="text" name="cs_name" readonly>
   </div>
   
   <div class="inline field">
     <div class="ui ribbon purple basic label">
       요청자
     </div>
-    <select name="cs_person"></select>
+    <input type="text" name="cs_person"/>
+    <!-- <select name="cs_person"></select> -->
   </div>
   
   <div class="inline field">
@@ -169,7 +171,7 @@
     <div class="ui calendar date">
 	    <div class="ui input left icon">
 	      <i class="calendar alternate outline icon purple"></i>
-	      <input type="text" value="" name="regdate"/>
+	      <input type="text" name="regdate"/>
 	    </div>
 	  </div>
   </div>
@@ -181,7 +183,7 @@
     <div class="ui calendar date">
 	    <div class="ui input left icon">
 	      <i class="calendar alternate outline icon purple"></i>
-	      <input type="text" value="" name="end_date"/>
+	      <input type="text" name="end_date"/>
 	    </div>
 	  </div>
   </div>
@@ -190,7 +192,7 @@
     <div class="ui ribbon purple basic label">
       담당자
     </div>
-    <select name="user_name" style="width:50%">
+    <select name="user_name" style="width:30%">
         <option value="unset">선택하세요</option>
         	<?
         		for ($user = 0; $user < $max; $user++) {
