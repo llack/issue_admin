@@ -100,7 +100,7 @@ $link = $fn->auto_link("seq");
 		  </div>
 		</div>
 		</form>
-		<br/>
+		<!-- 
 		<h2 class="ui header" style="margin-top: 0px" id="rowStart">
 			<i class="circular purple address book outline icon"></i>
 			<div class="content">사원목록<?$fn->add_nbsp(2)?>
@@ -110,11 +110,11 @@ $link = $fn->auto_link("seq");
 				</button>
 			</div>
 		</h2>
-		<!-- 사원입력창 -->
+		<!-- 사원입력창
 		<div id="cloneTarget" class="ui segment clone" style="display: none"></div>
 		<div class="ui bottom attached button primary clone" style="display: none" onclick="addRow(1)">한 줄 추가하기</div>
 		<div class="ui bottom attached button positive clone" style="display: none;margin-bottom:30px" onclick="saveInfo()">저장</div>
-		<!-- 사원입력창 -->
+		<!-- 사원입력창
 		<? 
 		$que_emp = "select * from employee_list where refseq = '$_REQUEST[seq]' order by name" ;
 		$res_emp = mysql_query($que_emp) or die(mysql_error());
@@ -191,10 +191,10 @@ $link = $fn->auto_link("seq");
 			  </div>
 			</h2>
 		<? } ?>
-		
+		-->
 		<h2 class="ui icon header right aligned">
 			<button class="ui inverted purple button" onclick="location.href='company_info.php'">목록</button>
-		</h2>
+		</h2> 
 </div>
 <!-- clone -->
 <div class="ui form" id="cloneContent0" data-idx="0" style="display:none">
@@ -313,8 +313,8 @@ function addRow(addOne) {
 	if(addOne) {
 		makeDiv(num);
 	} else {
-		var popup = prompt("추가할 사원수를 입력하세요\n* 숫자만 입력할 수 있습니다.","1");
-		if(popup != null && popup.trim()!=0 && isNaN(popup)===false) {
+		var popup = prompt("추가할 사원수를 입력하세요\n* 10이하 숫자만 입력할 수 있습니다.","1");
+		if(popup != null && popup.trim()!=0 && isNaN(popup)===false && popup.trim() <= 10) {
 			for(var i = num; i < num+(popup*1); i++) {
 				makeDiv(i);
 			}
@@ -323,7 +323,7 @@ function addRow(addOne) {
 		} else if(popup ==null) {
 			return;
 		} else {
-			alert("잘못된 값입니다. 다시 입력해주세요!");
+			alert("잘못된 값 또는 입력제한을 초과하였습니다. 다시 입력해주세요!");
 			$(this).blur();
 		}
 	}
