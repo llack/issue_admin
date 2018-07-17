@@ -503,7 +503,8 @@ function loadEmployee(id,refseq) {
 		ajax(csName
 			,"/common/simple_select.php"
 			,function(result){
-			$("#cs_name" + i +"").val(result[0].cs_name);
+			$("#cs_name" + i).val(result[0].cs_name);
+			$("#csPerson" + i).focus();
 		});
 		
 	} else {
