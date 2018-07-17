@@ -5,7 +5,7 @@ header("Content-Type: text/html; charset=UTF-8");
 include_once($_SERVER["DOCUMENT_ROOT"]."/conf/config.db.conn.php");//디비연결
 include $_SERVER["DOCUMENT_ROOT"]."/lib/nawoo.php";
 
-$que = " select * from issue_history where refseq ='".$_REQUEST[seq]."' order by regdate desc";
+$que = " select * from issue_history where refseq ='".$_REQUEST[seq]."' order by regdate";
 $res = mysql_query($que) or die(mysql_error());
 $cnt = mysql_num_rows($res);
 
