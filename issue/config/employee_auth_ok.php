@@ -17,4 +17,4 @@ $que = "update member set user_level = '".$user_level."' where no = '".$_REQUEST
 mysql_query($que) or die(mysql_error());
 
 echo json_encode($_REQUEST[mode]);
-?>
+?> 

@@ -5,7 +5,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 ?>
 <style>
 #company_info {
-	position: absolute;
+	position: fixed;
 	 width: 480px;
 	 height: 480px;
 	 left: 50%;
@@ -71,7 +71,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 		<a class="ui teal tag label">업체현황</a>
 	</div>
 	<h2 class="ui header" style="margin-top: 0px">
-	<i class="circular purple sitemap icon"></i>
+	<i class="circular purple building icon"></i>
 	<div class="content">업체관리<?$fn->add_nbsp(2)?>
 		<button class="ui basic blue button" onclick="editOrRemove('','insert')">
 		  <i class="icon plus square"></i>
@@ -303,3 +303,4 @@ function insertCompany() {
 
 
 
+ 

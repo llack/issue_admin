@@ -14,5 +14,5 @@ while($row = mysql_fetch_array($res)) {
 	$i++;
 }
 
-echo json_encode($result);
+echo json_encode($result); 
 ?>

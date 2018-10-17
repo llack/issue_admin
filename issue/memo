@@ -35,4 +35,3 @@ var c = $("input[id='chk']:checked");
 		alert("삭제 대상이 없습니다.");
 		return;
 	}
-SELECT @RNUM := @RNUM + 1 AS ROWNUM,issue_list.* FROM ( select * from issue_list) issue_list, ( SELECT @RNUM := 0 ) R

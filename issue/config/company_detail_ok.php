@@ -13,3 +13,4 @@ if($max >= 1 ) {
 	}
 }
 echo json_encode("저장되었습니다.");exit;
+ 

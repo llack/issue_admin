@@ -11,7 +11,7 @@ if (typeof window.console == "undefined" || typeof window.console.log == "undefi
     info : function(){},
     warn : function(){}
   };
-}
+} 
 if(typeof window.console.group == 'undefined' || typeof window.console.groupEnd == 'undefined' || typeof window.console.groupCollapsed == 'undefined') {
   window.console.group = function(){};
   window.console.groupEnd = function(){};

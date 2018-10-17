@@ -2,9 +2,10 @@
 session_start();
 
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
+include $_SERVER["DOCUMENT_ROOT"]."/lib/lib.php";
+$lib = new LibCode();
 $year = ($_REQUEST[year] != "") ? $_REQUEST[year] : date("Y");
 $month = ($_REQUEST[month] != "") ? $_REQUEST[month] : date("m");
-
 $chart = workChart($year,$month);
 /* chart */
 foreach ($chart->year as $key=>$value) {
@@ -13,15 +14,18 @@ foreach ($chart->year as $key=>$value) {
 foreach ($chart->month as $key=>$value) {
 	$donut_month[] = "['".$key."',".$value."]";
 }
+@$noList = $chart->no;
 @$cntYear = array_sum($chart->chart);
+$noSum = array_sum($noList);
 for($c = 0; $c < count($chart->chart); $c++) {
+	
 	$cValue = $chart->chart[$c];
-	$view = ($cValue == 0) ? "null" : $cValue;
 	$cAvg = number_format(($cValue / @$cntYear) *100,2);
-	$view2 = ($cAvg == 0 ) ? "null" : $cAvg;
-	$chartDiv[] = "['".($c+1)."월',".$cValue.",".$view.",".$cAvg.",".$view2."]";
+	//업무통계
+	$chartDiv[] = "['".($c+1)."월',".$cValue.",".$lib->nullChk($cValue).",".$cAvg.",".$lib->nullChk($cAvg)."]";
+	//미완료 수
+	$noChart[] = "['".($c+1)."월',".$noList[$c].",".$lib->nullChk($noList[$c])."]";
 }
-
 ?>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <body>
@@ -92,21 +96,31 @@ for($c = 0; $c < count($chart->chart); $c++) {
 		<tr class="center aligned">
 		<!-- 연도별 -->
 			<td>
-				<div id="yearDonut" style="height:500px"></div>
+				<div id="yearDonut" style="height:400px"></div>
 			</td>
 		<!-- 월별 -->
 			<td>	
-				<div id="monthDonut" style="height:500px"></div>
+				<div id="monthDonut" style="height:400px"></div>
 			</td>
 		</tr>
 		<thead>
-			<tr class="center aligned" >
-				<th colspan="4" style="border-top:1px solid rgba(34,36,38,.1)">월별 업무 통계</th>
+			<tr class="center aligned">
+				<th colspan="4" style="background-color:#CFFFCF">월별 업무 통계 (총 <?=number_format($cntYear)?>건)</th>
 			</tr>
 		</thead>
 		<tr>
 			<td colspan="2">
-				<div id="chart_div" style="height:500px"></div>
+				<div id="chart_div" style="height:400px"></div>
+			</td>
+		</tr>
+		<thead>
+			<tr class="center aligned" >
+				<th colspan="4" style="background-color:#FFCCCC">월별 미완료 통계 (총 <?=number_format($noSum)?>건)</th>
+			</tr>
+		</thead>
+		<tr>
+			<td colspan="2">
+				<div id="no_chart_div" style="height:400px"></div>
 			</td>
 		</tr>
 	</table>
@@ -141,12 +155,11 @@ function drawChart() {
 	  pieHole: 0.4,
 	  is3D : true
 	};
-	legendValue('yearDonut',data);
+	//legendValue('yearDonut',data);
 	var chart = new google.visualization.PieChart(document.getElementById('yearDonut'));
 	chart.draw(data, options);
 }
 /* 당월 */
-google.charts.load("current", {packages:["corechart"]});
 google.charts.setOnLoadCallback(drawChart2);
 function drawChart2() {
 	var data = google.visualization.arrayToDataTable([
@@ -167,13 +180,13 @@ function drawChart2() {
 	  is3D : true
 	};
 	
-	legendValue('monthDonut',data);
+	//legendValue('monthDonut',data);
 	var chart = new google.visualization.PieChart(document.getElementById('monthDonut'));
 	chart.draw(data, options);
 }
 /* 년도 월별 */
 google.charts.load('current', {'packages':['corechart']});
-      google.charts.setOnLoadCallback(drawVisualization);
+google.charts.setOnLoadCallback(drawVisualization);
 
       function drawVisualization() {
         // Some raw data (not necessarily accurate)
@@ -223,7 +236,42 @@ google.charts.load('current', {'packages':['corechart']});
 	formatter.format(data, 4);
     chart.draw(data, options);
   }
+/* 년도 월별 */
+google.charts.setOnLoadCallback(drawVisualization2);
 
+      function drawVisualization2() {
+        // Some raw data (not necessarily accurate)
+        var data = google.visualization.arrayToDataTable([
+         ['월', '미완료 수',{type: 'number', role: 'annotation'}],
+         
+         <? 
+         if(is_array($noChart)) {
+         	echo implode(",",$noChart);
+			} else {
+				echo "['-',0,null]";
+			}
+		?>
+      ]);
+
+    var options = {
+      title : '월별 업무 통계',
+      vAxes: { 
+		  0: { title: '미완료 수',format : '' }
+      },
+      hAxis: {title: '월'},
+      seriesType: 'bars',
+      series: {
+		  0: {targetAxisIndex:0,color: '#FF5757'}
+	   },//
+		vAxis: { 
+        viewWindow: {
+            min:0
+        }
+		 }
+    };
+    var chart = new google.visualization.ComboChart(document.getElementById('no_chart_div'));
+    chart.draw(data, options);
+  }
 </script>
 <? 
 function init_year() { // 제일 오래된 업무 부터 검색
@@ -236,14 +284,14 @@ function workChart($year,$month) {
 	$que = " select * from erp_ocsinfo " ;
 	$res = mysql_query($que) or die(mysql_error());
 	while($row = mysql_fetch_array($res)) {
-		$que_year = " select count(*) as issue from issue_list where refseq = '$row[seq]' and regdate like '$year%' ";
+		$que_year = " select count(*) as issue from issue_list where refseq = '$row[seq]' and end_date like '$year%' ";
 		$res_year= mysql_query($que_year) or die(mysql_error());
 		$row_year = mysql_fetch_array($res_year);
 		if($row_year[issue]!=0) {
 			$list[$row[cs_name]] = $row_year[issue];
 		}
 		
-		$que_month = " select count(*) as issue from issue_list where refseq = '$row[seq]' and regdate like '$year-$month%' ";
+		$que_month = " select count(*) as issue from issue_list where refseq = '$row[seq]' and end_date like '$year-$month%' ";
 		$res_month= mysql_query($que_month) or die(mysql_error());
 		$row_month = mysql_fetch_array($res_month);
 		if($row_month[issue]!=0) {
@@ -253,16 +301,21 @@ function workChart($year,$month) {
 	}
 	for($i = 0; $i < 12; $i++) {
 		$mon = sprintf("%02d",($i+1));
-		$que_chart = " select count(*) as issue from issue_list where regdate like '$year-$mon%' ";
+		$que_chart = " select count(*) as issue from issue_list where end_date like '$year-$mon%' ";
 		$res_chart = mysql_query($que_chart) or die(mysql_error());
 		$row_chart = mysql_fetch_array($res_chart);
 		$chartList[] = (int)$row_chart[issue]; 
+		
+		$que_no = " select count(*) as no from issue_list where 1=1 and (state = 'N' or state = 'G')and end_date like '$year-$mon%' ";
+		$res_no = mysql_query($que_no) or die(mysql_error());
+		$row_no = mysql_fetch_array($res_no);
+		$noList[] = (int)$row_no[no];
 	};
 	
 	if($list) {
 		arsort($list);
 	}
-	
+
 	if($list2) {
 		arsort($list2);
 	}
@@ -270,6 +323,7 @@ function workChart($year,$month) {
 	$return->year = $list;
 	$return->month = $list2;
 	$return->chart = $chartList;
+	$return->no = $noList;
 	return $return;
 }
 

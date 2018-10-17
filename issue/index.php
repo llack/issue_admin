@@ -2,28 +2,18 @@
 session_start();
 
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
+include $_SERVER["DOCUMENT_ROOT"]."/lib/fn_index.php";
+
 $sdate = ($_REQUEST[sdate]!="") ? $_REQUEST[sdate] : date("Y-m-01");
 $edate = ($_REQUEST[edate]!="") ? $_REQUEST[edate] : date("Y-m-t",strtotime($sdate));
-$_POST[state] = ($_POST[state]!="")? $fn->param_to_array2($_POST[state]) : $fn->param_to_array2("전체_blue");
+$_POST[state] = ($_POST[state]!="")? $fn->param_to_array2($_POST[state]) : $fn->param_to_array2("전체_grey");
 
 if($_REQUEST[nAll] != "") {
-	$_POST[state] = $fn->param_to_array2("미완료_red");
+	$_POST[state] = $fn->param_to_array2(getState($_REQUEST[nAll]));
 }
-$link = $fn->auto_link("cs_seq","sdate","edate");
+
 ?>
 <style>
-#issue_info {
-	position: absolute;
-	 width: 480px;
-	 height: 700px;
-	 left: 50%;
-	 top: 50%;
-	 margin-left: -250px;
-	 margin-top: -350px;
-	 border: solid #a333c8 2px;
-	 border-radius: 25px;
-	 padding : 1rem;
-}
 #issueSnackbar {
     visibility: hidden;
     min-width: 250px;
@@ -115,7 +105,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	      Filter by tag
 	    </div>
 	    <div class="divider"></div>
-	    <? $filter = array("전체"=>"blue","완료"=>"green","미완료"=>"red","보류"=>"violet");
+	    <? $filter = array("전체"=>"grey","완료"=>"green","진행중"=>"blue","미완료"=>"red","보류"=>"violet");
 		    foreach ($filter as $key=>$value){?>
 			    <div class="item" data-value="<?=$key?>_<?=$value?>">
 			    <div class="ui <?=$value?> empty circular label"></div><?=$key?></div>
@@ -160,7 +150,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	       <div class="ui calendar datepicker">
 		    <div class="ui input left icon">
 		      <i class="calendar alternate outline icon"></i>
-		      <input type="text" value="<?=$sdate?>" name="sdate" id="sdate">
+		      <input type="text" value="<?=$sdate?>" name="sdate" id="sdate" autocomplete="off">
 		    </div>
 		  </div>
 	    </div>
@@ -169,7 +159,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	      <div class="ui calendar datepicker">
 		    <div class="ui input left icon">
 		      <i class="calendar alternate outline icon"></i>
-		      <input type="text" value="<?=$edate?>" name="edate" id="edate">
+		      <input type="text" value="<?=$edate?>" name="edate" id="edate" autocomplete="off">
 		    </div>
 		  </div>
 		</div>
@@ -193,10 +183,12 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 	} else if($_POST[state][0] == "보류") {
 		$where .= " and state = 'Z' ";
 	} else if($_POST[state][0] == "미완료" || $_REQUEST[nAll]!=""){
-		$where .= " and state = 'N' ";
+		$where .= " and (state = 'N' or state = 'G') ";
+	}	else if($_POST[state][0] == "진행중"){
+		$where .= " and state = 'G' ";
 	}
 	
-	$que = "select * from issue_list where 1=1 and (regdate between '$sdate' and '$edate') $where order by state asc,regdate desc,cs_name asc ";
+	$que = "select * from issue_list where 1=1 and (end_date between '$sdate' and '$edate') $where order by state asc,regdate desc,cs_name asc ";
 	$res = mysql_query($que) or die(mysql_error());
 	$cnt = mysql_num_rows($res);
 	
@@ -218,14 +210,14 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			<col width="5%">
 			<col width="5%">
 			<col width="10%">
-			<col width="25%">
+			<col width="24%">
 			<col width="8%">
 			<col width="8%">
 			<col width="6%">
 			<col width="6%">
 			<col width="8%">
 			<col width="12%">
-			<col width="8%">
+			<col width="9%">
 		</colgroup>
 		<thead>
 			<tr align="center" > 
@@ -235,11 +227,11 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 				<th class="no-search">No.</th>
 				<th>업체명<br/>(요청자)</th>
 			    <th class="no-sort">업무명</th>
-			    <th class="no-search">등록일</th>
-			    <th class="no-search">마감예정일</th>
+			    <th>등록일</th>
+			    <th>마감예정일</th>
 			    <th>지시자</th>
 			    <th>담당자</th>
-			    <th class="no-search">완료일</th>
+			    <th>완료일</th>
 			    <th class="no-sort no-search">상태변경</th>
 			    <th class="no-sort no-search"><i class="large edit icon"></i>업무기록</th>
 			</tr>
@@ -257,26 +249,13 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			  	$end_date = strtotime(date($issue[end_date]));
 			  	$dday = intval(($today - $end_date) / 86400);
 			  	/*D-day 구하기*/
-			  	$setColor = "green";
-			  	$setText = "완료";
-			  	$font = "";
-			  	$dDayView = $issue[end_date];
-			  	$setIcon = "flag";
-			  	if($issue[state]=="N") {
-			  		$dDayResult = dDay($dday);
-			  		$setColor = "red";
-			  		$setText = "미완료";
-			  		$setIcon = "times";
-			  		if($dday > 0) { // 미완료 중 날짜 지난업무 
-			  			$font = "font_red"; // D-day font color red = > background로
-			  		}
-			  		$dDayView = $issue[end_date]."<br/>".$dDayResult;
-			  	} else if($issue[state] == "Z") {
-			  		$setColor = "violet";
-			  		$setText = "보류";
-			  		$setIcon = "pause";
-			  	}
-			  	$stateList = stateView($setText);
+			  	$over = ($issue[state]=="N" || $issue[state] == "G") ? true : false; 
+			  	$font = ($over == true && $dday > 0) ? "font_red" : "";
+			  	$dDayView = ($over==true) ? $issue[end_date]."<br/>".dDay($dday) : $issue[end_date];
+			  	
+			  	$vObj = getView($issue[state]); # / lib/fn_index.php;
+			  	
+			  	$stateList = stateView($vObj->text);
 	  ?>
 			<tr align="center" class="<?=$font?> tr_hover">
 				<td style="background:#f9fafb!important">
@@ -285,8 +264,8 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			      <label></label>
 			    </div>
 				</td>
-				<td><font color="<?=$setColor?>"><b><?=$i?></b></font></td>
-				<td><a href="javascript:editIssue('<?=$issue[seq]?>')"><?=$issue[cs_name]?><?=unSetView($issue[cs_person])?></a></td>
+				<td><font color="<?=$vObj->color?>"><b><?=$i?></b></font></td>
+				<td><a href="javascript:editIssue('<?=$issue[seq]?>')"><?=getCsName($issue[refseq])?><?=unSetView($issue[cs_person])?></a></td>
 				<td style="text-align:left"><a href="javascript:editIssue('<?=$issue[seq]?>')"><?=$issue[memo]?></a></td>
 				<td><?=$issue[regdate]?></td>
 				<td><?=$dDayView?></td>
@@ -294,9 +273,9 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			  	<td><?=$name?></td>
 			  	<td><?=$fn->d($issue[finish_date]);?></td>
 			  	<td>
-			  		<div class="ui floating labeled icon dropdown inverted <?=$setColor?> button stateDiv">
-					  <i class="<?=$setIcon?> icon"></i>
-					  <span class="text"><?=$setText?></span>
+			  		<div class="ui floating labeled icon dropdown inverted <?=$vObj->color?> button stateDiv">
+					  <i class="<?=$vObj->icon?> icon"></i>
+					  <span class="text"><?=$vObj->text?></span>
 					  <div class="menu">
 					    <div class="header">
 					      <i class="sync icon"></i>
@@ -314,7 +293,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 			  	</td>
 			  	<td>
 				  	<div class="ui tiny buttons">
-					  <button class="ui inverted blue button" onclick="openWin('<?=$issue[seq]?>')">보기</button>
+					  <button class="ui inverted brown button openRecord" onclick="openWin('<?=$issue[seq]?>')">보기</button>
 					</div>
 			  	</td>
 			</tr>
@@ -330,7 +309,7 @@ $link = $fn->auto_link("cs_seq","sdate","edate");
 		  </div>
 		</h2> 
 	<? } ?>
-	<br/><br/><br/>
+	<br/>
 	</div>
 <!-- clone + 팝업 elements -->
 <? include_once $_SERVER["DOCUMENT_ROOT"].'/sub/index_sub.php';?>
@@ -356,6 +335,32 @@ $(document).on("click","#addRow,.addrow",function(e){
 	e.preventDefault();
 	addRow();
 });
+$(document).on("click",".copyRow",function(e){
+	e.preventDefault();
+	$(this).blur();
+	
+	var ele = $(this).closest("div[id*=cloneContent]"); //copy target
+	var cnt = ele.attr("id").substr(12)*1; // copy cnt 
+	var num = $("div[id*='cloneContent']:visible").length; // last div
+	var next = "cloneContent" + (num+1); // next id
+	var id = "#"+ele.attr("id"); // copy id 
+	
+	var cl = $(id).clone(); // copy start
+	cl.prop("id", next ).attr("data-idx",(num+1)); //id,index값 +1 바꾸고
+	sortElements(cl,(num+1),"cloneCnt","csCnt","csPerson","userName","userView","cs_name","line","regdate","end_date");
+
+	cl.insertAfter("#cloneContent"+num);// copy end
+	
+	/* selects */
+	var userName = $("#userName"+cnt).val();
+	var csCnt = $("#csCnt"+cnt).val();
+	$("#userName"+(num+1)).val(userName);
+	$("#csCnt"+(num+1)).val(csCnt);
+	/* selects */
+	calendar(cl.find(".date")); //달력 
+	$("#cloneCnt" + (num+1)).text((num+1));
+	$("#" + next).css("display","");
+});
 
 $(document).on("click",".removeRow",function(e){
 	e.preventDefault();
@@ -370,67 +375,95 @@ $(document).on("click",".removeRow",function(e){
 		var num = i+1;
 		$(this).prop("id","cloneContent"+num);
 		$(this).attr("data-idx",num);
-		sortElements($(this),num,"regdate","cs_name","end_date","cloneCnt","csCnt","csPerson","userName","userView");
+		sortElements($(this),num,"regdate","cs_name","end_date","cloneCnt","csCnt","csPerson","userName","userView","line");
 		$("#cloneCnt" + num).text(num);
 	});
 });
 
 function stateModify(value) {
 	var arr = value.split("_");
-	var before = arr[0];
 	var after = arr[1];
 	var seq = arr[2];
-	
-	if(before == after) {
-		return;
+	var modal = $("#completeModal");
+	if(after == "Y") {
+		$("#completeModal").modal({
+			onShow : function(){
+				var init = {};
+				init["table"] = "issue_list";
+				init["where"] = " and seq = '"+seq+"' ";
+				ajax(init, "/common/simple_select.php",function(result){
+					var data = result[0];
+					modal.find("#modalTitle").html("["+data.cs_name+"]<br/>"+data.memo);
+					for(key in data) {
+						modal.find("#modal_"+key).val(data[key]);
+					}
+				});				
+			},
+			onApprove : function() {
+				var param = {};
+				var seq = modal.find("#modal_seq").val();
+				var cause_memo = modal.find("#modal_cause_memo").val();  
+				var result_memo = modal.find("#modal_result_memo").val(); 
+				param["param"] = {
+									"state" : after, 
+									"seq" : seq, 
+									"finish_date" : "<?=date('Y-m-d')?>",
+									"cause_memo" : cause_memo,
+									"result_memo" : result_memo,
+									};
+				fn_state(param,after,seq);
+			}
+		}).modal('show');
 	} else {
 		var param = {};
-		var text = "",color = "";
-		param["param"] = {"state" : after, "seq" : seq};
-		param["param"].finish_date = (after == "Y") ? "<?=date('Y-m-d')?>" : "0000-00-00"; //실제 완료일 
-		param["table"] = "issue_list";
-		param["id"] = ["seq"];
-		ajax(param,"/common/simple_update.php",function(result){
-			var text,color,memo,userName,regdate,gubunColor;
-
-			userName = "<?=$_SESSION["USER_NAME"]?>";
-			regdate = "<?=date("Y-m-d H:i:s")?>";
-			if(after == "Y") {
-				text = "완료처리 되었습니다.";	color = "#21ba45"; memo = "완료처리", gubunColor = "green";
-			} else if(after =="Z"){
-				text = "보류처리 되었습니다."; color = "#6435c9"; memo = "보류처리", gubunColor = "violet";
-			} else {
-				text = "미완료처리 되었습니다."; color = "#db2828"; memo = "미완료처리", gubunColor = "red";
-			}
-			
-			/* history */
-			var history = {};
-			history["table"] = "issue_history";
-			history["param"] = { "memo" : memo, 
-								"refseq" : seq, 
-								"user_name" : userName, 
-								"regdate" : regdate,
-								"gubunColor" : gubunColor};
-			ajax(history,"/common/simple_insert.php");
-			
-			snackbar("issueSnackbar",color,text);
-			popupHide();
-		})
+		param["param"] = { "state" : after, "seq" : seq, "finish_date" : "0000-00-00"}
+		fn_state(param,after,seq);	
 	}
 }
 
+function fn_state(param,after,seq) {
+	var text = "",color = "";
+	param["table"] = "issue_list";
+	param["id"] = ["seq"];
+	ajax(param,"/common/simple_update.php",function(result){
+		var text,color,memo,gubunColor;
+
+		if(after == "Y") {
+			text = "완료처리 되었습니다.";	color = "#21ba45"; memo = "완료 처리", gubunColor = "green";
+		} else if(after =="Z"){
+			text = "보류처리 되었습니다."; color = "#6435c9"; memo = "보류 처리", gubunColor = "violet";
+		} else if(after =="G"){
+			text = "진행업무처리 되었습니다."; color = "#2185d0"; memo = "진행업무 처리", gubunColor = "yellow";
+		} else {
+			text = "미완료처리 되었습니다."; color = "#db2828"; memo = "미완료 처리", gubunColor = "red";
+		}
+		
+		/* history */
+		var history = {};
+		history["table"] = "issue_history";
+		history["param"] = { "memo" : memo, 
+							"refseq" : seq, 
+							"gubunColor" : gubunColor};
+		ajax(history,"/sub/historyInsert.php");
+		
+		snackbar("issueSnackbar",color,text);
+		popupHide();
+	});
+}
 function userSelect(id,val) {
 	// id_format userName + (num)
 	var idCut = id.substr(8);
-	if(val != "unset") {
+	if(val != "") {
 		var param = {};
 		param["table"] = "member";
 		param["where"] = " and user_id = '"+val+"' ";
 		ajax(param,"/common/simple_select.php",function(result){
 			$("#userView" + idCut).html(result[0].user_name);
 		});
+		$("#line" + idCut).css("display","");
 		return;
 	}
+	$("#line" + idCut).css("display","none");
 	$("#userView" + idCut).html("");
 }
 function sortElements() {
@@ -469,11 +502,9 @@ function makeDiv(num) {
 	cl.find("input:visible,textarea").val("");
 	cl.find("[id*=userView]").html("");
 	cl.find("[id*=csPerson]").val("");
-	sortElements(cl,(num+1),"cloneCnt","csCnt","csPerson","userName","userView","cs_name");
+	cl.find("[id*=line]").css("display","none");
+	sortElements(cl,(num+1),"cloneCnt","csCnt","csPerson","userName","userView","cs_name","line");
 	
-	//cl.find(".selectDiv").addClass("error");
-	//cl.find("select[id*=csPerson]").html("<option value='unset'>업체 미선택</option>");
-
 	/*datepicker*/
 	cl.find("input[id*='regdate']").prop("id","regdate"+(num+1)).val("<?=date("Y-m-d")?>");
 	cl.find("input[id*='end_date']").prop("id","end_date"+(num+1)).val("<?=date("Y-m-d")?>");
@@ -490,12 +521,6 @@ function makeDiv(num) {
 function loadEmployee(id,refseq) {
 	var i = id.substr(5);
 	if(refseq != "unset") {
-		/* 사원 불러오기
-		var param = {};
-		param["table"] = "employee_list";
-		param["where"] = " and refseq = '" + refseq + "' order by name";
-		ajax(param,"/common/simple_select.php",function(result){ makeSelect(id,result) }); */
-
 		/* 업체명 리스트에서 사용하려고 .. */
 		var csName = {};
 		csName["table"] = "erp_ocsinfo";
@@ -508,10 +533,17 @@ function loadEmployee(id,refseq) {
 		});
 		
 	} else {
-		/*$("#csPerson" + i +"").html("<option value=''>업체미선택</option>");
-		$("#csPerson" + i +"").closest(".selectDiv").addClass("error");
-		$("#cs_name" + i +"").val("");*/
+		return;
 	}
+}
+function setCsName(val) { //팝업에서 업체변경시 
+	var param = {};
+	param["table"] = "erp_ocsinfo";
+	param["where"] = " and seq = '"+val+"' ";
+	ajax(param,"/common/simple_select.php",function(result){
+		var frm = $("form[name='issue_modify']");
+		frm.find("[name='cs_name']").val(result[0].cs_name);
+	});
 }
 function saveIssue(){
 	var param = {};
@@ -540,7 +572,7 @@ function saveIssue(){
 		var obj = {};
 		obj["issue"] = param;
 		obj["mode"] = "insert";
-		ajax(obj, "issue_add_ok.php",function (result) { alert(result);	move("/index.php?cs_seq=<?=$_REQUEST[cs_seq]?>"); });
+		ajax(obj, "issue_add_ok.php",function (result) { alert(result);	location.href='/'; });
 	}
 }
 
@@ -564,11 +596,13 @@ function fn_submit(frm) {
 
 function modifyIssue() {
 	var param = {};
-	param["param"] = jsonBot("issue_modify",["cs_name"]);
+	param["param"] = jsonBot("issue_modify");
 	param["table"] = "issue_list";
 	param["id"] = ["seq"];
 	param["mode"] = "modify"; 
-	ajax(param, "issue_add_ok.php",function(result){ snackbar("issueSnackbar","#54c8ff",result); popupHide(); });
+	ajax(param, "issue_add_ok.php",function(result){ 
+		snackbar("issueSnackbar","#54c8ff",result); popupHide();
+	});
 }
 
 function delete_issue() {
@@ -608,67 +642,7 @@ function selectIssue(result){
 	}
 	calendar(form.find(".date"));
 	
-	/* 요청자 셋팅
-	var param = {};
-	param["table"] = "employee_list";
-	param["where"] = " and refseq = '" + data.refseq + "' order by name";
-	ajax(param,"/common/simple_select.php",function(val){
-		 var option = "";
-		 var select = form.find($("select[name='cs_person']"));
-		 if(val) {
-		 max = val.length;
-			option = "<option value='unset'>선택하세요</option>";
-			 for (var i = 0; i < max; i++) {
-				 var selected = (val[i].name == data.cs_person) ? "selected" : "";
-				 option += "<option value='"+val[i].name+"' "+selected+">"+val[i].name+"</option>";
-			}
-		 } else {
-			 option = "<option value='unset'>사원등록수 : 0</option>";
-			 select.closest("div").addClass("error");
-		}
-		 select.html(option);
-	});
-	== 요청자 셋팅 == */
-}
-function makeSelect(id,result) {
-	 var id = id.substr(5); 
-	 var csPerson = $("#csPerson" + id +"");
-	 if(result) {
-		 var option = "<option value='unset'>선택하세요</option>";
-		 max = result.length;
-		 for (var i = 0; i < max; i++) {
-			 option += "<option value='"+result[i].name+"'>"+result[i].name+"</option>";
-		}
-		 csPerson.html(option);
-		 csPerson.closest(".selectDiv").removeClass("error");
-	 } else {
-		 csPerson.html("<option value='unset'>사원등록 수 : 0</option>");
-		 csPerson.closest(".selectDiv").addClass("error");
-	}
 }
 /* == CALLBACK ==*/
 </script>
 </html>
-<?
-function dDay($dday) {
-	if($dday >0) {
-		return "<font color='red'><strong>(D+" .$dday . ")</strong></font>";
-	} else if($dday < 0) {
-		return "<font color='green'><strong>(D" .$dday . ")</strong></font>";
-	} else {
-		return "<font color='red'>오늘 마감</font>";
-	}
-}
-function unSetView($val) {
-	if($val == "unset"||$val == "") {
-		return "";
-	} else {
-		return "<br/>(".$val.")";
-	}
-}
-function stateView($text) {
-	$stateList = array("완료"=>"green|Y","미완료"=>"red|N","보류"=>"violet|Z");
-  	unset($stateList[$text]);
-  	return $stateList;
-}
-?> 

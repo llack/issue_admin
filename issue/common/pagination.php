@@ -1,4 +1,4 @@
-<?
+ <?
 
 class Paginator{
 	private $_limit;

@@ -1,4 +1,4 @@
-<? 
+<?
 $user = $fn->userInfo($_SESSION["USER_ID"]);
 $row_info = $user[0];
 $myWork = $fn->myWork($_SESSION["USER_ID"]);
@@ -16,7 +16,7 @@ $myWork = $fn->myWork($_SESSION["USER_ID"]);
 	 border: solid #a333c8 2px;
 	 border-radius: 25px;
 	 padding : 1rem;
-}
+} 
 #modify_result {
     visibility: hidden;
     min-width: 250px;
@@ -98,6 +98,7 @@ $myWork = $fn->myWork($_SESSION["USER_ID"]);
       <h4 class="ui header">사원</h4>
       <div class="ui link list">
         <a class="item" href="/config/employee_auth.php">권한관리 (관리자)</a>
+        <a class="item" href="/config/company_tree.php">조직도</a>
       </div>
     </div>
     <div class="column"> <!-- 내정보 -->
@@ -147,13 +148,13 @@ $myWork = $fn->myWork($_SESSION["USER_ID"]);
     <div class="ui ribbon purple basic label">
       	비밀번호
     </div>
-    <input type="password" name="user_pw">
+    <input type="password" name="user_pw" autocomplete="off">
   </div>
   <div class="inline field">
     <div class="ui ribbon purple basic label">
       	비밀번호확인
     </div>
-    <input type="password" name="user_pwd2">
+    <input type="password" name="user_pwd2" autocomplete="off">
   </div>
   <div class="inline field">
     <div class="ui ribbon purple basic label">
@@ -276,6 +277,7 @@ function modify_callback(result) {
 
 function logout() {
 	var param = {};
+	sessionStorage.clear();
 	ajax(param,"/common/logout.php",function(result){ move(result.url); });
 }
 

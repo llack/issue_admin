@@ -9,15 +9,15 @@ $que = "select * from member where user_id = '" . mysql_escape_string($_REQUEST[
 $res = mysql_query($que);
 $row = mysql_fetch_array($res);
 $total = mysql_num_rows($res);
-
+ 
 /*
-if ($row[user_id] != "" && $row[user_level]!="A") {
-	if ($row[login_check]==0) {
-		$js->AlertBack("로그인 불가능상태입니다.\\n관리자에게 문의하세요");
-		exit;
-	}
-}
-*/
+ if ($row[user_id] != "" && $row[user_level]!="A") {
+ if ($row[login_check]==0) {
+ $js->AlertBack("로그인 불가능상태입니다.\\n관리자에게 문의하세요");
+ exit;
+ }
+ }
+ */
 $logtime = date("Y-m-d H:i:s");
 
 if ($total == 0) {
@@ -31,12 +31,13 @@ else {
 		echo json_encode($result);
 		exit;
 	}
-		
+	
 	$_SESSION["USER_ID"] = $row[user_id];
 	$_SESSION["USER_NAME"] = $row[user_name];
 	$_SESSION["USER_GROUP"] = $row[user_dept];
 	$_SESSION["USER_LEVEL"] = $row[user_level];
 	$_SESSION["HOST"] = $HTTP_HOST;
+	$_SESSION["ISSUE_DATE"] = date("Y-m");
 	
 	$que_up = "update member set user_login = '$logtime',lastIP='$REMOTE_ADDR' where user_id = '$row[user_id]'";
 	$res_up = mysql_query($que_up) or die(mysql_error());

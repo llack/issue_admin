@@ -43,3 +43,6 @@ td.fc-widget-content {
 .fc-event-container {
 	padding : 0px !important;
 }
+.fc-content {
+	cursor : pointer;
+}

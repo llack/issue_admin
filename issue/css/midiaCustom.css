@@ -1,0 +1,11 @@
+@CHARSET "UTF-8";
+.side {
+	display :none !important;
+}
+.ui.purple.segment:not(.inverted) {
+	width : 100% !important;
+	margin-left : 0px !important;
+	margin-right : 0px  !important;
+}
+thead {
+}

@@ -1,4 +1,4 @@
-<?
+ <?
 session_start();
 
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
@@ -16,8 +16,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 </div>
 <!-- 메인 테이블  -->
 <div class="ui container table purple segment">
-		<div id="calendar" class="ui container" style="padding-top: 5px"></div>
-	</div>
+	<div id="calendar" class="ui container" style="padding-top: 5px"></div>
 </div>
 </body>
 <script>
@@ -25,29 +24,32 @@ $(document).ready(function(){
 	
 	$("#calendar").fullCalendar({
 		customButtons: {
+			/*
 			saveBtn : {
 				text: '일단만듬',
 				click : function() {
 					
 				}
 			}
+			*/
 		},
 		header: {
 		      left: 'saveBtn',
 		      center: 'title',
 		      right: 'today prev,next'
 		},
+		//defaultView: 'basicWeek',
 		buttonText : { prev :"저번달", next : "다음달"},
 		views: {
 		    month: {
-		      titleFormat: 'YYYY년 MM월 업무달력'
+		      titleFormat: 'YYYY년 MM월 달력'
 		    }
 		  },
 		 windowResizeDelay : 0,
 		 selectable: true,
 		 select : selectDate,
 		events: setData,
-		editable : true,
+		editable : false,
 		eventResize: modifyData,
 		eventDrop : dropData,
 		eventClick : clickData,
@@ -57,16 +59,17 @@ $(document).ready(function(){
 	$('#calendar').fullCalendar('option', 'locale', 'ko');
 	
 });
-function test(str) {
-	//alert(str);
-}
+
 function setData(start,end,timezone,callback) {
-	ajax({},"/common/loadEvents.php",
+	var date = $("#calendar").fullCalendar("getDate").format().split("-");
+	var param = { year : date[0], month : date[1]};
+	ajax(param,"/common/loadEvents.php",
 		function(result){
-			if(result) {
+			var data = result.data;
+			if(data) {
 				var events = [];
-				for(var i = 0; len = result.length, i < len ; i++) {
-					var r = result[i];
+				for(var i = 0; len = data.length, i < len ; i++) {
+					var r = data[i];
 					events.push({
 						id : r.seq,
 						title : r.memo,
@@ -77,8 +80,11 @@ function setData(start,end,timezone,callback) {
 						borderColor : r.borderColor
 					});
 				}
-				callback(events);
-			}		
+			}
+			if(result.holi) {
+				holiDay(result.holi);
+	   		}
+			callback([]);// events		
 		});	
 }
 function clickData(event) {

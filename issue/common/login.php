@@ -4,7 +4,7 @@ include $_SERVER["DOCUMENT_ROOT"]."/lib/nawoo.php";
 if($_SESSION["USER_NAME"]!="") {
 	header("Location:/");
 }
-
+ 
 ?>
 <!DOCTYPE>
 <html>
@@ -16,7 +16,6 @@ if($_SESSION["USER_NAME"]!="") {
 <link rel="stylesheet" href="/css/semantic.min.css">
 <script src="/js/jquery-3.2.1.js"></script>
 <script src="/js/semantic.min.js"></script>
-<script src="/js/docs.js"></script>
 <script src="/js/nawoo.js"></script>
 <title><?=TITLE?></title>
 </head>

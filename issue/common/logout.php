@@ -5,7 +5,7 @@ header ("Content-Type: text/html; charset=UTF-8");		#다국어지원을 위한 �
 
 include_once($_SERVER["DOCUMENT_ROOT"]."/conf/config.db.conn.php");//디비연결
 
-
+ 
 $logtime = date("Y-m-d H:i:s");
 
 $timeout = time();
@@ -20,6 +20,7 @@ $_SESSION["USER_INFO1"] = "";
 $_SESSION["USER_INFO2"] = "";
 $_SESSION["USER_LEVEL"] = "";
 $_SESSION["HOST"] = "";
+$_SESSION["ISSUE_DATE"] = "";
 
 session_destroy();
 
@@ -28,5 +29,5 @@ session_destroy();
  @unlink("/tmp/$session_file");
  */
 $result = array("url"=>"/");
-echo json_encode($result); 
+echo json_encode($result);
 ?>

@@ -4,11 +4,15 @@ header("Content-Type: text/html; charset=UTF-8");
 
 include_once($_SERVER["DOCUMENT_ROOT"]."/conf/config.db.conn.php");//디비연결
 include $_SERVER["DOCUMENT_ROOT"]."/lib/nawoo.php";
+include $_SERVER["DOCUMENT_ROOT"]."/lib/lib.php";
+$lib = new LibCode();
+
+$memoList = array("detail_memo"=>"업무상세","order_memo"=>"요청 및 지시사항","cause_memo"=>"원인분석","result_memo"=>"해결방안 및 결과");
+$memoColor = array("detail_memo"=>"blue","order_memo"=>"blue","cause_memo"=>"purple","result_memo"=>"purple");
 
 $que = " select * from issue_history where refseq ='".$_REQUEST[seq]."' order by regdate";
 $res = mysql_query($que) or die(mysql_error());
 $cnt = mysql_num_rows($res);
-
 $que_issue = " select * from issue_list where seq = '".$_REQUEST[seq]."' ";
 $res_issue = mysql_query($que_issue) or die(mysql_error());
 $row_issue = mysql_fetch_array($res_issue);
@@ -27,7 +31,6 @@ $row_issue = mysql_fetch_array($res_issue);
 <script src="/js/semantic.min.js"></script>
 <script src="/js/calendar.min.js"></script>
 <script src="/js/datatables.min.js"></script>
-<script src="/js/docs.js"></script>
 <title>업무기록</title>
 </head>
 <style>
@@ -43,56 +46,31 @@ body {
 }
 </style>
 <body>
-<h3 class="ui block header">[<?=$row_issue[cs_name]?>]<br/><?=$row_issue[memo]?></h3>
+<h3 class="ui block header">[<?=$row_issue[cs_name]?>]<br/><?=$lib->url_auto_link($row_issue[memo],true)?></h3>
 <table style="width:100%">
 <colgroup>
 	<col width="15%">
 	<col width="70%">
 	<col width="15%">
 </colgroup>
-<tr>
-	<td><div class="ui right pointing purple basic label">업무상세</div></td>
+<? foreach($memoList as $memo=>$text){ ?>
+<tr height="60">
+	<td><div class="ui right pointing <?=$memoColor[$memo]?> basic label"><?=$text?></div></td>
 	<td>
 		<div class="ui form">
-			<textarea rows="2" style="resize: none"><?=$row_issue[detail_memo]?></textarea>
+		<textarea rows="3" id="<?=$memo?>" style="resize: none"><?=$row_issue[$memo]?></textarea>
+		<textarea style="display: none" class="<?=$memo?>"><?=$row_issue[$memo]?></textarea>
 		</div>
 	</td>
-	<td></td>
-</tr>
-<tr>
-	<td><div class="ui right pointing purple basic label">요청 및 지시사항</div></td>
-	<td>
-		<div class="ui form">
-			<textarea rows="2" style="resize: none"><?=$row_issue[order_memo]?></textarea>
-	</td>
-	<td></td>
-</tr>
-<tr>
-	<td><div class="ui right pointing purple basic label">원인분석</div></td>
-	<td>
-		<div class="ui form">
-			<textarea rows="2" id="cause_memo" style="resize: none"><?=$row_issue[cause_memo]?></textarea>
-		</div>
-	</td>
-	<td>
+	<? if($text == $memoList["detail_memo"]) {?>
+	<td rowspan="4" align="center">
 		<div class="ui tiny buttons">
-		  <button class="ui inverted blue button" onclick="memoUpdate('cause_memo')">수정</button>
+		  <button class="ui inverted blue button" onclick="memoUpdate(<?=$_REQUEST[seq]?>)">수정</button>
 		</div>
 	</td>
+	<? } ?>
 </tr>
-<tr>
-	<td><div class="ui right pointing purple basic label">해결방안 및 결과</div></td>
-	<td>
-		<div class="ui form">
-			<textarea rows="2" id="result_memo" style="resize: none"><?=$row_issue[result_memo]?></textarea>
-		</div>
-	</td>
-	<td>
-		<div class="ui tiny buttons">
-		  <button class="ui inverted blue button" onclick="memoUpdate('result_memo')">수정</button>
-		</div>
-	</td>
-</tr>
+<? } ?>
 </table>
 <br/><br/>
 <div class="ui left aligned">
@@ -105,12 +83,13 @@ body {
 	  <i class="check trash alternate icon"></i>
 	  선택삭제
 	</button>
-	<button class="ui button inverted red" style="float:right" id="closeBtn" onclick="self.close();">
+	<button class="ui button inverted red" style="float:right" id="closeBtn" onclick="closeWin();">
 	  <i class="times icon"></i>
 	  닫기
 	</button>
 	<div class='ui blue empty circular label'></div>수정&nbsp;&nbsp;
 	<div class='ui green empty circular label'></div>완료&nbsp;&nbsp;
+	<div class='ui yellow empty circular label'></div>진행중&nbsp;&nbsp;
 	<div class='ui red empty circular label'></div>미완료&nbsp;&nbsp;
 	<div class='ui violet empty circular label'></div>보류&nbsp;&nbsp;
 </div>
@@ -138,7 +117,7 @@ body {
 	</thead>
 	<tbody>
 	<? if($cnt == 0 ) { ?>
-		<tr><td colspan="5" align="center">내용이 없습니다.</td></tr>		
+		<tr><td colspan="6" align="center">내용이 없습니다.</td></tr>		
 	<? } else {
 		$i = 1; 
 		while($row = mysql_fetch_array($res)) { 
@@ -167,17 +146,21 @@ body {
 </body>
 <script>
 $(document).ready(function(){
+	$("textarea,input").prop("spellcheck",false); 
 	<? if($cnt > 0) { ?>
 		fn_table("#datatables");
 	<? } ?>
 	$("body").keydown(function(e){
 		var key = e.keyCode || e.which;
 		if(key == 27) {
-			$("#closeBtn").click();
+			closeWin();
 		}
 	});
 });
-
+function closeWin(){
+	self.close();
+	$(opener.document).find(".openRecord").blur();
+}
 function delete_history() {
 	var c = $("#chk:checked");
 	if(c.length==0) {
@@ -191,22 +174,37 @@ function delete_history() {
 		return;
 	}
 }
-function memoUpdate(id) {
-	var text = $("#"+id).val();
+function memoUpdate(seq) {
+	var dMemo = $("#detail_memo").val();
+	var oMemo = $("#order_memo").val();
 	var seq = "<?=$_REQUEST[seq]?>";
-	var param = {};
-	param["param"] = {"seq" : seq};
-	if(id == "result_memo") {
-		param["param"].result_memo = text;
-	} else {
-		param["param"].cause_memo = text;
-	}
-	
-	param["table"] = "issue_list";
-	param["id"] = ["seq"];
+	var param = {table : "issue_list", id : ["seq"]};
+	param["param"] = {"seq" : seq, 
+					"detail_memo" : dMemo, 
+					"order_memo" : oMemo, 
+					"cause_memo" : $("#cause_memo").val(), 
+					"result_memo" : $("#result_memo").val()
+					};
 	ajax(param,"/common/simple_update.php",function(result) {
-		alert(result);	
+		var str = ""; 
+		var chkDif = $(".detail_memo").val() == dMemo ? true : false;
+		str += (!chkDif) ? "[업무상세] " + emp($(".detail_memo").val()) + " ▶ " + emp(dMemo)+"<br/>" : "";
+		chkDif = $(".order_memo").val() == oMemo ? true : false;
+		str += (!chkDif) ? "[요청 및 지시사항] " + emp($(".order_memo").val()) + " ▶ " + emp(oMemo) : "";
+		if(str != "") {
+			var insert = {};
+			insert["param"] = { "refseq" : seq , "gubunColor" : "blue", "memo" : str};
+			insert["table"] = "issue_history";
+			ajax(insert,"/sub/historyInsert.php",function(){ alert("수정되었습니다.");location.reload();});
+		} else {
+			alert("수정되었습니다.");
+			location.reload();
+		}
 	});
+}
+function emp(val) {
+	var result = (val=="") ? "없음" : val;
+	return result;
 }
 </script>
 </html>

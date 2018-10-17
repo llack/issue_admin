@@ -13,7 +13,7 @@ function ajax(params, url, callback, data, method){
 	});
 }
 // chart 범례 
-function legendValue(id,data) { // 범례에 건수 추가
+function legendValue(id,data) { // 범례에 건수 추가 
 	google.charts.setOnLoadCallback(function() {
 		var chartContainer = $("#" + id).find("svg");
 		var labelSelector = '> g:eq(1) > g';
@@ -95,7 +95,9 @@ function fn_table(ele) {
             
             "paginate": {
      		 "previous": "<",
-     		 "next" : ">"
+     		 "next" : ">",
+     		 "first" : "처음",
+     		 "last" : "마지막"
     		}
         },
         "columnDefs": [
@@ -109,12 +111,28 @@ function fn_table(ele) {
         	"searchable": false
         	}
         ],
+        searchHighlight: true,
+        pagingType: "full_numbers",
         drawCallback: function(settings) {
         	var top = $(this).closest('.dataTables_wrapper');
+        	var select = top.find("[name='datatables_length']").dropdown();
+        	select.closest(".dropdown").css({"min-width":"0"});
+        	var input = top.find("label > input")
+        	input.wrap("<div class='ui icon  input'>");
+        	input.after("<i class='inverted circular search link purple icon'></i>");
         	var pagination = top.find('.dataTables_paginate,.dataTables_info');
 		    pagination.toggle(this.api().page.info().pages > 1);
 		  }
     });
+}
+// holiday fucntion
+function holiDay(list) {
+	list.map(function(v) {
+		var day = $(".fc-day-top[data-date="+v.ymd+"]");
+		var text = day.html();
+		var holiHtml = "<font color='red' style='float:left;font-weight:bold'>"+text+"&nbsp;&nbsp;"+v.text+"</font>";
+		day.html(holiHtml);
+	});
 }
 function setJson() {
 	var frm = arguments[0];

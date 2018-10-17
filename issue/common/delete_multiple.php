@@ -13,4 +13,4 @@ for($i = 0; $i < $max; $i++) {
 	$fn->simple_delete($obj[$i][table],$obj[$i][id],$obj[$i][chk]);
 }
 echo json_encode("삭제되었습니다.");
-
+ 

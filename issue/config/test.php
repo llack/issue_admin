@@ -1,4 +1,4 @@
-<!-- 정보 수정 modal --> 
+ <!-- 정보 수정 modal --> 
 <div id="modify_userInfo" class="ui basic modal">
   <div class="content">
   	<div id="login_form2">
