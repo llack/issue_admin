@@ -11,30 +11,29 @@
 	</div>
    <div class="item" >
    <? 
-   
+   $user_date = $_SESSION['ISSUE_DATE'];
    $que_count = " select count(*) as total, sum(state= 'Y') as yes, sum(state = 'N')+sum(state = 'G') as no, sum(state = 'Z') as pause from issue_list where end_date
-					like '".$_SESSION['ISSUE_DATE']."%' ";
+					like '".$user_date."%' ";
 	$res_count = mysql_query($que_count) or die(mysql_error());
-	$row_count = mysql_fetch_array($res_count);
-	$c = $row_count;
+	$c = mysql_fetch_array($res_count);
 	$avg_issue = ( (int)$c[yes] / (int)$c[total] ) * 100;
 	$avg_issue = number_format($avg_issue,1);
 	?> 
    <h5 align="center" id="completeForm">
-   <input type="hidden" name="hiddenDate" id="hiddenDate" value="<?=$_SESSION['ISSUE_DATE']?>"/>
+   <input type="hidden" name="hiddenDate" id="hiddenDate" value="<?=$user_date?>"/>
    <i class="ui purple caret left icon" onclick="monthChange('before')" style="cursor:pointer"></i>
-   <span id="cMonth"><?=date("Y년 m",strtotime($_SESSION['ISSUE_DATE']))?></span>월 완료율 
+   <span id="cMonth"><?=date("Y년 m",strtotime($user_date))?></span>월 완료율 
    <i class="ui purple caret right icon"  onclick="monthChange('after')" style="cursor:pointer"></i>
-   <br/>( <a href="/index.php?nAll=&sdate=<?=$_SESSION['ISSUE_DATE']?>-01" class="stateUrl monthTotal"><span id="cTotal"><?=number_format($c[total])?></span></a>건 )
+   <br/>( <a href="/index.php?nAll=&sdate=<?=$user_date?>-01" class="stateUrl monthTotal"><span id="cTotal"><?=number_format($c[total])?></span></a>건 )
    
    <div class="ui indicating progress" data-percent="<?=$avg_issue?>" id="progress">
 	  <div class="bar">
 	  	<div class="progress {{progValue}}"></div>
 	  </div>
 	  <div class="label"> 
-		 <a href="/index.php?nAll=Y&sdate=<?=$_SESSION['ISSUE_DATE']?>-01" class="ui green circular label stateUrl">완료</a><span id="cYes"><?=number_format($c[yes])?></span><?=$fn->add_nbsp(4)?>
-		 <a href="/index.php?nAll=N&sdate=<?=$_SESSION['ISSUE_DATE']?>-01" class="ui red circular label stateUrl">미완료</a><span id="cNo"><?=number_format($c[no])?></span><?=$fn->add_nbsp(4)?>
-		 <a href="/index.php?nAll=Z&sdate=<?=$_SESSION['ISSUE_DATE']?>-01" class="ui violet circular label stateUrl">보류</a><span id="cPause"><?=number_format($c[pause])?></span>
+		 <a href="/index.php?nAll=Y&sdate=<?=$user_date?>-01" class="ui green circular label stateUrl">완료</a><span id="cYes"><?=number_format($c[yes])?></span><?=$fn->add_nbsp(4)?>
+		 <a href="/index.php?nAll=N&sdate=<?=$user_date?>-01" class="ui red circular label stateUrl">미완료</a><span id="cNo"><?=number_format($c[no])?></span><?=$fn->add_nbsp(4)?>
+		 <a href="/index.php?nAll=Z&sdate=<?=$user_date?>-01" class="ui violet circular label stateUrl">보류</a><span id="cPause"><?=number_format($c[pause])?></span>
 	  </div>
 	</div>
 	
@@ -75,16 +74,14 @@ $(document).ready(function(){
 });
 function monthChange(mode) {
 	var d = $("#hiddenDate");
-	var param = {};
-	param["date"] = d.val();
-	param["mode"] = mode;
+	var param = { date : d.val() , mode : mode};
 	ajax(param,"/common/totalView.php",function(result){
 		d.val(result.date);
-		for(key in result.text) {
+		for(var key in result.text) {
 			$("#"+key).text(result.text[key]);
 		}
 		$("#progress").progress({
-			percent : result.avg,
+			percent : result.avg
 		});
 		$(".stateUrl").each(function(i,e){
 			var url = $(this).attr("href");

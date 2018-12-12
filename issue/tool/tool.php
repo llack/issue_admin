@@ -3,6 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="UTF-8">
+<link rel="icon" href="/img/settings.png" type="image/x-icon" />
 <link rel="stylesheet" href="/css/semantic.min.css">
 <link rel="stylesheet" href="/css/datatables.min.css">
 <link rel="stylesheet" href="/css/calendar.min.css">
@@ -14,25 +15,16 @@
 <script src="/js/datatables.min.js"></script>
 <script src="/js/dataTables.searchHighlight.min.js"></script>
 <script src="/js/jquery.highlight.js"></script>
-<!-- file Export by datatables -->
-	<script src="/js/file_export/dataTables.buttons.min.js"></script>
-	<script src="/js/file_export/buttons.flash.min.js"></script>
-	<script src="/js/file_export/jszip.min.js"></script>
-	<script src="/js/file_export/pdfmake.min.js"></script>
-	<script src="/js/file_export/vfs_fonts.js"></script>
-	<script src="/js/file_export/buttons.html5.min.js"></script>
-	<script src="/js/file_export/buttons.print.min.js"></script>
-<!-- /file Export  -->
-<title>개발도구</title> 
-</head>
 <?
 session_start();
 
 include $_SERVER["DOCUMENT_ROOT"]."/lib/fn_index.php";
 
-$toolArr = array("colorPicker","tableWidth");
-$toolName = ($_REQUEST[toolName] != "unset" && $_REQUEST[toolName] != "") ? $_REQUEST[toolName] : "tableWidth"; 
+$toolArr = array("keycode","colgroup","colorPicker");
+$toolName = ($_REQUEST[toolName] != "unset" && $_REQUEST[toolName] != "") ? $_REQUEST[toolName] : "colgroup"; 
 ?>
+<title>개발도구 - <?=$toolName?></title> 
+</head>
 <style>
 body {
 	padding : 1rem;

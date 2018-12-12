@@ -1,5 +1,5 @@
 <div class="ui center aligned">
-<p>Copy Now! ↓ Click ↓ </p>
+<p>클릭하여 복사하기 ↓</p>
 <input type="text" id="copyColor" placeholder="Your color..." readonly onclick="fn_copy(this.id)"  style="width:300px;"/><br/>
 <input name="color2" type="hidden" id="color_value" value="">
 <button class="jscolor {valueElement: 'color_value'}" id="colorBtn" style="width:300px;height:200px">Pick a color</button> 

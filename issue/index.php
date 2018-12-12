@@ -4,8 +4,8 @@ session_start();
 include $_SERVER["DOCUMENT_ROOT"]."/common/header.php";
 include $_SERVER["DOCUMENT_ROOT"]."/lib/fn_index.php";
 
-$sdate = ($_REQUEST[sdate]!="") ? $_REQUEST[sdate] : date("Y-m-01");
-$edate = ($_REQUEST[edate]!="") ? $_REQUEST[edate] : date("Y-m-t",strtotime($sdate));
+$sdate = ($_REQUEST[sdate]!="") ? $_REQUEST[sdate] : date("Y-m-01",strtotime("-2 months",strtotime(date("Y-m-d"))));
+$edate = ($_REQUEST[edate]!="") ? $_REQUEST[edate] : date("Y-m-t");
 $_POST[state] = ($_POST[state]!="")? $fn->param_to_array2($_POST[state]) : $fn->param_to_array2("전체_grey");
 
 if($_REQUEST[nAll] != "") {
@@ -265,8 +265,8 @@ if($_REQUEST[nAll] != "") {
 			    </div>
 				</td>
 				<td><font color="<?=$vObj->color?>"><b><?=$i?></b></font></td>
-				<td><a href="javascript:editIssue('<?=$issue[seq]?>')"><?=getCsName($issue[refseq])?><?=unSetView($issue[cs_person])?></a></td>
-				<td style="text-align:left"><a href="javascript:editIssue('<?=$issue[seq]?>')"><?=$issue[memo]?></a></td>
+				<td><a onclick="editIssue('<?=$issue[seq]?>')" style='cursor: pointer'><?=getCsName($issue[refseq])?><?=unSetView($issue[cs_person])?></a></td>
+				<td style="text-align:left"><a onclick="editIssue('<?=$issue[seq]?>')" style='cursor: pointer'><?=$issue[memo]?></a></td>
 				<td><?=$issue[regdate]?></td>
 				<td><?=$dDayView?></td>
 			  	<td><?=$order?></td>
@@ -347,14 +347,16 @@ $(document).on("click",".copyRow",function(e){
 	
 	var cl = $(id).clone(); // copy start
 	cl.prop("id", next ).attr("data-idx",(num+1)); //id,index값 +1 바꾸고
-	sortElements(cl,(num+1),"cloneCnt","csCnt","csPerson","userName","userView","cs_name","line","regdate","end_date");
+	sortElements(cl,(num+1),"cloneCnt","csCnt","csPerson","userName","orderName","userView","orderView","cs_name","line","regdate","end_date");
 
 	cl.insertAfter("#cloneContent"+num);// copy end
 	
 	/* selects */
 	var userName = $("#userName"+cnt).val();
+	var orderName = $("#orderName"+cnt).val();
 	var csCnt = $("#csCnt"+cnt).val();
 	$("#userName"+(num+1)).val(userName);
+	$("#orderName"+(num+1)).val(orderName);
 	$("#csCnt"+(num+1)).val(csCnt);
 	/* selects */
 	calendar(cl.find(".date")); //달력 
@@ -375,7 +377,7 @@ $(document).on("click",".removeRow",function(e){
 		var num = i+1;
 		$(this).prop("id","cloneContent"+num);
 		$(this).attr("data-idx",num);
-		sortElements($(this),num,"regdate","cs_name","end_date","cloneCnt","csCnt","csPerson","userName","userView","line");
+		sortElements($(this),num,"regdate","cs_name","end_date","cloneCnt","csCnt","csPerson","userName","orderName","userView","orderView","line");
 		$("#cloneCnt" + num).text(num);
 	});
 });
@@ -451,20 +453,19 @@ function fn_state(param,after,seq) {
 	});
 }
 function userSelect(id,val) {
-	// id_format userName + (num)
-	var idCut = id.substr(8);
+	var type = (id.indexOf("user") !== -1) ? "userView" : "orderView"; 
+	var num = (type=="userView") ? 8 : 9;
+	var idCut = id.substr(num);
 	if(val != "") {
 		var param = {};
 		param["table"] = "member";
 		param["where"] = " and user_id = '"+val+"' ";
 		ajax(param,"/common/simple_select.php",function(result){
-			$("#userView" + idCut).html(result[0].user_name);
+			$("#"+ type + idCut).html(result[0].user_name);
 		});
-		$("#line" + idCut).css("display","");
 		return;
 	}
-	$("#line" + idCut).css("display","none");
-	$("#userView" + idCut).html("");
+	$("#"+ type + idCut).html("");
 }
 function sortElements() {
 	var max = arguments.length;
@@ -501,9 +502,9 @@ function makeDiv(num) {
 	cl.prop("id", next ).attr("data-idx",(num+1)); //id,index값 +1 바꾸고
 	cl.find("input:visible,textarea").val("");
 	cl.find("[id*=userView]").html("");
+	cl.find("[id*=orderView]").html("<?=$_SESSION[USER_NAME]?>");
 	cl.find("[id*=csPerson]").val("");
-	cl.find("[id*=line]").css("display","none");
-	sortElements(cl,(num+1),"cloneCnt","csCnt","csPerson","userName","userView","cs_name","line");
+	sortElements(cl,(num+1),"cloneCnt","csCnt","csPerson","userName","orderName","userView","orderView","cs_name","line");
 	
 	/*datepicker*/
 	cl.find("input[id*='regdate']").prop("id","regdate"+(num+1)).val("<?=date("Y-m-d")?>");
@@ -551,11 +552,11 @@ function saveIssue(){
 	$("div[id*='cloneContent']:visible").each(function(i,e){
 		var save = {};
 		var id = $(this).attr("id");
-
+		
 		$("#" + id).find("input,select,textarea").each(function(i,e){
 				var name = $(this).attr("name");
 				var value = $(this).val();
-				if(name=="refseq" && value == "unset") {
+				if(name=="refseq" && value == "") {
 					alert("업체 선택은 필수항목 입니다.");
 					$(this).focus();
 					out = false;

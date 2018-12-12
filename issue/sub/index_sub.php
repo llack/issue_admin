@@ -27,6 +27,21 @@
         	</select> -->
         </div>
       </div>
+      <div class="field">
+        <label>지시자</label><br/>
+        <div class="ui fluid">
+        	<select name="order_name" class="fluid" id="orderName0" onchange="userSelect(this.id,this.value)">
+        		<?
+        			$user_list = $fn->allowUser(); //승인된 유저
+        			$max = count($user_list);
+        			for ($user = 0; $user < $max; $user++) {
+        				$selected = $_SESSION[USER_ID] == $user_list[$user][user_id] ? "selected" : "";
+        		?>
+        		<option value="<?=$user_list[$user][user_id]?>" <?=$selected?>><?=$user_list[$user][user_name]?></option>
+        		<? } ?>
+        	</select>
+        </div>
+      </div>
       
       <div class="field">
         <label>업무담당자</label><br/>
@@ -34,8 +49,6 @@
         	<select name="user_name" class="fluid" id="userName0" onchange="userSelect(this.id,this.value)">
         		<option value="">선택하세요</option>
         		<?
-        			$user_list = $fn->allowUser(); //승인된 유저
-        			$max = count($user_list);
         			for ($user = 0; $user < $max; $user++) {
         		?>
         		<option value="<?=$user_list[$user][user_id]?>"><?=$user_list[$user][user_name]?></option>
@@ -94,15 +107,13 @@
 	</div>
 	
     <div class="field left aligned">
-	      <div class="ui" style="display:none" id="line0">
+	      <div class="ui" id="line0">
 	      	<br/>
 			<span class="blockLine">
-			<div class="ui right pointing purple basic label">
+			<div class="ui right pointing blue basic label">
 				지시자
-			</div><?=$_SESSION["USER_NAME"]?>
-			<input type="hidden" name="order_name" value="<?=$_SESSION["USER_ID"]?>"/>
-			&nbsp;
-			</span>
+			</div><span id="orderView0"><?=$_SESSION["USER_NAME"]?></span>
+			</span>&nbsp;&nbsp;
 			<div class="ui right pointing purple basic label">
 				담당자
 			</div>
@@ -268,7 +279,7 @@
 		<td><div class="ui right pointing blue basic label">업무상세</div></td>
 		<td>
 			<div class="ui form">
-				<textarea rows="3" id="modal_detail_memo" style="resize: none"  readonly></textarea>
+				<textarea rows="5" id="modal_detail_memo" style="resize: none"  readonly></textarea>
 			</div>
 		</td>
 	</tr>
@@ -276,7 +287,7 @@
 		<td><div class="ui right pointing blue basic label">요청 및 지시사항</div></td>
 		<td>
 			<div class="ui form">
-			<textarea rows="3" id="modal_order_memo" style="resize: none" readonly></textarea>
+			<textarea rows="5" id="modal_order_memo" style="resize: none" readonly></textarea>
 			</div>
 		</td>
 	</tr>
@@ -284,7 +295,7 @@
 		<td><div class="ui right pointing purple basic label">원인분석</div></td>
 		<td>
 			<div class="ui form">
-				<textarea rows="3" id="modal_cause_memo" style="resize: none"></textarea>
+				<textarea rows="5" id="modal_cause_memo" style="resize: none"></textarea>
 			</div>
 		</td>
 	</tr>
@@ -292,7 +303,7 @@
 		<td><div class="ui right pointing purple basic label">해결방안 및 결과</div></td>
 		<td>
 			<div class="ui form">
-				<textarea rows="3" id="modal_result_memo" style="resize: none"></textarea>
+				<textarea rows="5" id="modal_result_memo" style="resize: none"></textarea>
 			</div>
 		</td>
 	</tr>

@@ -31,9 +31,21 @@ $row_issue = mysql_fetch_array($res_issue);
 <script src="/js/semantic.min.js"></script>
 <script src="/js/calendar.min.js"></script>
 <script src="/js/datatables.min.js"></script>
+<script src="/js/dataTables.searchHighlight.min.js"></script>
+<script src="/js/jquery.highlight.js"></script>
+<script src="/js/history_lib.js"></script>
 <title>업무기록</title>
 </head>
 <style>
+table.dataTable span.highlight {
+  background-color: #FFFF88;
+  border-radius: 0.28571429rem;
+}
+
+table.dataTable span.column_highlight {
+  background-color: #ffcc99;
+  border-radius: 0.28571429rem;
+}
 body {
 	padding : 1rem;
 	overflow-x : auto;
@@ -44,6 +56,10 @@ body {
 .right {
 	float : right;
 }
+.mText{
+	cursor : zoom-in;
+}
+
 </style>
 <body>
 <h3 class="ui block header">[<?=$row_issue[cs_name]?>]<br/><?=$lib->url_auto_link($row_issue[memo],true)?></h3>
@@ -55,10 +71,10 @@ body {
 </colgroup>
 <? foreach($memoList as $memo=>$text){ ?>
 <tr height="60">
-	<td><div class="ui right pointing <?=$memoColor[$memo]?> basic label"><?=$text?></div></td>
+	<td><div class="ui right pointing <?=$memoColor[$memo]?> basic label mText"><?=$text?></div></td>
 	<td>
 		<div class="ui form">
-		<textarea rows="3" id="<?=$memo?>" style="resize: none"><?=$row_issue[$memo]?></textarea>
+		<textarea rows="5" id="<?=$memo?>" style="resize: none"><?=$row_issue[$memo]?></textarea>
 		<textarea style="display: none" class="<?=$memo?>"><?=$row_issue[$memo]?></textarea>
 		</div>
 	</td>
@@ -143,6 +159,7 @@ body {
 	</tbody>
 
 </table>
+<? include_once $_SERVER["DOCUMENT_ROOT"].'/sub/history_textarea.php';?>
 </body>
 <script>
 $(document).ready(function(){
@@ -153,14 +170,53 @@ $(document).ready(function(){
 	$("body").keydown(function(e){
 		var key = e.keyCode || e.which;
 		if(key == 27) {
-			closeWin();
+			if(!$("#fullText").hasClass("visible")) {
+				closeWin();
+			}
 		}
 	});
+	$(".mText").click(function(){
+		
+		$("#fullText").modal({
+			onShow : initModal($(this)),
+			onApprove : modalUpdate,
+			duration : 0
+		}).modal('show');
+	});
+	
+	$(".mText").hover(function(){ $(this).removeClass('basic');},function(){$(this).addClass('basic');});
 });
-function closeWin(){
-	self.close();
-	$(opener.document).find(".openRecord").blur();
+/* TEXTAREA */ 
+function initModal(t) {
+	var title = t.html();
+	var text = t.closest("tr").find("textarea");
+	$("#modalTitle").html(title);
+	$("#modalMemo").val(text.val()).focus();
+	$("#modalMemo").prop("name",text.prop("id"));
 }
+function modalUpdate() {
+	var seq = $("#modal_seq").val();
+	let param = { table : "issue_list", id : ["seq"], param : { seq : seq } };
+
+	var m = $("#modalMemo");
+	var name = m.prop("name");
+	var dMemo = $("."+name).val(); //수정 전
+	var value = m.val(); // 수정 후 
+	param.param[name] = value;
+	
+	$.post("/common/simple_update.php", param, function(result){
+		if(name == "detail_memo" || name == "order_memo") {
+			var str = "";
+			var chkDif = dMemo == value ? true : false;
+			str += (!chkDif) ? "["+$("#modalTitle").html()+"] " + emp(dMemo) + " ▶ " + emp(value) : "";
+			historyInsert(seq,str);
+		} else {
+			alram();
+		}
+		
+	});
+}
+/* ==TEXTAREA== */
 function delete_history() {
 	var c = $("#chk:checked");
 	if(c.length==0) {
@@ -191,20 +247,8 @@ function memoUpdate(seq) {
 		str += (!chkDif) ? "[업무상세] " + emp($(".detail_memo").val()) + " ▶ " + emp(dMemo)+"<br/>" : "";
 		chkDif = $(".order_memo").val() == oMemo ? true : false;
 		str += (!chkDif) ? "[요청 및 지시사항] " + emp($(".order_memo").val()) + " ▶ " + emp(oMemo) : "";
-		if(str != "") {
-			var insert = {};
-			insert["param"] = { "refseq" : seq , "gubunColor" : "blue", "memo" : str};
-			insert["table"] = "issue_history";
-			ajax(insert,"/sub/historyInsert.php",function(){ alert("수정되었습니다.");location.reload();});
-		} else {
-			alert("수정되었습니다.");
-			location.reload();
-		}
+		historyInsert(seq,str);
 	});
-}
-function emp(val) {
-	var result = (val=="") ? "없음" : val;
-	return result;
 }
 </script>
 </html>
