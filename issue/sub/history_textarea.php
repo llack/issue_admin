@@ -14,7 +14,7 @@
 	<tr height="60">
 		<td>
 			<div class="ui form">
-				<textarea rows="20" style="resize: none" id="modalMemo"></textarea>
+				<textarea rows="30" style="resize: none" id="modalMemo"></textarea>
 			</div>
 		</td>
 	</tr>

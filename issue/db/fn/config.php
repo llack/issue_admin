@@ -1,7 +1,7 @@
 <?php
 $host = "localhost";
 $user = "root";
-$dbpass = "924509as";
+$dbpass = "";
 mysql_connect($host,$user,$dbpass);
 mysql_query('SET NAMES utf8');
 ?>

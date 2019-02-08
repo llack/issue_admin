@@ -41,15 +41,15 @@ $(document).on("keyup",".modifyTables",function(){
 		$("#resultState").html("<br/><font color='red'>숫자만 입력해주세요</font>");
 		setValue(id,null,null,0);
 	} else if(value=="") {
-		setValue(id,"0%","0%",0);
+		setValue(id,"0","0",0);
 		resultWidth();
 	} else {
 		value = parseInt(value);
-		setValue(id, value+"%", value+"%", value);
+		setValue(id, value, value, value);
 		
 		if(!resultWidth()) {
-			$("#resultState").html("<br/><font color='red'>합계 100이하로 입력해주세요</font>");
-			setValue(id, "0%", "0%", 0);
+			$("#resultState").html("<br/><font color='red'>합계 202이하로 입력해주세요</font>");
+			setValue(id, "0", "0", 0);
 			resultWidth();
 		}
 	}
@@ -62,7 +62,7 @@ function resultWidth() {
 	$("[id*='col_']").each(function(){
 		resultWidth += this.value*1;
 	});
-	if(resultWidth > 100) {
+	if(resultWidth > 202) {
 		return false;
 	} else {
 		$("#resultWidth").html(resultWidth);
@@ -85,7 +85,7 @@ function serWidth(){
 	$("[id*='col_']").each(function(){
 		resultWidth += this.value*1;
 	});
-	$("#serWidth").html("사용가능 : " + (100-resultWidth) + "%");
+	$("#serWidth").html("사용가능 : " + (202-resultWidth) + "");
 }
 function copyData() {
 	fn_copy("copyWidth");
@@ -113,8 +113,8 @@ function makeTable() {
 		}
 		colgroup += "</colgroup>";
 		html += colgroup;
-		html += "<tr><td colspan='"+num+"' class='resultTd'>합계 : <span id='resultWidth'>0</span>%";
-		html += " / <span id='serWidth'>사용 가능 : 100%</span><span id='resultState'></span></td></tr>";
+		html += "<tr><td colspan='"+num+"' class='resultTd'>합계 : <span id='resultWidth'>0</span>";
+		html += " / <span id='serWidth'>사용 가능 : 202</span><span id='resultState'></span></td></tr>";
 		html += "<tr>";
 		for(var i = 0; i < num; i++) {
 			html += "<td bgcolor='#E3FAFF'><a class='ui teal circular label'>"+(i+1)+"</a></td>";
@@ -122,7 +122,7 @@ function makeTable() {
 		html += "</tr>";
 		html += "<tr>";
 		for(var i = 0; i < num; i++) {
-			html += "<td><span name='col_"+(i+1)+"'>0%</span><br/><div class='ui input' style='width:50px'>";
+			html += "<td><span name='col_"+(i+1)+"'>0</span><br/><div class='ui input' style='width:50px'>";
 			html += "<input type='text' id='col_"+(i+1)+"' class='modifyTables' value='0' onclick='this.select()'/></div></td>";
 		}
 		html += "</tr>";

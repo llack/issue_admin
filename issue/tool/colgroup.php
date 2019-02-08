@@ -117,7 +117,7 @@ function makeTable() {
 		html += " / <span id='serWidth'>사용 가능 : 100%</span><span id='resultState'></span></td></tr>";
 		html += "<tr>";
 		for(var i = 0; i < num; i++) {
-			html += "<td bgcolor='#E3FAFF'><a class='ui teal circular label'>"+(i+1)+"</a></td>";
+			html += "<td bgcolor='#E3FAFF'><div class='ui form'><textarea style='width:100%;resize:none' rows='1'></textarea></div></td>";
 		}
 		html += "</tr>";
 		html += "<tr>";
